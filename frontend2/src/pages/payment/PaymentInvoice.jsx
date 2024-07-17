@@ -14,11 +14,10 @@ const PaymentInvoice = () => {
       try {
         const response = await axios.get(`/api/payment/detail/${id}`);
         console.log(response.data.payments);
-        const sortedPayments = response.data.payments.sort((a, b) => {
+        const sortedPayments = response.data.payments[0].sort((a, b) => {
           return new Date(b.paymentDate) - new Date(a.paymentDate); // Sort by latest paymentDate
         });
         setPaymentDetails(sortedPayments);
-        console.log(paymentDetails);
         setError(null); // Clear any previous errors
       } catch (error) {
         console.error('Error fetching payment details:', error);
@@ -91,9 +90,9 @@ const PaymentInvoice = () => {
               Programmes Purchased:
             </h3>
             {payment.programmes &&
-              payment.programmes.map((programmeId) => (
+              payment.programmes.map((programme) => (
                 <div
-                  key={programmeId}
+                  key={programme._id}
                   className="flex flex-col md:flex-row items-center mb-4"
                 >
                   <div className="w-full md:w-20 h-20 md:h-20 rounded-md overflow-hidden mb-4 md:mb-0 md:mr-4">
@@ -106,6 +105,7 @@ const PaymentInvoice = () => {
                   <div>
                     <p className="font-semibold mb-1">
                       {/* Replace with actual programme category */}
+                      {programme.category}
                     </p>
                     <p>
                       <strong>Price:</strong> {payment.amount}
