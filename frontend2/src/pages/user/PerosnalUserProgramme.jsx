@@ -41,9 +41,7 @@ const PersonalUserProgramme = () => {
   useEffect(() => {
     const getPersonalProgramme = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/after/user/${user.user._id}`
-        );
+        const response = await axios.get(`/api/after/user/${user.user._id}`);
 
         setTrainerDatas(response.data.programmeDetails); // Assuming setTrainerDatas is a state setter function
       } catch (error) {

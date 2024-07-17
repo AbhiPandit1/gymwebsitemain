@@ -61,7 +61,7 @@ const PaymentInvoice = () => {
       {paymentDetails.map((payment, index) => (
         <div
           key={index}
-          className="bg-gray-700 rounded-lg p-4 mb-6 min-h-[100vh]"
+          className="bg-gray-700 rounded-lg p-4 mb-6 max-h-[200vh]"
         >
           <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2">
             Invoice Details
