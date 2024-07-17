@@ -98,7 +98,8 @@ export const postUser = async (req, res) => {
     // Send success response with user information and token
     const userResponse = user.toObject();
     delete userResponse.password; // Remove password from the response
-    console.log(userResponse);
+
+    console.log(token);
 
     res.status(201).json({
       message: 'User created successfully',

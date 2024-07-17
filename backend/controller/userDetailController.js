@@ -2,10 +2,11 @@ import fs from 'fs';
 import User from '../model/userModel.js';
 import uploadToCloudinary from '../middleware/uploadToCloudinary.js';
 import singleUpload from '../middleware/multer.js';
+import generateTokenAndSetCookie from '../lib/generateToken.js';
 
 export const createUserDetail = async (req, res) => {
-  const userId = req.user._id;
-  const token = req.token;
+  const userId = req.params.id;
+
   const { name, gender, role } = req.body;
 
   try {
@@ -49,12 +50,13 @@ export const createUserDetail = async (req, res) => {
       const user = await User.findByIdAndUpdate(userId, updatedUser, {
         new: true,
       });
+
       await user.save();
 
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-      console.log(user, token);
+      const token = generateTokenAndSetCookie(user._id, res);
       // Return updated user and token
       res.status(201).json({ user, token });
     });

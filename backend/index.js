@@ -17,17 +17,18 @@ import cors from 'cors';
 import cloudinary from 'cloudinary';
 
 // Load environment variables from .env file
-dotenv.config();
 
 const port = 3001;
 
 // Initialize Express application
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
+dotenv.config();
 
 // Middleware and configuration setup
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(cookieParser());
+
 app.use(cors());
 
 // Configure Cloudinary

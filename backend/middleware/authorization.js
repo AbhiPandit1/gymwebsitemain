@@ -2,7 +2,7 @@ import User from '../model/userModel.js';
 
 const checkRole = (requiredRole) => {
   return (req, res, next) => {
-    const user = req.user; // The authenticated user attached by protectRoute
+    const user = req.user; 
     const userId = req.params.id;
     console.log(userId);
 

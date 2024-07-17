@@ -34,7 +34,7 @@ const ProductPage = () => {
     try {
       // Send checkoutDetails to your backend API to create a Stripe session
       const response = await axios.post(
-        `/api/payment/checkout/${id}`,
+        `http://localhost:3000/api/payment/checkout/${id}`,
         checkoutDetails
       );
       const session = response.data;
