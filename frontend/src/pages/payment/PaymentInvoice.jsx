@@ -14,21 +14,11 @@ const PaymentInvoice = () => {
     const getPaymentDetail = async () => {
       setLoading(true);
       try {
-<<<<<<< HEAD:frontend/src/pages/payment/PaymentInvoice.jsx
         const response = await axios.get(`${api}/api/payment/detail/${id}`);
         console.log(response.data.payments);
         const sortedPayments = response.data.payments[0].sort((a, b) => {
           return new Date(b.paymentDate) - new Date(a.paymentDate); // Sort by latest paymentDate
         });
-=======
-        const response = await axios.get(
-          `${backendapi}/api/payment/detail/${id}`
-        );
-        const sortedPayments = response?.data.payments
-          .flat()
-          .sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
-        console.log(sortedPayments);
->>>>>>> 7b51c01e35a79bcccdd54a45a56cbe0623c4ccc4:frontend2/src/pages/payment/PaymentInvoice.jsx
         setPaymentDetails(sortedPayments);
         setError(null);
       } catch (error) {

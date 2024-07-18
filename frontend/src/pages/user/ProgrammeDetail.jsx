@@ -26,13 +26,7 @@ const ProgrammeDetail = () => {
     try {
       setLoading(true);
       setError(false);
-<<<<<<< HEAD:frontend/src/pages/user/ProgrammeDetail.jsx
       const response = await axios.get(`${api}/api/admin/programme/${programmeId}`);
-=======
-      const response = await axios.get(
-        `${backendapi}/api/admin/programme/${programmeId}`
-      );
->>>>>>> 7b51c01e35a79bcccdd54a45a56cbe0623c4ccc4:frontend2/src/pages/user/ProgrammeDetail.jsx
       console.log(response);
       if (response.data.message === 'success') {
         setSingleProgramme(response.data.singleProgramme);
@@ -54,11 +48,7 @@ const ProgrammeDetail = () => {
   const makePayment = async () => {
     try {
       const response = await axios.post(
-<<<<<<< HEAD:frontend/src/pages/user/ProgrammeDetail.jsx
         `${api}/api/payment/checkout/${programmeId}`,
-=======
-        `${backendapi}/api/payment/checkout/${programmeId}`,
->>>>>>> 7b51c01e35a79bcccdd54a45a56cbe0623c4ccc4:frontend2/src/pages/user/ProgrammeDetail.jsx
         {
           amount: singleProgramme.price * 100, // Amount in cents
           country: 'usa', // Hardcoded country selection

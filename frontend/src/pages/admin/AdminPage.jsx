@@ -5,12 +5,8 @@ import { FiEdit2 } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-<<<<<<< HEAD:frontend/src/pages/admin/AdminPage.jsx
 
 const api = import.meta.env.VITE_BACKEND_URL;
-=======
-const backendapi = import.meta.env.VITE_BACKEND_URL;
->>>>>>> 7b51c01e35a79bcccdd54a45a56cbe0623c4ccc4:frontend2/src/pages/admin/AdminPage.jsx
 const AdminPage = () => {
   {
     /*/admin/page/:id */
@@ -40,13 +36,7 @@ const AdminPage = () => {
 
   const deleteUser = async () => {
     try {
-<<<<<<< HEAD:frontend/src/pages/admin/AdminPage.jsx
       const response = await axios.delete(`${api}/api/admin/user/${selectedUserId}`);
-=======
-      const response = await axios.delete(
-        `${backendapi}/api/admin/user/${selectedUserId}`
-      );
->>>>>>> 7b51c01e35a79bcccdd54a45a56cbe0623c4ccc4:frontend2/src/pages/admin/AdminPage.jsx
       if (response.status === 200) {
         toast.success('User Deleted Successfully');
         setUsers(users.filter((user) => user._id !== selectedUserId));

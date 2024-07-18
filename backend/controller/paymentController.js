@@ -25,11 +25,7 @@ export const paymentCheckout = async (req, res) => {
       return res.status(404).json({ error: 'Programme not found' });
     }
     const user = await User.findById(userId);
-<<<<<<< HEAD
     console.log(user.takenProgrammes);
-=======
-    
->>>>>>> 7b51c01e35a79bcccdd54a45a56cbe0623c4ccc4
     
 
     if (user.takenProgrammes.includes(id)) {
