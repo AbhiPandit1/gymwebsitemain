@@ -2,10 +2,17 @@ import jwt from 'jsonwebtoken';
 
 const generateTokenAndSetCookie = (userId, res) => {
   try {
+    // Log userId and secret for debugging
+    console.log('Generating token for userId:', userId);
+    console.log('JWT Secret:', process.env.JWT_SECRET);
+
     // Generate JWT token
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
       expiresIn: '15d', // Token expires in 15 days
     });
+
+    // Log the generated token for debugging
+    console.log('Generated token:', token);
 
     // Set JWT token as a cookie in the response
     res.cookie('jwt', token, {

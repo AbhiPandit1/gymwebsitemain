@@ -4,6 +4,7 @@ import Category1 from '../assets/Category1.png';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import { useParams } from 'react-router-dom';
+const backendapi = import.meta.env.VITE_BACKEND_URL;
 
 const ProductPage = () => {
   {
@@ -34,7 +35,7 @@ const ProductPage = () => {
     try {
       // Send checkoutDetails to your backend API to create a Stripe session
       const response = await axios.post(
-        `http://localhost:3000/api/payment/checkout/${id}`,
+        `${backendapi}/api/payment/checkout/${id}`,
         checkoutDetails
       );
       const session = response.data;

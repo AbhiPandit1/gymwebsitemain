@@ -41,16 +41,18 @@ export const signIn = async (req, res) => {
 
 export const signOut = (req, res) => {
   try {
-    // Clear existing 'token' cookie (if it exists)
-    res.clearCookie('token');
-
-    // Set a new 'jwt' cookie with maxAge set to 0 to expire immediately
-    res.cookie('jwt', '', {
-      maxAge: 0, // Expire immediately
+    // Options for clearing cookies
+    const cookieOptions = {
       httpOnly: true, // Cookie accessible only by the web server
       sameSite: 'strict', // Cookie sent only in same-site requests
       secure: process.env.NODE_ENV !== 'development', // Cookie sent over HTTPS in production
-    });
+    };
+
+    // Clear existing 'token' cookie (if it exists)
+    res.clearCookie('token', cookieOptions);
+
+    // Clear the 'jwt' cookie explicitly with the same options
+    res.clearCookie('jwt', cookieOptions);
 
     // Send a success response
     return res.status(200).json({ message: 'User logged out successfully' });

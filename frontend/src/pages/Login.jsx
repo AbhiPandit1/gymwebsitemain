@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import loginImage from '../assets/loginImage.png';
@@ -119,7 +119,7 @@ const Login = () => {
                     </label>
                   </div>
                   <div>
-                    <Link to="/user/forgot/password">
+                    <Link to="/user/forgot/email">
                       <p className="text-sans text-green-500 hover:text-green-700">
                         forgot password
                       </p>

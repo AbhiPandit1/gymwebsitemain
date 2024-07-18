@@ -21,6 +21,14 @@ dotenv.config();
 
 // Initialize Express application
 const app = express();
+
+const corsOptions = {
+  origin: 'https://gymwebsitemain.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow only specific methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specific headers
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
