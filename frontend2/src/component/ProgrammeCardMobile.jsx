@@ -19,7 +19,7 @@ const ProgrammeCardMobile = () => {
           />
           <div>
             <div className="mt-[1rem] font-extrabold items-center text-4xl font-sans text-white h-[20vh] absolute top-[50%] left-[5%]">
-              {data.category}
+              {data.id}
             </div>
           </div>
         </div>

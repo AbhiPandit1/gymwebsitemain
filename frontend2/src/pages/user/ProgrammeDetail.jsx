@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import Header from '../../component/Header';
+const backendapi = import.meta.env.VITE_BACKEND_URL;
 
 const ProgrammeDetail = () => {
   const [singleProgramme, setSingleProgramme] = useState(null);
@@ -23,7 +24,9 @@ const ProgrammeDetail = () => {
     try {
       setLoading(true);
       setError(false);
-      const response = await axios.get(`/api/admin/programme/${programmeId}`);
+      const response = await axios.get(
+        `${backendapi}/api/admin/programme/${programmeId}`
+      );
       console.log(response);
       if (response.data.message === 'success') {
         setSingleProgramme(response.data.singleProgramme);
@@ -45,7 +48,7 @@ const ProgrammeDetail = () => {
   const makePayment = async () => {
     try {
       const response = await axios.post(
-        `/api/payment/checkout/${programmeId}`,
+        `${backendapi}/api/payment/checkout/${programmeId}`,
         {
           amount: singleProgramme.price * 100, // Amount in cents
           country: 'usa', // Hardcoded country selection

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+const backendapi = import.meta.env.VITE_BACKEND_URL;
 
 const PaymentInvoice = () => {
   const [paymentDetails, setPaymentDetails] = useState([]);
@@ -12,8 +13,10 @@ const PaymentInvoice = () => {
     const getPaymentDetail = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`/api/payment/detail/${id}`);
-        const sortedPayments = response.data.payments
+        const response = await axios.get(
+          `${backendapi}/api/payment/detail/${id}`
+        );
+        const sortedPayments = response?.data.payments
           .flat()
           .sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
         console.log(sortedPayments);
@@ -57,7 +60,7 @@ const PaymentInvoice = () => {
         Payment Invoice
       </h2>
 
-      {paymentDetails.map((payment, index) => (
+      {paymentDetails?.map((payment, index) => (
         <div
           key={index}
           className="bg-gray-700 rounded-lg p-4 mb-6 max-h-[200vh]"

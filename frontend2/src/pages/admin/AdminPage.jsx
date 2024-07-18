@@ -5,7 +5,7 @@ import { FiEdit2 } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-
+const backendapi = import.meta.env.VITE_BACKEND_URL;
 const AdminPage = () => {
   {
     /*/admin/page/:id */
@@ -19,7 +19,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/api/admin/user');
+        const response = await axios.get(`${backendapi}/api/admin/user`);
 
         const filteredUsers = response.data.users.filter(
           (currentUser) => currentUser._id !== user._id
@@ -35,7 +35,9 @@ const AdminPage = () => {
 
   const deleteUser = async () => {
     try {
-      const response = await axios.delete(`/api/admin/user/${selectedUserId}`);
+      const response = await axios.delete(
+        `${backendapi}/api/admin/user/${selectedUserId}`
+      );
       if (response.status === 200) {
         toast.success('User Deleted Successfully');
         setUsers(users.filter((user) => user._id !== selectedUserId));

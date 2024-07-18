@@ -5,6 +5,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { MdEmail } from 'react-icons/md';
 
+const backendapi = import.meta.env.VITE_BACKEND_URL;
+
 const EmailField = () => {
   {
     /*/user/forgot/email */
@@ -15,7 +17,7 @@ const EmailField = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post('/api/forgot/password', {
+      const res = await axios.post(`${backendapi}/api/forgot/password`, {
         email: userEmail,
       });
 

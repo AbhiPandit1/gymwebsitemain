@@ -1,7 +1,9 @@
 import TrainerComponent from '../component/TrainerComponent';
 
 const Trainers = () => {
-  {/* /trainers */}
+  {
+    /* /trainers */
+  }
   return (
     <div>
       <TrainerComponent />

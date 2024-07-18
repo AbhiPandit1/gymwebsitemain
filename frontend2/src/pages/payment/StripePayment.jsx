@@ -3,6 +3,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
 
+
+const backendapi = import.meta.env.VITE_BACKEND_URL;
 const StripePayment = ({ amount }) => {
   const stripePromise = loadStripe(
     'pk_test_51Pa814I7lJRhp8GEBpmlT7u9bssCwu3MtiZALmBXBIsYkeqZboK3CT8JgOpMfwLdMXyyKrFXuUAc28crTu0DmJG300zMtqLK58'
@@ -13,7 +15,7 @@ const StripePayment = ({ amount }) => {
   console.log(country);
 
   const makePayment = async () => {
-    const response = await axios.post('/api/payment/checkout', {
+    const response = await axios.post(`${backendapi}/api/payment/checkout`, {
       amount: 200,
       country: 'inr',
     });

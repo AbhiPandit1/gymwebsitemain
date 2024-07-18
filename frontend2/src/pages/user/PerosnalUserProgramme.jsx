@@ -8,7 +8,7 @@ import { ImCheckboxChecked } from 'react-icons/im';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
-
+const backendapi = import.meta.env.VITE_BACKEND_URL;
 const PersonalUserProgramme = () => {
   const { user } = useSelector((state) => state.user);
   const dashBoardLink = [
@@ -41,7 +41,9 @@ const PersonalUserProgramme = () => {
   useEffect(() => {
     const getPersonalProgramme = async () => {
       try {
-        const response = await axios.get(`/api/after/user/${user.user._id}`);
+        const response = await axios.get(
+          `${backendapi}/api/after/user/${user.user._id}`
+        );
 
         setTrainerDatas(response.data.programmeDetails); // Assuming setTrainerDatas is a state setter function
       } catch (error) {

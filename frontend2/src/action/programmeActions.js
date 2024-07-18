@@ -10,7 +10,7 @@ import {
   getProgrammeSuccess,
 } from '../reducers/programmeReducer';
 
-const api = import.meta.env.VITE_BACKEND_URL;
+const backendapi = import.meta.env.VITE_BACKEND_URL;
 export const createProgramme = (programmeData, userId) => async (dispatch) => {
   try {
     dispatch(createProgrammeStart()); // Dispatch the action creator function
@@ -27,7 +27,7 @@ export const createProgramme = (programmeData, userId) => async (dispatch) => {
     formData.append('desc', programmeData.desc);
 
     const response = await axios.post(
-      `${api}/api/admin/programme/${userId}`,
+      `${backendapi}/api/admin/programme/${userId}`,
       formData,
       {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -52,7 +52,7 @@ export const getProgramme = () => async (dispatch) => {
   try {
     dispatch(getProgrammeStart());
 
-    const response = await axios.get(`${api}/api/admin/category`);
+    const response = await axios.get(`${backendapi}/api/admin/category`);
 
     if (response.status === 200) {
       dispatch(getProgrammeSuccess(response.data));

@@ -7,8 +7,9 @@ import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
+const backendapi = import.meta.env.VITE_BACKEND_URL;
+
 const ForgortPassword = () => {
-  
   {
     /* "/resetpassword/:token" */
   }
@@ -35,10 +36,13 @@ const ForgortPassword = () => {
       toast.error('Passwords do not match');
     } else {
       try {
-        const res = await axios.put(`/api/forgot/reset/password/${token}`, {
-          newPassword: userPassword,
-          confirmNewPassword: userConfirmPassword,
-        });
+        const res = await axios.put(
+          `${backendapi}/api/forgot/reset/password/${token}`,
+          {
+            newPassword: userPassword,
+            confirmNewPassword: userConfirmPassword,
+          }
+        );
 
         if (res.data.success) {
           toast.success('Password updated successfully');
