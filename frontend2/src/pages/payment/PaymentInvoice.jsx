@@ -10,27 +10,27 @@ const PaymentInvoice = () => {
 
   useEffect(() => {
     const getPaymentDetail = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
         const response = await axios.get(`/api/payment/detail/${id}`);
-        console.log(response.data.payments);
-        const sortedPayments = response.data.payments[0].sort((a, b) => {
-          return new Date(b.paymentDate) - new Date(a.paymentDate); // Sort by latest paymentDate
-        });
+        const sortedPayments = response.data.payments
+          .flat()
+          .sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
+        console.log(sortedPayments);
         setPaymentDetails(sortedPayments);
-        setError(null); // Clear any previous errors
+        setError(null);
       } catch (error) {
         console.error('Error fetching payment details:', error);
-        setError('Error loading payment details'); // Set error state
+        setError('Error loading payment details');
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
     if (id) {
-      getPaymentDetail(); // Fetch payment details when ID changes
+      getPaymentDetail();
     } else {
-      setLoading(false); // No ID, stop loading
+      setLoading(false);
     }
   }, [id]);
 
@@ -49,7 +49,7 @@ const PaymentInvoice = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading payment details: {error}</div>;
-  if (!paymentDetails?.length) return <div>No payment details found</div>;
+  if (!paymentDetails.length) return <div>No payment details found</div>;
 
   return (
     <div className="payment-invoice min-h-screen bg-gray-800 text-white p-8">
@@ -97,18 +97,17 @@ const PaymentInvoice = () => {
                 >
                   <div className="w-full md:w-20 h-20 md:h-20 rounded-md overflow-hidden mb-4 md:mb-0 md:mr-4">
                     <img
-                      src="https://via.placeholder.com/150"
+                      src={
+                        programme.imageUrl || 'https://via.placeholder.com/150'
+                      }
                       alt="Programme"
                       className="object-cover w-full h-full"
                     />
                   </div>
                   <div>
-                    <p className="font-semibold mb-1">
-                      {/* Replace with actual programme category */}
-                      {programme.category}
-                    </p>
+                    <p className="font-semibold mb-1">{programme.category}</p>
                     <p>
-                      <strong>Price:</strong> {payment.amount}
+                      <strong>Price:</strong> {programme.price}
                     </p>
                   </div>
                 </div>

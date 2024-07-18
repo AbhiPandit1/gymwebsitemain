@@ -5,7 +5,6 @@ const protectRoute = async (req, res, next) => {
   try {
     // Retrieve JWT token from cookies
     const token = req.cookies.jwt;
-    console.log(token);
 
     if (!token) {
       return res
@@ -30,6 +29,9 @@ const protectRoute = async (req, res, next) => {
     // Attach user and token to request object
     req.user = user;
     req.token = token;
+
+    console.log(user.email);
+    console.log(token);
 
     // Proceed to the next middleware
     next();

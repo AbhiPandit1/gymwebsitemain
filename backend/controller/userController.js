@@ -81,7 +81,7 @@ export const postUser = async (req, res) => {
       email,
       password: hashedPassword,
     });
-
+    console.log(user);
     try {
       await user.save();
       console.log('User saved successfully!');

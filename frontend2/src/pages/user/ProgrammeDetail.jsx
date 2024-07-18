@@ -12,6 +12,7 @@ const ProgrammeDetail = () => {
   const [error, setError] = useState(false);
 
   const { programmeId } = useParams();
+  console.log(programmeId);
   const navigate = useNavigate();
 
   const stripePromise = loadStripe(

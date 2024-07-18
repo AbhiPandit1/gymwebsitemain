@@ -19,7 +19,7 @@ const EmailField = () => {
         email: userEmail,
       });
 
-      if (res.success) {
+      if (res.data.success) {
         toast.success('Email sent Successfull');
       } else {
         toast.error(res, 'error');

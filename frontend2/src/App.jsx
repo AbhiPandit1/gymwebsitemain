@@ -35,7 +35,7 @@ function App() {
   const location = useLocation();
   const { user } = useSelector((state) => state.user);
   const token = user?.token;
-
+  console.log(user);
   const noHeaderFooterPaths = [
     '/signin',
     '/login',
