@@ -12,6 +12,8 @@ const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
 export const paymentCheckout = async (req, res) => {
   const { amount } = req.body;
   const userId = req.user._id;
+  console.log(userId);
+  
 
   // Validate id parameter
   const id = req.params.id;
@@ -23,6 +25,8 @@ export const paymentCheckout = async (req, res) => {
       return res.status(404).json({ error: 'Programme not found' });
     }
     const user = await User.findById(userId);
+    console.log(user.takenProgrammes);
+    
 
     if (user.takenProgrammes.includes(id)) {
       return res.status(404).json({ error: 'You cant buy a programme twice' });
@@ -51,8 +55,8 @@ export const paymentCheckout = async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: 'http://localhost:5173/payment/success',
-      cancel_url: 'http://localhost:5173/payment/cancel',
+      success_url: 'http://localhost:3000/payment/success',
+      cancel_url: 'http://localhost:3000/payment/cancel',
       payment_intent_data: {
         metadata: { paymentIntentId: paymentIntent.id },
       },

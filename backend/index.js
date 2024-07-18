@@ -17,19 +17,20 @@ import cors from 'cors';
 import cloudinary from 'cloudinary';
 
 // Load environment variables from .env file
-
-const port = 3001;
+dotenv.config();
 
 // Initialize Express application
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-dotenv.config();
-
-// Middleware and configuration setup
 app.use(express.urlencoded({ extended: false }));
 
-app.use(cors());
+// Set up CORS to allow requests from your frontend
+app.use(cors({
+  origin: 'http://localhost:3000', // Adjust to your frontend URL
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
 
 // Configure Cloudinary
 cloudinary.v2.config({
@@ -38,19 +39,18 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
 });
 
-if (port === 3000) {
-  const __filename = fileURLToPath(import.meta.url);
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-  const __dirname = path.dirname(__filename);
-
-  // Serve static files from the frontend build directory
-  const staticPath = path.join(__dirname, '../frontend2', 'dist');
-
+// Serve static files from the frontend build directory if not in development mode
+if (process.env.NODE_ENV !== 'development') {
+  const staticPath = path.join(__dirname, '../frontend', 'dist');
   app.use(express.static(staticPath));
 
   // Route for serving the index.html file for any unmatched route
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend2', 'dist', 'index.html'));
+    res.sendFile(path.resolve(staticPath, 'index.html'));
   });
 }
 
@@ -70,8 +70,8 @@ const startServer = async () => {
     // Establish database connection
     await databaseConnection();
 
-    // Define port to listen on, default to 3000 if not specified in .env
-    const port = process.env.PORT || 3000;
+    // Define port to listen on, default to 5000 if not specified in .env
+    const port = process.env.PORT || 5000;
 
     // Start listening on defined port
     app.listen(port, () => {
