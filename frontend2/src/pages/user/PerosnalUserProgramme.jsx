@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 const PersonalUserProgramme = () => {
   const { user } = useSelector((state) => state.user);
+  const token = user.token;
   const dashBoardLink = [
     {
       id: '1',
@@ -42,13 +43,18 @@ const PersonalUserProgramme = () => {
     const getPersonalProgramme = async () => {
       try {
         const response = await axios.get(
-          `${backendapi}/api/after/user/${user.user._id}`
+          `${backendapi}/api/after/user/${user.user._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include JWT token in request headers
+            },
+          }
         );
 
         setTrainerDatas(response.data.programmeDetails); // Assuming setTrainerDatas is a state setter function
       } catch (error) {
         console.error(error);
-        toast.error('Failed to fetch personal programme'); // Toast error message
+        toast.error(error.response.data.error); // Toast error message
       }
     };
 

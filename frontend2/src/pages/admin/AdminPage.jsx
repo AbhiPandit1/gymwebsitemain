@@ -5,21 +5,27 @@ import { FiEdit2 } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
+
 const backendapi = import.meta.env.VITE_BACKEND_URL;
+
 const AdminPage = () => {
-  {
-    /*/admin/page/:id */
-  }
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false); // State for showing delete confirmation modal
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.user.user);
+  const { user, token } = useSelector((state) => ({
+    user: state.user.user,
+    token: state.user.token // Ensure your Redux store has the token
+  }));
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${backendapi}/api/admin/user`);
+        const response = await axios.get(`${backendapi}/api/admin/user`, {
+          headers: {
+            Authorization: `Bearer ${token}` // Include JWT token in request headers
+          }
+        });
 
         const filteredUsers = response.data.users.filter(
           (currentUser) => currentUser._id !== user._id
@@ -27,16 +33,22 @@ const AdminPage = () => {
         setUsers(filteredUsers);
       } catch (error) {
         console.error('Error fetching users:', error);
+        toast.error('Error fetching users');
       }
     };
 
     fetchUsers();
-  }, [user._id]); // Add selectedUserId to dependency array to refetch users when it changes
+  }, [user._id, token]); // Add token to dependency array to refetch users if token changes
 
   const deleteUser = async () => {
     try {
       const response = await axios.delete(
-        `${backendapi}/api/admin/user/${selectedUserId}`
+        `${backendapi}/api/admin/user/${selectedUserId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}` // Include JWT token in request headers
+          }
+        }
       );
       if (response.status === 200) {
         toast.success('User Deleted Successfully');
@@ -98,7 +110,7 @@ const AdminPage = () => {
               <th className="px-6 py-3 text-left text-xl font-sans font-bold uppercase">
                 Role
               </th>
-              <th className="px-6 py-3 text-xl font-sans font-bold uppercase text-center">
+              <th className="px-4 py-4 whitespace-nowrap text-center">
                 Programmes
               </th>
               <th className="px-6 py-3 text-left text-xl font-sans font-bold uppercase">

@@ -35,7 +35,7 @@ export const registerUser = (userData) => async (dispatch) => {
     }
   } catch (error) {
     dispatch(registerUserFailure(error.message));
-    toast.error(error.message.message);
+    toast.error(error.response.data.error);
   }
 };
 
@@ -52,8 +52,8 @@ export const signInuser = (userData) => async (dispatch) => {
       throw new Error('Failed to sign in'); // Throwing an error if sign-in fails
     }
   } catch (error) {
-    dispatch(signInFailure(error.message)); // Dispatching failure action with error message
-    toast.error(error.message); // Showing error message using toast
+    dispatch(signInFailure(error.message));
+    toast.error(error.response.data.message); // Showing error message using toast
   }
 };
 
@@ -93,7 +93,8 @@ export const updateUserDetail = (userDetail, id) => async (dispatch) => {
   } catch (error) {
     console.error('Error updating user:', error); // Log the error for debugging
     dispatch(userDetailFailure(error.message));
-    toast.error('Failed to update user');
+    console.log(error);
+    console.log(error.response.data.message);
     throw error; // Rethrow the error to handle it elsewhere if necessary
   }
 };

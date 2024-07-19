@@ -3,9 +3,11 @@ import User from '../model/userModel.js';
 
 const protectRoute = async (req, res, next) => {
   try {
-    // Retrieve JWT token from cookies
-    const token = req.cookies.jwt;
+    // Retrieve JWT token from Authorization header
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1]; // Token should be in the format "Bearer TOKEN"
     console.log(token);
+
     if (!token) {
       return res
         .status(401)

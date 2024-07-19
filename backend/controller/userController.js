@@ -64,7 +64,7 @@ export const postUser = async (req, res) => {
     if (user) {
       return res
         .status(400)
-        .json({ message: 'User with that email already exists' });
+        .json({ error: 'User with that email already exists' });
     }
 
     if (password !== confirmPassword) {
@@ -109,7 +109,7 @@ export const postUser = async (req, res) => {
   } catch (err) {
     // Handle errors
     console.error(err.message);
-    res.status(500).json({ message: 'Server Error', err });
+    res.status(500).json({ error: 'Server Error', err });
   }
 };
 

@@ -5,37 +5,45 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import Header from '../../component/Header';
+import { useSelector } from 'react-redux';
+
 const backendapi = import.meta.env.VITE_BACKEND_URL;
+
+const stripePromise = loadStripe(
+  'pk_test_51Pa814I7lJRhp8GEBpmlT7u9bssCwu3MtiZALmBXBIsYkeqZboK3CT8JgOpMfwLdMXyyKrFXuUAc28crTu0DmJG300zMtqLK58'
+);
 
 const ProgrammeDetail = () => {
   const [singleProgramme, setSingleProgramme] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
 
   const { programmeId } = useParams();
-  console.log(programmeId);
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.user);
+  const token = user.token;
 
-  const stripePromise = loadStripe(
-    'pk_test_51Pa814I7lJRhp8GEBpmlT7u9bssCwu3MtiZALmBXBIsYkeqZboK3CT8JgOpMfwLdMXyyKrFXuUAc28crTu0DmJG300zMtqLK58'
-  );
-
+  // Fetch programme details
   const fetchProgramme = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(false);
       const response = await axios.get(
-        `${backendapi}/api/admin/programme/${programmeId}`
+        `${backendapi}/api/admin/programme/${programmeId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include JWT token in request headers
+          },
+        }
       );
-      console.log(response);
       if (response.data.message === 'success') {
         setSingleProgramme(response.data.singleProgramme);
       } else {
         throw new Error('Failed to fetch programme.');
       }
     } catch (error) {
-      setError(true);
-      toast.error('Error fetching programme details.');
+      setError(error.message || 'Error fetching programme details.');
+      toast.error(error.response.data.message || 'Error making payment.');
     } finally {
       setLoading(false);
     }
@@ -43,15 +51,26 @@ const ProgrammeDetail = () => {
 
   useEffect(() => {
     fetchProgramme();
-  }, []);
+  }, [programmeId]);
 
+  // Handle payment
   const makePayment = async () => {
+    if (!singleProgramme) {
+      toast.error('Programme details are not available.');
+      return;
+    }
+
     try {
       const response = await axios.post(
         `${backendapi}/api/payment/checkout/${programmeId}`,
         {
           amount: singleProgramme.price * 100, // Amount in cents
-          country: 'usa', // Hardcoded country selection
+          country: 'usa', // Hardcoded country selection, if necessary
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include JWT token in request headers
+          },
         }
       );
 
@@ -66,16 +85,12 @@ const ProgrammeDetail = () => {
       }
     } catch (error) {
       console.error('Error making payment:', error);
-      toast.error(error.message);
+      toast.error(error.response.data.message || 'Error making payment.');
     }
   };
 
   const handleCheckout = () => {
-    if (singleProgramme) {
-      makePayment();
-    } else {
-      toast.error('Programme details are not available.');
-    }
+    makePayment();
   };
 
   const handleBack = () => {
@@ -91,7 +106,7 @@ const ProgrammeDetail = () => {
             {loading && <div className="text-center">Loading...</div>}
             {error && (
               <div className="text-center text-red-500">
-                Error loading programme details.
+                Error loading programme details: {error}
               </div>
             )}
             {!loading && !error && singleProgramme && (

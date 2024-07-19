@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux'; // Import useSelector to get token
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
 const PaymentInvoice = () => {
@@ -8,13 +9,20 @@ const PaymentInvoice = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = useParams();
+  const { user } = useSelector((state) => state.user); // Retrieve token from Redux store
+  const token = user.token;
 
   useEffect(() => {
     const getPaymentDetail = async () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${backendapi}/api/payment/detail/${id}`
+          `${backendapi}/api/payment/detail/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include JWT token in request headers
+            },
+          }
         );
         const sortedPayments = response?.data.payments
           .flat()
@@ -35,7 +43,7 @@ const PaymentInvoice = () => {
     } else {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, token]); // Add token to dependency array to refetch if token changes
 
   const formatDateTime = (dateString) => {
     const options = {
@@ -60,7 +68,7 @@ const PaymentInvoice = () => {
         Payment Invoice
       </h2>
 
-      {paymentDetails?.map((payment, index) => (
+      {paymentDetails.map((payment, index) => (
         <div
           key={index}
           className="bg-gray-700 rounded-lg p-4 mb-6 max-h-[200vh]"

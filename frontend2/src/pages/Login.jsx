@@ -32,7 +32,6 @@ const Login = () => {
 
     try {
       const response = await dispatch(signInuser(signField));
-      console.log(signField);
 
       if (response.status === 201) {
         navigate('/');
