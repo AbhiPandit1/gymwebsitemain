@@ -24,7 +24,7 @@ const port = 3001;
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow only specific methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specific headers
 };
