@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux'; // Import useSelector to get token
+import LoadingSpinner from '../../../LoadingSpinner';
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
 const PaymentInvoice = () => {
@@ -58,7 +59,12 @@ const PaymentInvoice = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
   if (error) return <div>Error loading payment details: {error}</div>;
   if (!paymentDetails.length) return <div>No payment details found</div>;
 
