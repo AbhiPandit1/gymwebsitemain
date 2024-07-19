@@ -22,6 +22,7 @@ const ProgrammeDetail = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   const token = user.token;
+  console.log(token);
 
   // Fetch programme details
   const fetchProgramme = async () => {

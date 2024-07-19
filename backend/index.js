@@ -17,25 +17,25 @@ import cors from 'cors';
 import cloudinary from 'cloudinary';
 
 // Load environment variables from .env file
-
-const port = 3001;
+dotenv.config();
 
 // Initialize Express application
 const app = express();
 
+// Define port to listen on, default to 3001 if not specified in .env
+const port = process.env.PORT || 3001;
+
+// Configure CORS
 const corsOptions = {
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow only specific methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specific headers
 };
-
 app.use(cors(corsOptions));
+
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
-dotenv.config();
-
-// Middleware and configuration setup
-app.use(express.urlencoded({ extended: false }));
 
 // Configure Cloudinary
 cloudinary.v2.config({
@@ -44,22 +44,16 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
 });
 
+// Setup static file serving
 const __filename = fileURLToPath(import.meta.url);
-
 const __dirname = path.dirname(__filename);
-
-// Serve static files from the frontend build directory
 const staticPath = path.join(__dirname, '../frontend2', 'dist');
-app.use(express.static(staticPath));
 
 app.use(express.static(staticPath));
 
 // Route for serving the index.html file for any unmatched route
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../frontend2', 'dist', 'index.html'));
-});
 
-// Set up routes
+// Set up API routes
 app.use('/api', userRoute);
 app.use('/api', userAuthRoute);
 app.use('/api', userDetailRoute);
@@ -69,18 +63,27 @@ app.use('/api/payment', paymentRoute);
 app.use('/api/forgot', forgotPasswordRouter);
 app.use('/api/after', afterBuyingRouter);
 
+// Error handling for unknown routes
+app.use((req, res, next) => {
+  res.status(404).send('Not Found');
+});
+
+// Error handling for server errors
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Server Error');
+});
+
 // Start server function
 const startServer = async () => {
   try {
     // Establish database connection
     await databaseConnection();
 
-    // Define port to listen on, default to 3000 if not specified in .env
-    const port = process.env.PORT || 3000;
-
-    // Start listening on defined port
+    // Start listening on the defined port
     app.listen(port, () => {
-      console.log('Serving static files from:', staticPath);
+      console.log(`Server is running on http://localhost:${port}`);
+      console.log(`Serving static files from: ${staticPath}`);
     });
   } catch (err) {
     console.error('Unable to connect to database:', err);

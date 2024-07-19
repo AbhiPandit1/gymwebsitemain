@@ -9,6 +9,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 const backendapi = import.meta.env.VITE_BACKEND_URL;
+console.log(backendapi);
 const PersonalUserProgramme = () => {
   const { user } = useSelector((state) => state.user);
   const token = user.token;
@@ -50,6 +51,7 @@ const PersonalUserProgramme = () => {
             },
           }
         );
+        console.log(response)
 
         setTrainerDatas(response.data.programmeDetails); // Assuming setTrainerDatas is a state setter function
       } catch (error) {
