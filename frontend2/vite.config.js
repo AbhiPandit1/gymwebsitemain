@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: '"https://gymwebsitemain-2.onrender.coms',
+        target: 'https://gymwebsitemain-2.onrender.com',
         changeOrigin: true,
       },
     },
