@@ -44,21 +44,20 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
 });
 
-if (port === 3000) {
-  const __filename = fileURLToPath(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
 
-  const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(__filename);
 
-  // Serve static files from the frontend build directory
-  const staticPath = path.join(__dirname, '../frontend2', 'dist');
+// Serve static files from the frontend build directory
+const staticPath = path.join(__dirname, '../frontend2', 'dist');
+app.use(express.static(staticPath));
 
-  app.use(express.static(staticPath));
+app.use(express.static(staticPath));
 
-  // Route for serving the index.html file for any unmatched route
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend2', 'dist', 'index.html'));
-  });
-}
+// Route for serving the index.html file for any unmatched route
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../frontend2', 'dist', 'index.html'));
+});
 
 // Set up routes
 app.use('/api', userRoute);
@@ -81,7 +80,7 @@ const startServer = async () => {
 
     // Start listening on defined port
     app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
+      console.log('Serving static files from:', staticPath);
     });
   } catch (err) {
     console.error('Unable to connect to database:', err);
