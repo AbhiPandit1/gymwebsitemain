@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import cloudinary from 'cloudinary';
+import fs from 'fs/promises'; // Importing the fs module for file system operations
 
 // Importing route modules
 import databaseConnection from './databaseConnection/database.js'; // Adjust path as necessary
@@ -50,8 +51,19 @@ cloudinary.v2.config({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const staticPath = path.join(__dirname, '../frontend2', 'dist');
-console.log(staticPath);
-app.use(express.static(staticPath));
+console.log(`Static path: ${staticPath}`);
+
+// Function to check if index.html exists
+const checkFileExists = async (filePath) => {
+  try {
+    await fs.access(filePath);
+    console.log(`${filePath} exists.`);
+    return true;
+  } catch (error) {
+    console.error(`${filePath} does not exist.`);
+    return false;
+  }
+};
 
 // Set up API routes
 app.use('/api', userRoute);
@@ -64,8 +76,14 @@ app.use('/api/forgot', forgotPasswordRouter);
 app.use('/api/after', afterBuyingRouter);
 
 // Route for serving the index.html file for any unmatched route
-app.get('*', (req, res) => {
-  res.sendFile(path.join(staticPath, 'index.html'));
+app.get('*', async (req, res) => {
+  const indexPath = path.join(staticPath, 'index.html');
+  const exists = await checkFileExists(indexPath);
+  if (exists) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send('index.html not found');
+  }
 });
 
 // Error handling for unknown routes
@@ -82,6 +100,15 @@ app.use((err, req, res, next) => {
 // Start server function
 const startServer = async () => {
   try {
+    // Check if index.html exists before starting the server
+    const indexPath = path.join(staticPath, 'index.html');
+    const exists = await checkFileExists(indexPath);
+    if (!exists) {
+      throw new Error(
+        'index.html not found. Please build the frontend project.'
+      );
+    }
+
     // Establish database connection
     await databaseConnection();
 
@@ -91,7 +118,7 @@ const startServer = async () => {
       console.log(`Serving static files from: ${staticPath}`);
     });
   } catch (err) {
-    console.error('Unable to connect to database:', err);
+    console.error('Unable to start server:', err);
     process.exit(1); // Exit the process with failure
   }
 };

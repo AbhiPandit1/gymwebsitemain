@@ -3,14 +3,22 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:backend": "node backend/index.js",
-    "start:frontend2": "npm start --prefix frontend2",
-    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend2\"",
-    "dev:backend": "npm run dev --prefix backend",
-    "dev:frontend2": "npm run dev --prefix frontend2",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend2\""
+    "start:frontend": "npm --prefix frontend2 run start",
+    "build:frontend": "npm --prefix frontend2 run build",
+    "install:frontend": "npm --prefix frontend2 install"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    
+    "express": "^4.17.1",
+    "dotenv": "^10.0.0",
+    "mongoose": "^6.0.13",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "cloudinary": "^1.24.0"
   }
 }
