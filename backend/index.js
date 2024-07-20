@@ -1,4 +1,4 @@
-// Importing required modules
+// Import required modules
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -6,9 +6,8 @@ import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import cloudinary from 'cloudinary';
-import fs from 'fs/promises'; // Importing the fs module for file system operations
 
-// Importing route modules
+// Import route modules
 import databaseConnection from './databaseConnection/database.js'; // Adjust path as necessary
 import userRoute from './route/userRoute.js'; // Adjust paths for all routes as necessary
 import userAuthRoute from './route/userAuthRoute.js';
@@ -30,7 +29,7 @@ const port = process.env.PORT || 3001;
 
 // Configure CORS
 const corsOptions = {
-  origin: '*',
+  origin: '*', // Consider specifying the allowed origin(s) for better security
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow only specific methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specific headers
 };
@@ -47,24 +46,6 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
 });
 
-// Setup static file serving
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const staticPath = path.join(__dirname, '../frontend2', 'dist');
-console.log(`Static path: ${staticPath}`);
-
-// Function to check if index.html exists
-const checkFileExists = async (filePath) => {
-  try {
-    await fs.access(filePath);
-    console.log(`${filePath} exists.`);
-    return true;
-  } catch (error) {
-    console.error(`${filePath} does not exist.`);
-    return false;
-  }
-};
-
 // Set up API routes
 app.use('/api', userRoute);
 app.use('/api', userAuthRoute);
@@ -75,16 +56,11 @@ app.use('/api/payment', paymentRoute);
 app.use('/api/forgot', forgotPasswordRouter);
 app.use('/api/after', afterBuyingRouter);
 
-// Route for serving the index.html file for any unmatched route
-app.get('*', async (req, res) => {
-  const indexPath = path.join(staticPath, 'index.html');
-  const exists = await checkFileExists(indexPath);
-  if (exists) {
-    res.sendFile(indexPath);
-  } else {
-    res.status(404).send('index.html not found');
-  }
-});
+// Serve static files (if any)
+// Uncomment and adjust the path if you have static files to serve
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // Error handling for unknown routes
 app.use((req, res, next) => {
@@ -100,22 +76,12 @@ app.use((err, req, res, next) => {
 // Start server function
 const startServer = async () => {
   try {
-    // Check if index.html exists before starting the server
-    const indexPath = path.join(staticPath, 'index.html');
-    const exists = await checkFileExists(indexPath);
-    if (!exists) {
-      throw new Error(
-        'index.html not found. Please build the frontend project.'
-      );
-    }
-
     // Establish database connection
     await databaseConnection();
 
     // Start listening on the defined port
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
-      console.log(`Serving static files from: ${staticPath}`);
     });
   } catch (err) {
     console.error('Unable to start server:', err);
