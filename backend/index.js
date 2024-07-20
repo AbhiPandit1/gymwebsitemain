@@ -2,7 +2,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url'; // For converting URL to file path
+import { fileURLToPath } from 'url';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import cloudinary from 'cloudinary';
+
+// Importing route modules
 import databaseConnection from './databaseConnection/database.js'; // Adjust path as necessary
 import userRoute from './route/userRoute.js'; // Adjust paths for all routes as necessary
 import userAuthRoute from './route/userAuthRoute.js';
@@ -12,9 +17,6 @@ import trainerRoute from './route/trainerRoute.js';
 import paymentRoute from './route/paymentRoute.js';
 import forgotPasswordRouter from './route/forgotPasswordRoute.js';
 import afterBuyingRouter from './route/afterBuyingRoute.js';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import cloudinary from 'cloudinary';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -48,10 +50,7 @@ cloudinary.v2.config({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const staticPath = path.join(__dirname, '../frontend2', 'dist');
-
 app.use(express.static(staticPath));
-
-// Route for serving the index.html file for any unmatched route
 
 // Set up API routes
 app.use('/api', userRoute);
@@ -62,6 +61,11 @@ app.use('/api/trainer', trainerRoute);
 app.use('/api/payment', paymentRoute);
 app.use('/api/forgot', forgotPasswordRouter);
 app.use('/api/after', afterBuyingRouter);
+
+// Route for serving the index.html file for any unmatched route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(staticPath, 'index.html'));
+});
 
 // Error handling for unknown routes
 app.use((req, res, next) => {
