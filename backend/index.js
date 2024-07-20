@@ -50,6 +50,7 @@ cloudinary.v2.config({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const staticPath = path.join(__dirname, '../frontend2', 'dist');
+console.log(staticPath);
 app.use(express.static(staticPath));
 
 // Set up API routes
