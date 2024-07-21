@@ -7,83 +7,89 @@ import deleteFile from '../middleware/removeMulterFile.js';
 export const createProgramme = async (req, res) => {
   const { category, price, desc, trainerEmail } = req.body;
   const userId = req.params.id;
-  console.log(req.file);
 
   try {
+    // Validate input fields
+    if (!category || !price || !desc) {
+      return res.status(400).json({ error: 'Missing required fields.' });
+    }
+
+    // Handle trainerEmail validation
+    let trainerId = userId;
+    if (trainerEmail) {
+      const trainerUser = await User.findOne({ email: trainerEmail });
+      if (!trainerUser) {
+        return res.status(404).json({ error: 'Trainer not found.' });
+      }
+      if (trainerUser.role !== 'trainer') {
+        return res
+          .status(400)
+          .json({ error: 'The specified user is not a trainer.' });
+      }
+      trainerId = trainerUser._id; // Use trainer's ID
+    }
+
     // Handle file upload to Cloudinary if a category photo is uploaded
+    let categoryPhoto;
     if (req.file) {
       const result = await uploadToCloudinary(req.file); // Upload file to Cloudinary
-      const categoryPhoto = {
+      categoryPhoto = {
         public_id: result.public_id,
         url: result.secure_url,
       };
+    } else {
+      return res.status(400).json({ error: 'No file uploaded.' });
+    }
 
-      let trainerUser;
-      if (trainerEmail) {
-        trainerUser = await User.findOne({ email: trainerEmail });
-        if (!trainerUser) {
-          return res.status(404).json({ error: 'Trainer not found.' });
-        }
+    // Check if a programme with the same category already exists for the user
+    let existingProgramme = await Programme.findOne({
+      category,
+      trainer: userId,
+    });
 
-        if (trainerUser.role !== 'trainer') {
-          return res
-            .status(400)
-            .json({ error: 'The specified user is not a trainer.' });
-        }
-      }
+    if (existingProgramme) {
+      // Update the existing programme
+      existingProgramme.categoryPhoto =
+        categoryPhoto || existingProgramme.categoryPhoto;
+      existingProgramme.desc = desc || existingProgramme.desc;
+      existingProgramme.price = price || existingProgramme.price;
+      existingProgramme.trainer = trainerId || existingProgramme.trainer;
 
-      // Check if a programme with the same category already exists for the user
-      let existingProgramme = await Programme.findOne({
-        category,
-        user: userId,
-      });
-
-      if (existingProgramme) {
-        // Update the existing programme
-        existingProgramme.categoryPhoto =
-          categoryPhoto || existingProgramme.categoryPhoto;
-        existingProgramme.desc = desc || existingProgramme.desc;
-        existingProgramme.price = price || existingProgramme.price;
-
-        try {
-          // Save the updated programme
-          const updatedProgramme = await existingProgramme.save();
-          deleteFile(updatedProgramme.categoryPhoto);
-          return res.status(200).json({
-            message: 'Programme updated successfully.',
-            programme: updatedProgramme,
-          });
-        } catch (saveError) {
-          console.error('Error saving updated programme:', saveError);
-          return res.status(500).json({ error: 'Error updating programme.' });
-        }
-      } else {
-        // Create a new Programme document
-        const newProgramme = new Programme({
-          category,
-          categoryPhoto: categoryPhoto,
-          desc,
-          price,
+      try {
+        // Save the updated programme
+        const updatedProgramme = await existingProgramme.save();
+        return res.status(200).json({
+          message: 'Programme updated successfully.',
+          programme: updatedProgramme,
         });
-
-        try {
-          // Save the new programme to the database
-          const savedProgramme = await newProgramme.save();
-          deleteFile(savedProgramme.categoryPhoto);
-
-          // Respond with success message or the saved programme data
-          return res.status(201).json({
-            message: 'Programme created and added to user.',
-            programme: savedProgramme,
-          });
-        } catch (saveError) {
-          console.error('Error saving new programme:', saveError);
-          return res.status(500).json({ error: 'Error creating programme.' });
-        }
+      } catch (saveError) {
+        console.error('Error saving updated programme:', saveError);
+        return res.status(500).json({ error: 'Error updating programme.' });
       }
     } else {
-      // Handle case where no file is uploaded
-      return res.status(400).json({ error: 'No file uploaded.' });
+      // Create a new Programme document
+      const newProgramme = new Programme({
+        category,
+        categoryPhoto,
+        desc,
+        price,
+        trainer: trainerId,
+      });
+
+      try {
+        // Save the new programme to the database
+        const savedProgramme = await newProgramme.save();
+        console.log(savedProgramme);
+
+        // Respond with success message or the saved programme data
+        return res.status(201).json({
+          message: 'Programme created and added to user.',
+          programme: savedProgramme,
+        });
+      } catch (saveError) {
+        console.error('Error saving new programme:', saveError);
+        return res.status(500).json({ error: 'Error creating programme.' });
+      }
     }
   } catch (error) {
     console.error('Error during programme creation:', error);
@@ -156,80 +162,60 @@ export const getByCategoryProgrammes = async (req, res) => {
 //Update Programme
 
 export const updateProgramme = async (req, res) => {
-  const userId = req.params.id;
-  const programmeId = req.query.programmeId;
-  const { category, image, desc, price, trainerId } = req.body;
+  const programmeId = req.params.id;
+  const { category, price, trainerMail, desc } = req.body; // Extract values from req.body
+  console.log(req.body);
+  console.log(category);
 
-  // Validate userId
-  if (!userId) {
-    return res.status(400).json({ message: 'User ID is required' });
-  }
-
-  // Validate programmeId
+  // Check if Programme ID is provided
   if (!programmeId) {
     return res.status(400).json({ message: 'Programme ID is required' });
   }
 
   try {
-    // Find the user by userId
-    const user = await User.findById(userId);
-    programmeId;
+    // Find the programme by ID
+    const programme = await Programme.findById(programmeId);
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    if (!programme) {
+      return res.status(404).json({ message: 'Programme not found' });
     }
 
-    // Find the index of the programme to be deleted in user's programmes array
-    const programmeIndex = user.programmes.findIndex((prog) => {
-      const programme = prog._id.toString(); // Convert _id to string if not already
-      return programme === programmeId; // Compare programme _id with programmeId
-    });
+    // Handle file upload if present
+    let updatedCategoryPhoto = programme.categoryPhoto; // Retain existing photo if not replaced
 
-    if (programmeIndex === -1) {
-      return res
-        .status(404)
-        .json({ message: 'Programme not found for this user' });
+    if (req.file) {
+      const result = await uploadToCloudinary(req.file); // Upload file to Cloudinary
+      updatedCategoryPhoto = {
+        public_id: result.public_id,
+        url: result.secure_url,
+      };
     }
 
-    const programme = user.programmes[programmeIndex]._id.toString();
-
-    const programmeDetail = await Programme.findById(programme);
-
-    if (!programmeDetail) {
-      return res
-        .status(404)
-        .json({ message: 'Programme not found for this user' });
-    }
-
-    programmeDetail.category = category;
-    programmeDetail.images = image;
-    programmeDetail.price = price;
-    programmeDetail.desc = desc;
-    programmeDetail.trainer = trainerId || null;
+    // Update programme fields
+    programme.category = category || programme.category;
+    programme.price = price || programme.price;
+    programme.trainerMail = trainerMail || programme.trainerMail; // Added trainerMail update
+    programme.desc = desc || programme.desc;
+    programme.categoryPhoto = updatedCategoryPhoto; // Update photo
 
     // Save the updated programme
-    const updatedProgramme = await programmeDetail.save();
+    const updatedProgramme = await programme.save();
 
-    // Respond with success message or the updated programme
     res.status(200).json({
       message: 'Programme updated successfully',
       programme: updatedProgramme,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error updating programme:', error);
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: error.message });
   }
 };
-
 //delete programme
 export const deleteProgramme = async (req, res) => {
-  const userId = req.params.id;
-  const programmeId = req.query.programmeId;
-
-  // Validate userId
-  if (!userId) {
-    return res.status(400).json({ message: 'User ID is required' });
-  }
+  const { programmeId } = req.body;
+  console.log(req.body);
 
   // Validate programmeId
   if (!programmeId) {
@@ -237,31 +223,15 @@ export const deleteProgramme = async (req, res) => {
   }
 
   try {
-    // Find the user by userId
-    const user = await User.findById(userId);
-    programmeId;
+    // Find the programme by programmeId
+    const programme = await Programme.findById(programmeId);
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    if (!programme) {
+      return res.status(404).json({ message: 'Programme not found' });
     }
 
-    // Find the index of the programme to be deleted in user's programmes array
-    const programmeIndex = user.programmes.findIndex((prog) => {
-      const programme = prog._id.toString(); // Convert _id to string if not already
-      return programme === programmeId; // Compare programme _id with programmeId
-    });
-
-    if (programmeIndex === -1) {
-      return res
-        .status(404)
-        .json({ message: 'Programme not found for this user' });
-    }
-
-    // Remove the programme from the array
-    user.programmes.splice(programmeIndex, 1);
-
-    // Save the updated user object
-    await user.save();
+    // Delete the programme
+    await Programme.deleteOne({ _id: programmeId });
 
     // Respond with success message
     return res.status(200).json({ message: 'Programme deleted successfully' });
@@ -320,5 +290,30 @@ export const getSingleProgramme = async (req, res) => {
   } catch (error) {
     console.error('Error fetching programme:', error);
     return res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+//get programme by trainer
+
+export const getByTrainer = async (req, res) => {
+  const id = req.params.id; // Assuming the trainer ID comes from the URL parameters
+
+  try {
+    // Find all programmes where the trainer field matches the given ID
+    const programmes = await Programme.find({ trainer: id });
+
+    // Check if any programmes were found
+    if (programmes.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No programmes found for this trainer' });
+    }
+
+    // Send the response with the programmes
+    res.status(200).json({ programmes, message: 'Your Programme' });
+  } catch (error) {
+    // Log the error and send a 500 response for internal server error
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };

@@ -8,35 +8,14 @@ import { ImCheckboxChecked } from 'react-icons/im';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 console.log(backendapi);
 const PersonalUserProgramme = () => {
   const { user } = useSelector((state) => state.user);
   const token = user.token;
-  const dashBoardLink = [
-    {
-      id: '1',
-      name: 'Home',
-      link: '/',
-      role: 'user',
-    },
-    {
-      id: '2',
-      name: 'My Programs',
-      link: '/user/programmes',
-      role: '',
-    },
-    {
-      id: '3',
-      name: 'Settings',
-      link: '/settings',
-    },
-    {
-      id: '4',
-      name: 'Edit',
-      link: `/user/detail/${user.user._id}`,
-    },
-  ];
+  
+  const dashBoardLink = useDashboardLinks();
   // Initialize state for trainerDatas
   const [trainerDatas, setTrainerDatas] = useState([]);
 
@@ -51,7 +30,7 @@ const PersonalUserProgramme = () => {
             },
           }
         );
-        console.log(response)
+        console.log(response);
 
         setTrainerDatas(response.data.programmeDetails); // Assuming setTrainerDatas is a state setter function
       } catch (error) {

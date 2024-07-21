@@ -44,7 +44,7 @@ const ProgrammeComponent = () => {
 
   // Filter programmes based on search box input
   const filteredProgrammes = programmeData.filter((programme) =>
-    programme.category.toLowerCase().includes(searchBox.toLowerCase())
+    programme.category?.toLowerCase().includes(searchBox.toLowerCase())
   );
 
   return (

@@ -4,36 +4,15 @@ import DashboardHeader from '../../component/DashboardHeader';
 import ProgrammeComponentCardMobile from '../../component/ProgrammeComponentCardMobile';
 import ProgrammeComponentCard from '../../component/ProgrammeComponentCard';
 import { useSelector } from 'react-redux';
+import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 
 const UserProgramme = () => {
   {
     /*"/user/programme/:id" */
   }
   const { user } = useSelector((state) => state.user.user);
-  const dashBoardLink = [
-    {
-      id: '1',
-      name: 'Home',
-      link: '/',
-      role: 'user',
-    },
-    {
-      id: '2',
-      name: 'My Programs',
-      link: `/user/programme/${user._id}`,
-      role: '',
-    },
-    {
-      id: '3',
-      name: 'Settings',
-      link: '/settings',
-    },
-    {
-      id: '4',
-      name: 'Edit',
-      link: '/user/detail/:id',
-    },
-  ];
+
+  const dashBoardLink = useDashboardLinks();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {

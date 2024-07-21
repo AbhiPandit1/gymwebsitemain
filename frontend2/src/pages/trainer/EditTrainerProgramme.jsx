@@ -1,28 +1,24 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProgramme } from '../../action/programmeActions';
-import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 import DashboardComponent from '../../component/DashboardComponent';
 import DashboardHeader from '../../component/DashboardHeader';
-import { useParams } from 'react-router-dom';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
+import { toast } from 'react-toastify';
+import { updateProgramme } from '../../action/programmeActions';
 
-const AdminCreatingNewProgramme = () => {
-  {
-    /*/admin/create/programme/:id */
-  }
-  const { id } = useParams();
-  console.log(id);
+const EditTrainerProgramme = () => {
+  const { id } = useParams(); // Extract programme ID from URL
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const token = user?.token;
 
+  // State for form fields
   const [category, setCategory] = useState('');
   const [price, setPrice] = useState('');
   const [categoryPhoto, setCategoryPhoto] = useState(null);
   const [trainerMail, setTrainerMail] = useState('');
   const [desc, setDesc] = useState('');
-
-  const { user } = useSelector((state) => state.user);
-  const token = user.token;
 
   const categoryOptions = [
     'Nutrients',
@@ -34,29 +30,32 @@ const AdminCreatingNewProgramme = () => {
     'General',
   ];
 
-  const handleMakeCategories = async (e) => {
+  const handleUpdateProgramme = async (e) => {
     e.preventDefault();
 
     try {
-      const formData = {
-        category,
-        price,
-        categoryPhoto,
-        trainerMail,
-        desc,
-      };
+      const formData = new FormData();
+      formData.append('category', category);
+      formData.append('price', price);
+      if (categoryPhoto) {
+        formData.append('categoryPhoto', categoryPhoto);
+      }
+      formData.append('trainerMail', trainerMail);
+      formData.append('desc', desc);
 
-      // Dispatch action to create programme
-      await dispatch(createProgramme(formData, id, token));
+      // Dispatch action to update programme
+      await dispatch(updateProgramme(formData, id, token));
 
-      // Reset form fields after successful submission
+      // Notify user and reset form fields after successful submission
+      toast.success('Programme updated successfully!');
       setCategory('');
       setPrice('');
       setCategoryPhoto(null);
       setTrainerMail('');
       setDesc('');
     } catch (error) {
-      console.error('Error creating programme:', error);
+      console.error('Error updating programme:', error);
+      toast.error('Failed to update programme.');
     }
   };
 
@@ -76,17 +75,17 @@ const AdminCreatingNewProgramme = () => {
 
           {/* Title */}
           <h1 className="text-3xl font-extrabold text-center py-4">
-            Create Programme
+            Edit Programme
           </h1>
 
           {/* Form */}
-          <div className="m-5 h-[80vh] overflow-auto p-6 w-max-[100vw]">
+          <div className="m-5 h-[80vh] overflow-auto p-6">
             <form
-              className="flex flex-col gap-8 m-2"
-              onSubmit={handleMakeCategories}
+              className="flex flex-col gap-8"
+              onSubmit={handleUpdateProgramme}
             >
               {/* Category */}
-              <div className="flex justify-between w-full sm:justify-between items-center pl-[10%] pr-[10%]">
+              <div className="flex justify-between w-full items-center px-[10%]">
                 <label className="w-[20%]">Category</label>
                 <select
                   value={category}
@@ -106,7 +105,7 @@ const AdminCreatingNewProgramme = () => {
               </div>
 
               {/* Image */}
-              <div className="flex justify-between sm:justify-center items-center">
+              <div className="flex justify-between items-center">
                 <label className="w-[20%]">Image</label>
                 <input
                   type="file"
@@ -117,7 +116,7 @@ const AdminCreatingNewProgramme = () => {
               </div>
 
               {/* Price */}
-              <div className="flex justify-between sm:justify-center items-center">
+              <div className="flex justify-between items-center">
                 <label className="w-[20%]">Price</label>
                 <input
                   type="number"
@@ -129,7 +128,7 @@ const AdminCreatingNewProgramme = () => {
               </div>
 
               {/* Trainer Mail */}
-              <div className="flex justify-between sm:justify-center items-center">
+              <div className="flex justify-between items-center">
                 <label className="w-[20%]">Trainer Mail</label>
                 <input
                   type="email"
@@ -158,7 +157,7 @@ const AdminCreatingNewProgramme = () => {
                   type="submit"
                   className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
                 >
-                  Submit
+                  Update
                 </button>
               </div>
             </form>
@@ -169,4 +168,4 @@ const AdminCreatingNewProgramme = () => {
   );
 };
 
-export default AdminCreatingNewProgramme;
+export default EditTrainerProgramme;

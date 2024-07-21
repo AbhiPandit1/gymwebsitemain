@@ -4,8 +4,8 @@ import {
   deleteProgramme,
   getAllCategory,
   getByCategoryProgrammes,
+  getByTrainer,
   getProgrammes,
-  getSingleProgramme,
   getSingleProgrammeOpen,
   updateProgramme,
 } from '../controller/programmeController.js';
@@ -19,7 +19,6 @@ const router = express.Router();
 router.post(
   '/programme/:id',
   protectRoute,
-  checkRole(['trainer']),
   categoryImageUpload,
   createProgramme
 );
@@ -31,13 +30,14 @@ router.get('/programme', protectRoute, checkRole(['trainer']), getProgrammes);
 router.get('/programmes', getByCategoryProgrammes);
 router.get('/category', getAllCategory);
 
-router.get('/programme/:id', getSingleProgrammeOpen);
+router.get('/programmes/:id', getSingleProgrammeOpen);
 
 // Get single Programme, Update Programme, and Delete Programme routes
+router.route('/trainer/programme').delete(deleteProgramme);
+
 router
-  .route('/programme/:id')
-  .get(protectRoute, getSingleProgramme)
-  .put(updateProgramme)
-  .delete(deleteProgramme);
+  .route('/trainer/programme/:id')
+  .get(protectRoute, getByTrainer)
+  .put(protectRoute, categoryImageUpload, updateProgramme);
 
 export default router;

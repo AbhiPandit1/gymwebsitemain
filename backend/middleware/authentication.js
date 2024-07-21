@@ -6,7 +6,6 @@ const protectRoute = async (req, res, next) => {
     // Retrieve JWT token from Authorization header
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1]; // Token should be in the format "Bearer TOKEN"
-    console.log(token);
 
     if (!token) {
       return res
@@ -31,7 +30,6 @@ const protectRoute = async (req, res, next) => {
     // Attach user and token to request object
     req.user = user;
     req.token = token;
-    console.log(user.email);
 
     // Proceed to the next middleware
     next();

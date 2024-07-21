@@ -10,7 +10,6 @@ const DashboardHeader = () => {
   const [showMenu, setShowMenu] = useState(false);
 
   const { user, loading } = useSelector((state) => state.user.user);
-  console.log(user);
 
   const handleMenu = () => {
     setShowMenu((prevShowMenu) => !prevShowMenu);

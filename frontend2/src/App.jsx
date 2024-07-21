@@ -7,6 +7,7 @@ import Header from './component/Header';
 import Footer from './component/Footer';
 import LoadingSpinner from '../LoadingSpinner';
 import NotFound from '../NotFound';
+import EditTrainerProgramme from './pages/trainer/EditTrainerProgramme';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/Trainers'));
@@ -139,7 +140,7 @@ function App() {
             element={token ? <UserDashboard /> : <Navigate to="/login" />}
           />
           <Route
-            path="/trainer/programmes"
+            path="/trainer/programmes/:id"
             element={
               token ? <PersonalTrainerProgramme /> : <Navigate to="/login" />
             }
@@ -150,11 +151,17 @@ function App() {
               token ? <PersonalUserProgramme /> : <Navigate to="/login" />
             }
           />
+          <Route
+            path="/trainer/programme/edit/:id"
+            element={
+              token ? <EditTrainerProgramme /> : <Navigate to="/login" />
+            }
+          />
           <Route path="/home" element={<Home />} />
           <Route path="/user/programme/:id" element={<UserProgramme />} />
           <Route path="/user/payment/checkout/id" element={<StripePayment />} />
           <Route path="/user/payment/detail/:id" element={<PaymentInvoice />} />
-          <Route path="/trainer/programmes/:id" element={<ShowProgramme />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

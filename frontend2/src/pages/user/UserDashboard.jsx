@@ -4,37 +4,15 @@ import homeGirl from '../../assets/homeGirl.jpeg';
 import { IoIosArrowRoundForward } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 
 const UserDashboard = () => {
   {
     /*"/user/dashboard/:id" */
   }
   const { user } = useSelector((state) => state.user);
-  const dashBoardLink = [
-    {
-      id: '1',
-      name: 'Home',
-      link: '/',
-      role: 'user',
-    },
-    {
-      id: '2',
-      name: 'My Programs',
-      link: '/user/programmes',
-      role: '',
-    },
-    {
-      id: '3',
-      name: 'Settings',
-      link: '/settings',
-    },
-    {
-      id: '4',
-      name: 'Edit',
-      link: `/user/detail/${user.user._id}`,
-    },
-  ];
 
+  const dashBoardLink = useDashboardLinks();
   return (
     <div className="grid grid-cols-7 min-h-[100vh] max-h-[100vh] overflow-hidden text-white">
       <div className="col-span-2 hidden sm:grid">
