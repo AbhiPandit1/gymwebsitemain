@@ -46,7 +46,7 @@ export const getAllTrainer = async (req, res) => {
 };
 
 export const deleteTrainer = async (req, res) => {
-  const id = req.params.id;
+  const id = req.body;
 
   try {
     const user = await User.findById(id);
@@ -94,12 +94,10 @@ export const updateTrainer = async (req, res) => {
     // Save the updated trainer object
     const updatedTrainer = await trainer.save();
 
-    res
-      .status(200)
-      .json({
-        message: 'Trainer updated successfully',
-        trainer: updatedTrainer,
-      });
+    res.status(200).json({
+      message: 'Trainer updated successfully',
+      trainer: updatedTrainer,
+    });
   } catch (error) {
     console.error('Error:', error.message);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -111,7 +109,6 @@ export const createTrainerDetail = async (req, res) => {
 
   try {
     const user = await User.findById(id);
-    
 
     if (!user) {
       return res.status(404).json({ message: 'User Not Found' });

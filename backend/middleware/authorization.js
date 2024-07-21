@@ -1,4 +1,4 @@
-import User from '../model/userModel.js';
+
 
 const checkRole = (requiredRole) => {
   return (req, res, next) => {

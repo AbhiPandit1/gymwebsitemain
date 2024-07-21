@@ -3,23 +3,6 @@ import User from '../model/userModel.js';
 import bcrypt from 'bcryptjs';
 
 //Admin Route Get All user
-export const getAllUser = async (req, res) => {
-  try {
-    const users = await User.find({}, '-password'); // Exclude password field from response
-    const usersCount = users.length; // Get the number of users
-
-    // Prepare response object including users array and count
-    const response = {
-      users: users,
-      count: usersCount,
-    };
-
-    res.status(200).json(response);
-  } catch (err) {
-    console.error('Error fetching users:', err);
-    res.status(500).json({ message: 'Server Error' });
-  }
-};
 
 export const getSingleUser = async (req, res) => {
   const userId = req.params.id; // Extract the user ID from route parameters
@@ -151,7 +134,8 @@ export const updateUser = async (req, res) => {
 
 //Admin Route Delete User
 export const deleteUser = async (req, res) => {
-  const userId = req.params.id; // Extract user ID from route parameters
+  const {userId }= req.body; // Extract user ID from route parameters
+  console.log(userId)
 
   try {
     // Find user by ID and delete from database

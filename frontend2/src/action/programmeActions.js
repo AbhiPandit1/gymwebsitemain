@@ -57,7 +57,7 @@ export const createProgramme =
 export const updateProgramme =
   (programmeData, programmeId, token) => async (dispatch) => {
     try {
-      dispatch(createProgrammeStart()); // Dispatch the action creator function
+      dispatch(createProgrammeStart());
 
       const formData = new FormData();
       formData.append('category', programmeData.category);
@@ -83,17 +83,19 @@ export const updateProgramme =
         }
       );
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         toast.success('Programme Updated');
-        dispatch(createProgrammeSuccess(response.data.programme)); // Dispatch success action with payload
+        dispatch(createProgrammeSuccess(response.data.programme));
       } else {
-        toast.error(response.data.error);
-        dispatch(createProgrammeFailure(response.data.error)); // Dispatch failure action with error payload
+        const errorMessage =
+          response.data.error || 'Failed to update programme';
+        toast.error(errorMessage);
+        dispatch(createProgrammeFailure(errorMessage));
       }
     } catch (error) {
       console.error('Error updating programme:', error);
-      toast.error('Failed to update programme.');
-      dispatch(createProgrammeFailure(error)); // Dispatch failure action with error payload
+
+      dispatch(createProgrammeFailure(error.message || error));
     }
   };
 export const getProgramme = () => async (dispatch) => {

@@ -13,8 +13,8 @@ const router = express.Router();
 router.route('/').get(getAllTrainer);
 router.route('/:id').get(protectRoute, checkRole('admin'), getTrainerDetail);
 router
-  .route('/:id')
-  .delete(protectRoute, checkRole('admin'), deleteTrainer)
+  .route('')
+  .delete(protectRoute, deleteTrainer)
   .put(protectRoute, checkRole('admin'), updateTrainer)
   .post(createTrainerDetail);
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import DashboardComponent from '../../component/DashboardComponent';
@@ -6,6 +6,7 @@ import DashboardHeader from '../../component/DashboardHeader';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 import { toast } from 'react-toastify';
 import { updateProgramme } from '../../action/programmeActions';
+import Spinner from '../../component/Spinner';
 
 const EditTrainerProgramme = () => {
   const { id } = useParams(); // Extract programme ID from URL
@@ -13,12 +14,16 @@ const EditTrainerProgramme = () => {
   const dispatch = useDispatch();
   const token = user?.token;
 
+  const { programme } = useSelector((state) => state.programme);
+  console.log(programme.programme);
+
   // State for form fields
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(''); // Default to empty string
   const [price, setPrice] = useState('');
   const [categoryPhoto, setCategoryPhoto] = useState(null);
-  const [trainerMail, setTrainerMail] = useState('');
+  const [trainerMail, setTrainerMail] = useState(user.user.email);
   const [desc, setDesc] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const categoryOptions = [
     'Nutrients',
@@ -33,29 +38,37 @@ const EditTrainerProgramme = () => {
   const handleUpdateProgramme = async (e) => {
     e.preventDefault();
 
+    // Validate that category is not empty
+    if (!category) {
+      toast.error('Please select a category.');
+
+      return;
+    }
+    setLoading(true);
+
     try {
-      const formData = new FormData();
-      formData.append('category', category);
-      formData.append('price', price);
-      if (categoryPhoto) {
-        formData.append('categoryPhoto', categoryPhoto);
-      }
-      formData.append('trainerMail', trainerMail);
-      formData.append('desc', desc);
+      const formData = {
+        category,
+        price,
+        categoryPhoto,
+        trainerMail,
+        desc,
+      };
+      console.log(formData);
 
       // Dispatch action to update programme
       await dispatch(updateProgramme(formData, id, token));
 
-      // Notify user and reset form fields after successful submission
-      toast.success('Programme updated successfully!');
+      // Reset form fields after successful submission
       setCategory('');
       setPrice('');
       setCategoryPhoto(null);
-      setTrainerMail('');
+      setTrainerMail(user.user.email);
       setDesc('');
+      setLoading(false);
     } catch (error) {
       console.error('Error updating programme:', error);
-      toast.error('Failed to update programme.');
+      setLoading(true);
     }
   };
 
@@ -92,6 +105,9 @@ const EditTrainerProgramme = () => {
                   onChange={(e) => setCategory(e.target.value)}
                   className="text-primary w-[40%] h-[2rem]"
                 >
+                  <option value="" disabled>
+                    Select category
+                  </option>
                   {categoryOptions.map((option, idx) => (
                     <option
                       key={idx}
@@ -155,9 +171,10 @@ const EditTrainerProgramme = () => {
               <div className="flex justify-center mt-4">
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex items-center justify-center"
+                  disabled={loading}
                 >
-                  Update
+                  {loading ? <Spinner /> : 'Update'}
                 </button>
               </div>
             </form>

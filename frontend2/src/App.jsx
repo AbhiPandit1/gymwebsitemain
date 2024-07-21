@@ -19,7 +19,7 @@ const UserDashboard = lazy(() => import('./pages/user/UserDashboard'));
 const Login = lazy(() => import('./pages/Login'));
 const Signin = lazy(() => import('./pages/SignIn'));
 const AdminCreatingNewProgramme = lazy(() =>
-  import('./pages/admin/AdminCreatingNewProgramme')
+  import('./pages/trainer/AdminCreatingNewProgramme')
 );
 const StripePayment = lazy(() => import('./pages/payment/StripePayment'));
 const ShowProgramme = lazy(() => import('./pages/trainer/ShowProgramme'));

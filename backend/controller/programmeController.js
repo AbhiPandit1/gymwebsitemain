@@ -163,9 +163,11 @@ export const getByCategoryProgrammes = async (req, res) => {
 
 export const updateProgramme = async (req, res) => {
   const programmeId = req.params.id;
-  const { category, price, trainerMail, desc } = req.body; // Extract values from req.body
-  console.log(req.body);
-  console.log(category);
+  const { category, price, trainerMail, desc } = req.body;
+
+  // Log the request body and category for debugging
+  console.log('Request Body:', req.body);
+  console.log('Category:', category);
 
   // Check if Programme ID is provided
   if (!programmeId) {
@@ -181,22 +183,23 @@ export const updateProgramme = async (req, res) => {
     }
 
     // Handle file upload if present
-    let updatedCategoryPhoto = programme.categoryPhoto; // Retain existing photo if not replaced
+    let updatedCategoryPhoto = programme.categoryPhoto;
 
     if (req.file) {
-      const result = await uploadToCloudinary(req.file); // Upload file to Cloudinary
+      const result = await uploadToCloudinary(req.file);
       updatedCategoryPhoto = {
         public_id: result.public_id,
         url: result.secure_url,
       };
     }
 
-    // Update programme fields
-    programme.category = category || programme.category;
-    programme.price = price || programme.price;
-    programme.trainerMail = trainerMail || programme.trainerMail; // Added trainerMail update
-    programme.desc = desc || programme.desc;
-    programme.categoryPhoto = updatedCategoryPhoto; // Update photo
+    // Update programme fields if provided, otherwise retain current values
+    programme.category = category !== undefined ? category : programme.category;
+    programme.price = price !== undefined ? price : programme.price;
+    programme.trainerMail =
+      trainerMail !== undefined ? trainerMail : programme.trainerMail;
+    programme.desc = desc !== undefined ? desc : programme.desc;
+    programme.categoryPhoto = updatedCategoryPhoto;
 
     // Save the updated programme
     const updatedProgramme = await programme.save();

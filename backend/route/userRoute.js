@@ -1,7 +1,6 @@
 import express from 'express';
 import {
   deleteUser,
-  getAllUser,
   getSingleUser,
   postUser,
   updateUser,
@@ -20,6 +19,4 @@ router
 //Logg in 'api.user.sigin
 router.route('/user/signin').post(postUser);
 
-//Only for admin
-router.route('/admin/user').get(protectRoute, getAllUser);
 export default router;
