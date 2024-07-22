@@ -1,4 +1,4 @@
-import TrainerComponent from '../component/TrainerComponent';
+import TrainerComponent from '../../component/TrainerComponent';
 
 const Trainers = () => {
   {

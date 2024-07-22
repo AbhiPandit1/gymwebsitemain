@@ -8,9 +8,10 @@ import Footer from './component/Footer';
 import LoadingSpinner from '../LoadingSpinner';
 import NotFound from '../NotFound';
 import EditTrainerProgramme from './pages/trainer/EditTrainerProgramme';
+import Setting from './pages/Setting/Setting';
 
 const Home = lazy(() => import('./pages/Home'));
-const Trainers = lazy(() => import('./pages/Trainers'));
+const Trainers = lazy(() => import('./pages/trainer/Trainers'));
 const ProgramsCategories = lazy(() => import('./pages/ProgramsCategories'));
 const Programmes = lazy(() => import('./pages/Programmes'));
 const AdminPage = lazy(() => import('./pages/admin/AdminPage'));
@@ -22,7 +23,7 @@ const AdminCreatingNewProgramme = lazy(() =>
   import('./pages/trainer/AdminCreatingNewProgramme')
 );
 const StripePayment = lazy(() => import('./pages/payment/StripePayment'));
-const ShowProgramme = lazy(() => import('./pages/trainer/ShowProgramme'));
+
 const UserProgramme = lazy(() => import('./pages/user/UserProgramme'));
 const ProductPage = lazy(() => import('./component/ProductPage'));
 const ForgortPassword = lazy(() => import('./pages/user/ForgotPassword'));
@@ -65,6 +66,7 @@ function App() {
     '/trainer/programmes',
     '/user/programmes',
     '/user/payment/detail',
+    '/settings',
   ];
 
   const showHeaderFooter = !noHeaderFooterPaths.some((path) =>
@@ -96,6 +98,7 @@ function App() {
             path="/login"
             element={!token ? <Login /> : <Navigate to="/" />}
           />
+
           <Route
             path="/signin"
             element={!token ? <Signin /> : <Navigate to="/" />}
@@ -104,6 +107,10 @@ function App() {
           <Route
             path="/admin/page/:id"
             element={token ? <AdminPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/settings"
+            element={token ? <Setting /> : <Navigate to="/login" />}
           />
 
           <Route

@@ -32,7 +32,10 @@ export const getTrainerDetail = async (req, res) => {
 
 export const getAllTrainer = async (req, res) => {
   try {
-    const trainers = await Trainer.find(); // Fetch all trainers from the database
+    // Fetch all trainers and populate the user field with additional fields
+    const trainers = await Trainer.find()
+      .populate('user', 'name email profilePhoto') // Include profilePhoto
+      .exec();
 
     res
       .status(200)
