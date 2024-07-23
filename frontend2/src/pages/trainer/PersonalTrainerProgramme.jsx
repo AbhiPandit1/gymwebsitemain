@@ -75,9 +75,9 @@ const PersonalTrainerProgramme = () => {
         <div>
           <DashboardHeader />
         </div>
-        <div className="grid grid-cols-3 m-auto sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-scroll">
-          <div className="col-span-3 items-start justify-center overflow-scroll">
-            <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-2 overflow-hidden">
+        <div className="grid grid-cols-3 m-auto sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-auto">
+          <div className="col-span-3 items-start justify-center overflow-auto">
+            <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-2 overflow-auto">
               {trainerDatas.map((card) => (
                 <div
                   key={card.id}

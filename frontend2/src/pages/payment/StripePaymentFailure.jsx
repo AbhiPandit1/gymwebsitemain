@@ -1,3 +1,6 @@
+import { BiLeftArrow } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
+
 const StripePaymentFailure = () => {
   /*"/payment/failure" */
   return (
@@ -22,7 +25,12 @@ const StripePaymentFailure = () => {
         <p className="text-gray-600 text-lg text-center mt-2">
           There was an issue processing your payment. Please try again later.
         </p>
-        {/* You can add more content here based on your application's needs */}
+        <Link to="/programmes">
+          <button className="h-[2rem] w-[6rem] rounded-md flex justify-center items-center bg-secondary mt-2 font-sans text-white">
+            <BiLeftArrow color="white" size={20} />
+            Back
+          </button>
+        </Link>
       </div>
     </div>
   );

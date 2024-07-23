@@ -8,13 +8,18 @@ export const createProgramme = async (req, res) => {
   const { category, price, desc, trainerEmail } = req.body;
   const userId = req.params.id;
 
-  try {
-    // Validate input fields
-    if (!category || !price || !desc) {
-      return res.status(400).json({ error: 'Missing required fields.' });
-    }
+  // Validate input fields
+  if (!category || !price || !desc) {
+    return res.status(400).json({ error: 'Missing required fields.' });
+  }
 
-    // Handle trainerEmail validation
+  // Validate price
+  if (isNaN(price) || price <= 0) {
+    return res.status(400).json({ error: 'Invalid price.' });
+  }
+
+  try {
+    // Handle trainerEmail validation and retrieve trainerId
     let trainerId = userId;
     if (trainerEmail) {
       const trainerUser = await User.findOne({ email: trainerEmail });
@@ -26,71 +31,53 @@ export const createProgramme = async (req, res) => {
           .status(400)
           .json({ error: 'The specified user is not a trainer.' });
       }
-      trainerId = trainerUser._id; // Use trainer's ID
+      trainerId = trainerUser._id;
     }
 
     // Handle file upload to Cloudinary if a category photo is uploaded
-    let categoryPhoto;
+    let categoryPhoto = null;
     if (req.file) {
-      const result = await uploadToCloudinary(req.file); // Upload file to Cloudinary
+      if (req.file.mimetype !== 'image/jpeg') {
+        return res.status(400).json({ error: 'Only JPEG files are allowed.' });
+      }
+
+      const result = await uploadToCloudinary(req.file);
       categoryPhoto = {
         public_id: result.public_id,
         url: result.secure_url,
       };
-    } else {
-      return res.status(400).json({ error: 'No file uploaded.' });
     }
 
     // Check if a programme with the same category already exists for the user
-    let existingProgramme = await Programme.findOne({
+    const existingProgramme = await Programme.findOne({
       category,
-      trainer: userId,
+      trainer: trainerId,
     });
 
     if (existingProgramme) {
-      // Update the existing programme
-      existingProgramme.categoryPhoto =
-        categoryPhoto || existingProgramme.categoryPhoto;
-      existingProgramme.desc = desc || existingProgramme.desc;
-      existingProgramme.price = price || existingProgramme.price;
-      existingProgramme.trainer = trainerId || existingProgramme.trainer;
-
-      try {
-        // Save the updated programme
-        const updatedProgramme = await existingProgramme.save();
-        return res.status(200).json({
-          message: 'Programme updated successfully.',
-          programme: updatedProgramme,
-        });
-      } catch (saveError) {
-        console.error('Error saving updated programme:', saveError);
-        return res.status(500).json({ error: 'Error updating programme.' });
-      }
-    } else {
-      // Create a new Programme document
-      const newProgramme = new Programme({
-        category,
-        categoryPhoto,
-        desc,
-        price,
-        trainer: trainerId,
+      return res.status(400).json({
+        error:
+          'A programme with this category already exists for this trainer.',
       });
-
-      try {
-        // Save the new programme to the database
-        const savedProgramme = await newProgramme.save();
-        console.log(savedProgramme);
-
-        // Respond with success message or the saved programme data
-        return res.status(201).json({
-          message: 'Programme created and added to user.',
-          programme: savedProgramme,
-        });
-      } catch (saveError) {
-        console.error('Error saving new programme:', saveError);
-        return res.status(500).json({ error: 'Error creating programme.' });
-      }
     }
+
+    // Create a new Programme document
+    const newProgramme = new Programme({
+      category,
+      categoryPhoto,
+      desc,
+      price: Number(price), // Ensure price is stored as a number
+      trainer: trainerId,
+    });
+
+    // Save the new programme to the database
+    const savedProgramme = await newProgramme.save();
+    console.log(savedProgramme);
+
+    return res.status(201).json({
+      message: 'Programme created and added to user.',
+      programme: savedProgramme,
+    });
   } catch (error) {
     console.error('Error during programme creation:', error);
     return res.status(500).json({ error: 'Internal server error.' });
@@ -163,28 +150,27 @@ export const getByCategoryProgrammes = async (req, res) => {
 
 export const updateProgramme = async (req, res) => {
   const programmeId = req.params.id;
-  const { category, price, trainerMail, desc } = req.body;
 
-  // Log the request body and category for debugging
-  console.log('Request Body:', req.body);
-  console.log('Category:', category);
-
-  // Check if Programme ID is provided
   if (!programmeId) {
     return res.status(400).json({ message: 'Programme ID is required' });
   }
 
+  // Extract fields from request body
+  const { category, price, trainerMail, desc, title } = req.body;
+
+  // Log the request body for debugging
+  console.log('Request Body:', req.body);
+  console.log('Category:', category);
+
   try {
     // Find the programme by ID
     const programme = await Programme.findById(programmeId);
-
     if (!programme) {
       return res.status(404).json({ message: 'Programme not found' });
     }
 
     // Handle file upload if present
     let updatedCategoryPhoto = programme.categoryPhoto;
-
     if (req.file) {
       const result = await uploadToCloudinary(req.file);
       updatedCategoryPhoto = {
@@ -192,18 +178,31 @@ export const updateProgramme = async (req, res) => {
         url: result.secure_url,
       };
     }
+    console.log(updatedCategoryPhoto);
 
     // Update programme fields if provided, otherwise retain current values
-    programme.category = category !== undefined ? category : programme.category;
-    programme.price = price !== undefined ? price : programme.price;
+    programme.category =
+      category !== undefined && category !== 'undefined'
+        ? category
+        : programme.category;
+    programme.price =
+      price !== undefined && price !== 'undefined'
+        ? Number(price)
+        : programme.price;
     programme.trainerMail =
-      trainerMail !== undefined ? trainerMail : programme.trainerMail;
-    programme.desc = desc !== undefined ? desc : programme.desc;
+      trainerMail !== undefined && trainerMail !== 'undefined'
+        ? trainerMail
+        : programme.trainerMail;
+    programme.desc =
+      desc !== undefined && desc !== 'undefined' ? desc : programme.desc;
+    programme.title =
+      title !== undefined && title !== 'undefined' ? title : programme.title;
     programme.categoryPhoto = updatedCategoryPhoto;
 
     // Save the updated programme
     const updatedProgramme = await programme.save();
 
+    // Send success response
     res.status(200).json({
       message: 'Programme updated successfully',
       programme: updatedProgramme,
@@ -215,6 +214,7 @@ export const updateProgramme = async (req, res) => {
       .json({ error: 'Internal server error', details: error.message });
   }
 };
+
 //delete programme
 export const deleteProgramme = async (req, res) => {
   const { programmeId } = req.body;

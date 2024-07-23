@@ -35,40 +35,28 @@ export const createProgramme =
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
           },
-
-          // Include JWT token in request headers
         }
       );
       console.log(response);
 
-      if (response.status === 200) {
+      if (response?.status === 200) {
         toast.success('Programme Created');
         dispatch(createProgrammeSuccess(response.data.programme)); // Dispatch success action with payload
-      } else {
-        toast.error(response.data.error);
-        dispatch(createProgrammeFailure(response.data.error)); // Dispatch failure action with error payload
       }
+      return response;
     } catch (error) {
       console.error('Error creating programme:', error);
-      dispatch(createProgrammeFailure(error)); // Dispatch failure action with error payload
+      toast.error(error.response?.data?.error || 'Error creating programme');
+      dispatch(
+        createProgrammeFailure(error.response?.data?.error || error.message)
+      );
     }
   };
 
 export const updateProgramme =
-  (programmeData, programmeId, token) => async (dispatch) => {
+  (formData, programmeId, token) => async (dispatch) => {
     try {
       dispatch(createProgrammeStart());
-
-      const formData = new FormData();
-      formData.append('category', programmeData.category);
-      formData.append('price', programmeData.price);
-      if (programmeData.categoryPhoto) {
-        formData.append('categoryPhoto', programmeData.categoryPhoto);
-      }
-      if (programmeData.trainerMail) {
-        formData.append('trainerMail', programmeData.trainerMail);
-      }
-      formData.append('desc', programmeData.desc);
 
       const response = await axios.put(
         `${
@@ -92,10 +80,15 @@ export const updateProgramme =
         toast.error(errorMessage);
         dispatch(createProgrammeFailure(errorMessage));
       }
+
+      return response;
     } catch (error) {
       console.error('Error updating programme:', error);
 
-      dispatch(createProgrammeFailure(error.message || error));
+      const errorMessage =
+        error.response?.data?.error || 'Error updating programme';
+      toast.error(errorMessage);
+      dispatch(createProgrammeFailure(errorMessage));
     }
   };
 export const getProgramme = () => async (dispatch) => {

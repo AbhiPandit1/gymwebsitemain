@@ -9,10 +9,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import LoginLogo from '../component/LoginLogo';
 import { useDispatch } from 'react-redux';
 import { signInuser } from '../action/userActions';
+import LoadingSpinner from '../../LoadingSpinner';
 
 const Login = () => {
   const [seePassword, setSeePassword] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [signField, setSignField] = useState({
     email: '',
@@ -31,20 +33,23 @@ const Login = () => {
     }
 
     try {
+      setLoading(true);
       const response = await dispatch(signInuser(signField));
 
       if (response.status === 201) {
         navigate('/');
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error during registration:', error);
+      setLoading(false);
     }
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[100vh] max-h-[100vh] overflow-hidden bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[100vh] bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4 ">
           <div className="flex flex-col pt-[3%] gap-6">
             <LoginLogo />
 
@@ -98,31 +103,31 @@ const Login = () => {
                   )}
                 </div>
               </div>
-            </div>
 
-            <div className="flex justify-between sm:pl-[20%] sm:pr-[15%]">
-              <div className="flex gap-4 justify-center items-center">
-                <div className="flex justify-between gap-8">
-                  <div>
-                    <input
-                      type="checkbox"
-                      id="terms"
-                      checked={agreedTerms}
-                      onChange={() => setAgreedTerms(!agreedTerms)}
-                    />
-                    <label
-                      htmlFor="terms"
-                      className="text-white text-[0.7rem] sm:text-xl"
-                    >
-                      Agree with terms and conditions
-                    </label>
-                  </div>
-                  <div>
-                    <Link to="/user/forgot/email">
-                      <p className="text-sans text-green-500 hover:text-green-700">
-                        forgot password
-                      </p>
-                    </Link>
+              <div className="flex justify-between w-full mt-2">
+                <div className="flex gap-4 justify-between items-center w-full ">
+                  <div className="flex justify-between items-center gap-8">
+                    <div className=" flex gap-2">
+                      <input
+                        type="checkbox"
+                        id="terms"
+                        checked={agreedTerms}
+                        onChange={() => setAgreedTerms(!agreedTerms)}
+                      />
+                      <label
+                        htmlFor="terms"
+                        className="text-white text-[0.7rem] sm:text-xl"
+                      >
+                        Agree with terms and conditions
+                      </label>
+                    </div>
+                    <div>
+                      <Link to="/user/forgot/email">
+                        <p className="text-sans text-green-500 hover:text-green-700">
+                          forgot password
+                        </p>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -130,7 +135,7 @@ const Login = () => {
 
             <div className="flex justify-center items-center text-white sm:ml-[10%]">
               <button className="h-[3rem] w-[80%] bg-secondary rounded-xl">
-                Sign Up
+                {loading ? '... Loading' : 'Log In'}
               </button>
             </div>
 

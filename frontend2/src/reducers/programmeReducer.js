@@ -3,9 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   loading: false,
   error: null,
-  programme: [],
+  programme: [], // Ensure it's an array
 };
-
 const programmeSlice = createSlice({
   name: 'programme', // Slice name should be 'programme'
   initialState,
@@ -16,7 +15,8 @@ const programmeSlice = createSlice({
     },
     createProgrammeSuccess(state, action) {
       state.loading = false;
-      state.programme = [...state.programme, action.payload]; // Push new item to the array immutably
+
+      state.programme = action.payload;
     },
     createProgrammeFailure(state, action) {
       state.loading = false;

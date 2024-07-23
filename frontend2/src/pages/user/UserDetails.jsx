@@ -1,4 +1,4 @@
-import { FaUser } from 'react-icons/fa';
+import { FaUser, FaPlus, FaTimes } from 'react-icons/fa';
 import { useState } from 'react';
 import LoginLogo from '../../component/LoginLogo';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,29 +7,26 @@ import { toast } from 'react-toastify';
 import { updateUserDetail } from '../../action/userActions';
 
 const UserDetails = () => {
-  {
-    /*/user/detail/:id */
-  }
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const [gender, setGender] = useState('');
   const [profilePhoto, setProfilePhoto] = useState(null); // State to hold the file object
+  const [profilePhotoName, setProfilePhotoName] = useState(''); // State to hold the file name
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state.user.user);
+  const userId = user?._id;
 
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
 
-  const { user } = useSelector((state) => state.user.user);
-
-  const userId = user._id;
-
-  // Handle file input change
   const handleProfilePhotoChange = (e) => {
-    const file = e.target.files[0]; // Access the file object
+    const file = e.target.files[0];
     setProfilePhoto(file);
+    setProfilePhotoName(file ? file.name : ''); // Update file name
   };
 
   const handleRoleChange = (e) => {
@@ -43,17 +40,16 @@ const UserDetails = () => {
   const handleUserDetailSubmit = async (e) => {
     e.preventDefault();
 
-    // Create FormData object to append data
     const formData = new FormData();
     formData.append('name', name);
     formData.append('role', role);
     formData.append('gender', gender);
-    formData.append('profilePhoto', profilePhoto); // Append the file object
+    if (profilePhoto) formData.append('profilePhoto', profilePhoto); // Append the file object
 
     try {
       const response = await dispatch(updateUserDetail(formData, userId));
 
-      const { user, token } = response;
+      const { user } = response;
 
       if (user) {
         toast.success('User updated successfully');
@@ -68,192 +64,152 @@ const UserDetails = () => {
   };
 
   return (
-    <>
-      <div className="flex flex-col pt-[3%] gap-6 min-h-[100vh]">
-        {/* Login Logo */}
-        <Link to="/home">
-          <LoginLogo />
-        </Link>
+    <div className="flex flex-col pt-4 gap-6 min-h-screen bg-primary p-4">
+      {/* Login Logo */}
+      <Link to="/home" className="mb-4">
+        <LoginLogo />
+      </Link>
 
-        {/* Upload Profile Photo */}
-        {user ? (
-          <>
-            {' '}
-            <form
-              className="flex flex-col items-center justify-center"
-              onSubmit={handleUserDetailSubmit}
-            >
-              <div className="bg-black w-30 h-20 flex flex-row justify-center items-center cursor-pointer border rounded-[32px] p-2 pt-5">
-                <div className="flex justify-center items-center gap-2 mr-2">
-                  <label htmlFor="upload-input" className="relative text-white">
-                    <input
-                      id="upload-input"
-                      name="profilePhoto"
-                      type="file"
-                      className="hidden"
-                      onChange={handleProfilePhotoChange} // Handle file change
-                    />
-                    <span className="text-white text-4xl flex justify-center items-center">
-                      +
-                    </span>
-                  </label>
+      {/* Form */}
+      {user ? (
+        <form
+          className="flex flex-col items-center justify-center mx-auto max-w-md w-full bg-gray-800 p-6 rounded-lg shadow-lg"
+          onSubmit={handleUserDetailSubmit}
+        >
+          {/* Upload Profile Photo */}
+          <div className="flex flex-col items-center mb-4">
+            <label className="bg-black w-full max-w-xs h-20 flex flex-col justify-center items-center cursor-pointer border rounded-2xl p-2 relative">
+              <input
+                type="file"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                name="profilePhoto"
+                onChange={handleProfilePhotoChange}
+              />
+              {profilePhotoName ? (
+                <div className="flex items-center gap-2">
+                  <h1 className="text-white font-sans truncate">
+                    {profilePhotoName}
+                  </h1>
+                  <button
+                    type="button"
+                    className="text-white"
+                    onClick={() => {
+                      setProfilePhoto(null);
+                      setProfilePhotoName('');
+                    }}
+                  >
+                    <FaTimes />
+                  </button>
                 </div>
-                <div className="flex justify-center items-center pb-[10%]">
-                  <p className="mt-2 text-white font-sans text-[1rem] font-extrabold">
-                    Upload Profile Photo
-                  </p>
-                </div>
-              </div>
-            </form>
-            {/* Name Input */}
-            <div className="flex flex-col justify-center items-center">
-              <label htmlFor="name" className="text-white">
-                Name
-              </label>
-              <div className="relative flex w-[80%] justify-center">
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={handleNameChange}
-                  className="w-full sm:w-[40%] text-white bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[20%] sm:pl-[8%] font-sans"
-                />
-                <div className="absolute top-[20%] left-[10%] sm:left-[33%]">
-                  <FaUser color="white" size={25} />
-                </div>
+              ) : (
+                <>
+                  <FaPlus size={40} color="white" />
+                  <h1 className="text-white font-sans">Upload Photo</h1>
+                </>
+              )}
+            </label>
+            <p className="mt-2 text-white font-sans text-lg font-extrabold">
+              Upload Profile Photo
+            </p>
+          </div>
+
+          {/* Name Input */}
+          <div className="flex flex-col w-full mb-4">
+            <label htmlFor="name" className="text-white mb-1">
+              Name
+            </label>
+            <div className="relative">
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={handleNameChange}
+                className="w-full text-white bg-gray-700 h-12 rounded-lg pl-12 font-sans"
+              />
+              <div className="absolute top-1/2 left-3 transform -translate-y-1/2">
+                <FaUser color="white" size={20} />
               </div>
             </div>
-            {/* Role Selection */}
-            <div className="flex justify-center items-center gap-6">
-              <p className="text-white">I am a...</p>
-              {/* Checkbox for Trainer */}
+          </div>
+
+          {/* Role Selection */}
+          <div className="flex flex-col items-center w-full mb-4">
+            <p className="text-white mb-2">I am a...</p>
+            <div className="flex flex-wrap justify-center gap-4">
               <div
-                className={`h-[3.5rem] w-[8rem] ${
-                  role === 'trainer' ? 'bg-secondary' : 'bg-black border'
-                } rounded-2xl px-4 flex justify-between items-center`}
+                className={`h-12 w-28 flex items-center justify-center rounded-lg cursor-pointer ${
+                  role === 'trainer'
+                    ? 'bg-secondary text-white'
+                    : 'bg-gray-700 text-gray-300'
+                }`}
                 onClick={() => setRole('trainer')}
               >
-                <input
-                  type="checkbox"
-                  value="trainer"
-                  checked={role === 'trainer'}
-                  onChange={handleRoleChange}
-                />
-                <div
-                  className={`${
-                    role === 'trainer' ? 'text-white' : 'text-paraColor'
-                  } font-sans font-extrabold`}
-                >
-                  Trainer
-                </div>
+                Trainer
               </div>
-
-              {/* Checkbox for User */}
               <div
-                className={`h-[3.5rem] w-[8rem] ${
-                  role === 'user' ? 'bg-secondary' : 'bg-black border'
-                } rounded-2xl px-4 flex justify-between items-center`}
+                className={`h-12 w-28 flex items-center justify-center rounded-lg cursor-pointer ${
+                  role === 'user'
+                    ? 'bg-secondary text-white'
+                    : 'bg-gray-700 text-gray-300'
+                }`}
                 onClick={() => setRole('user')}
               >
-                <input
-                  type="checkbox"
-                  value="user"
-                  checked={role === 'user'}
-                  onChange={handleRoleChange}
-                />
-                <div
-                  className={`${
-                    role === 'user' ? 'text-white' : 'text-paraColor'
-                  } font-sans font-extrabold`}
-                >
-                  User
-                </div>
+                User
               </div>
             </div>
-            {/* Gender Selection */}
-            <div className="flex justify-center items-center gap-2">
-              <p className="text-white">Gender</p>
-              {/* Male Checkbox */}
+          </div>
+
+          {/* Gender Selection */}
+          <div className="flex flex-col items-center w-full mb-4">
+            <p className="text-white mb-2">Gender</p>
+            <div className="flex flex-wrap justify-center gap-4">
               <div
-                className={`h-[3.5rem] w-[6rem] ${
-                  gender === 'male' ? 'bg-secondary' : 'bg-black border'
-                } rounded-2xl px-4 flex justify-between items-center`}
+                className={`h-12 w-24 flex items-center justify-center rounded-lg cursor-pointer ${
+                  gender === 'male'
+                    ? 'bg-secondary text-white'
+                    : 'bg-gray-700 text-gray-300'
+                }`}
                 onClick={() => setGender('male')}
               >
-                <input
-                  type="checkbox"
-                  value="male"
-                  checked={gender === 'male'}
-                  onChange={handleGenderChange}
-                />
-                <div
-                  className={`${
-                    gender === 'male' ? 'text-white' : 'text-paraColor'
-                  } font-sans font-extrabold`}
-                >
-                  Male
-                </div>
+                Male
               </div>
-
-              {/* Female Checkbox */}
               <div
-                className={`h-[3.5rem] w-[6rem] ${
-                  gender === 'female' ? 'bg-secondary' : 'bg-black border'
-                } rounded-2xl px-4 flex justify-between items-center`}
+                className={`h-12 w-24 flex items-center justify-center rounded-lg cursor-pointer ${
+                  gender === 'female'
+                    ? 'bg-secondary text-white'
+                    : 'bg-gray-700 text-gray-300'
+                }`}
                 onClick={() => setGender('female')}
               >
-                <input
-                  type="checkbox"
-                  value="female"
-                  checked={gender === 'female'}
-                  onChange={handleGenderChange}
-                />
-                <div
-                  className={`${
-                    gender === 'female' ? 'text-white' : 'text-paraColor'
-                  } font-sans font-extrabold`}
-                >
-                  Female
-                </div>
+                Female
               </div>
-
-              {/* Others Checkbox */}
               <div
-                className={`h-[3.5rem] w-[6rem] ${
-                  gender === 'others' ? 'bg-secondary' : 'bg-black border'
-                } rounded-2xl px-4 flex justify-between items-center`}
+                className={`h-12 w-24 flex items-center justify-center rounded-lg cursor-pointer ${
+                  gender === 'others'
+                    ? 'bg-secondary text-white'
+                    : 'bg-gray-700 text-gray-300'
+                }`}
                 onClick={() => setGender('others')}
               >
-                <input
-                  type="checkbox"
-                  value="others"
-                  checked={gender === 'others'}
-                  onChange={handleGenderChange}
-                />
-                <div
-                  className={`${
-                    gender === 'others' ? 'text-white' : 'text-paraColor'
-                  } font-sans font-extrabold`}
-                >
-                  Others
-                </div>
+                Others
               </div>
             </div>
-            {/* Button */}
-            <div className="flex justify-center items-center">
-              <button
-                className="h-[3.5rem] w-[10rem] bg-secondary text-white rounded-xl"
-                onClick={handleUserDetailSubmit}
-              >
-                Next
-              </button>
-            </div>
-          </>
-        ) : (
-          '...Loading'
-        )}
-      </div>
-    </>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center items-center mt-6 w-full">
+            <button
+              type="submit"
+              className="w-full h-12 bg-secondary text-white rounded-lg font-sans font-bold"
+            >
+              Next
+            </button>
+          </div>
+        </form>
+      ) : (
+        <p className="text-white text-center">...Loading</p>
+      )}
+    </div>
   );
 };
 

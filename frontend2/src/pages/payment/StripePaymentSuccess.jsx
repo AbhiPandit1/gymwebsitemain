@@ -1,9 +1,12 @@
+import { BiLeftArrow } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
+
 const StripePaymentSuccess = () => {
   {
     /*"/payment/success" */
   }
   return (
-    <div className="flex justify-center items-center h-screen bg-green-500">
+    <div className="flex flex-col justify-center items-center h-screen bg-green-500">
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
         <svg
           className="mx-auto h-12 w-12 text-green-500"
@@ -25,8 +28,13 @@ const StripePaymentSuccess = () => {
           Thank you for your purchase. A confirmation email has been sent to
           your registered email address.
         </p>
-        {/* You can add more content here based on your application's needs */}
       </div>
+      <Link to="/programmes">
+        <button className="h-[2rem] w-[6rem] rounded-md flex justify-center items-center bg-secondary mt-2 font-sans text-white">
+          <BiLeftArrow color="white" size={20} />
+          Back
+        </button>
+      </Link>
     </div>
   );
 };

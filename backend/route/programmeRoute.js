@@ -30,7 +30,7 @@ router.get('/programme', protectRoute, checkRole(['trainer']), getProgrammes);
 router.get('/programmes', getByCategoryProgrammes);
 router.get('/category', getAllCategory);
 
-router.get('/programmes/:id', getSingleProgrammeOpen);
+router.get('/programme/:id', getSingleProgrammeOpen);
 
 // Get single Programme, Update Programme, and Delete Programme routes
 router.route('/trainer/programme').delete(deleteProgramme);

@@ -16,10 +16,10 @@ const DashboardHeader = () => {
   };
 
   return (
-    <div className="col-span-5 max-w-[100vw]">
-      <div className="flex justify-between items-center sm:m-2 sm:p-4 p-2">
+    <div className="col-span-5 min-w-[100vw] sm:min-w-full max-w-[100vw]">
+      <div className="flex justify-between items-center sm:m-2 sm:p-4 p-4">
         <div className="text-xl sm:text-3xl font-sans font-bold">Dashboard</div>
-        <div className="flex items-center justify-between gap-16">
+        <div className="flex items-center justify-between gap-2">
           <div className="relative">
             <IoMdNotifications
               size={40}

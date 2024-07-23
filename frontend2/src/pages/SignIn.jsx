@@ -17,7 +17,7 @@ const SignIn = () => {
   const [seePassword, setSeePassword] = useState(false);
   const [seeConfirmPassword, setSeeConfirmPassword] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [signField, setSignField] = useState({
     email: '',
     password: '',
@@ -45,22 +45,26 @@ const SignIn = () => {
     }
 
     try {
+      setLoading(true);
       const response = await dispatch(registerUser(signField));
 
       if (response.status === 201) {
         navigate('/');
+        setLoading(false);
       } else {
         toast.error('Registration failed. Please try again.');
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error during registration:', error);
+      setLoading(false);
     }
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[100vh] max-h-[100vh] overflow-hidden bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2  min-h-[100vh] overflow-scroll bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4">
           <div className="flex flex-col pt-[3%] gap-6">
             <LoginLogo />
 
@@ -171,7 +175,7 @@ const SignIn = () => {
                 type="submit"
                 className="h-[3rem] w-[80%] bg-secondary rounded-xl"
               >
-                Sign In
+                {loading ? '... Loading' : 'Sign In'}
               </button>
             </div>
 
@@ -180,7 +184,7 @@ const SignIn = () => {
                 Already have an account?
               </div>
               <div className="text-sans text-secondary text-[0.9rem]">
-                <Link to="/login">Sign In</Link>
+                <Link to="/login">Log In</Link>
               </div>
             </div>
           </div>
