@@ -97,11 +97,15 @@ export const handleStripeWebhook = async (req, res) => {
 
   try {
     // Construct the Stripe event from the raw body and signature
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    event = stripeClient.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
     console.log('Webhook Event:', event);
   } catch (err) {
     // Handle errors related to webhook signature verification
-    console.error('Webhook signature verification failed.', err.message);
+    console.error('Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
@@ -109,20 +113,20 @@ export const handleStripeWebhook = async (req, res) => {
   switch (event.type) {
     case 'checkout.session.async_payment_failed':
       const checkoutSessionAsyncPaymentFailed = event.data.object;
-      // Define and call a function to handle the event checkout.session.async_payment_failed
       console.log(
         'Checkout session async payment failed:',
         checkoutSessionAsyncPaymentFailed
       );
+      // Handle async payment failure
       break;
 
     case 'checkout.session.async_payment_succeeded':
       const checkoutSessionAsyncPaymentSucceeded = event.data.object;
-      // Define and call a function to handle the event checkout.session.async_payment_succeeded
       console.log(
         'Checkout session async payment succeeded:',
         checkoutSessionAsyncPaymentSucceeded
       );
+      // Handle async payment success
       break;
 
     case 'checkout.session.completed':
@@ -152,38 +156,38 @@ export const handleStripeWebhook = async (req, res) => {
 
     case 'checkout.session.expired':
       const checkoutSessionExpired = event.data.object;
-      // Define and call a function to handle the event checkout.session.expired
       console.log('Checkout session expired:', checkoutSessionExpired);
+      // Handle expired checkout session
       break;
 
     case 'payment_intent.amount_capturable_updated':
       const paymentIntentAmountCapturableUpdated = event.data.object;
-      // Define and call a function to handle the event payment_intent.amount_capturable_updated
       console.log(
         'Payment intent amount capturable updated:',
         paymentIntentAmountCapturableUpdated
       );
+      // Handle capturable amount update
       break;
 
     case 'payment_intent.canceled':
       const paymentIntentCanceled = event.data.object;
-      // Define and call a function to handle the event payment_intent.canceled
       console.log('Payment intent canceled:', paymentIntentCanceled);
+      // Handle payment intent cancellation
       break;
 
     case 'payment_intent.created':
       const paymentIntentCreated = event.data.object;
-      // Define and call a function to handle the event payment_intent.created
       console.log('Payment intent created:', paymentIntentCreated);
+      // Handle payment intent creation
       break;
 
     case 'payment_intent.partially_funded':
       const paymentIntentPartiallyFunded = event.data.object;
-      // Define and call a function to handle the event payment_intent.partially_funded
       console.log(
         'Payment intent partially funded:',
         paymentIntentPartiallyFunded
       );
+      // Handle partially funded payment intent
       break;
 
     case 'payment_intent.payment_failed':
@@ -209,35 +213,35 @@ export const handleStripeWebhook = async (req, res) => {
 
     case 'payment_intent.processing':
       const paymentIntentProcessing = event.data.object;
-      // Define and call a function to handle the event payment_intent.processing
       console.log('Payment intent processing:', paymentIntentProcessing);
+      // Handle payment intent processing
       break;
 
     case 'payment_intent.requires_action':
       const paymentIntentRequiresAction = event.data.object;
-      // Define and call a function to handle the event payment_intent.requires_action
       console.log(
         'Payment intent requires action:',
         paymentIntentRequiresAction
       );
+      // Handle payment intent requiring action
       break;
 
     case 'payment_intent.succeeded':
       const paymentIntentSucceeded = event.data.object;
-      // Define and call a function to handle the event payment_intent.succeeded
       console.log('Payment intent succeeded:', paymentIntentSucceeded);
+      // Handle successful payment intent
       break;
 
     case 'refund.created':
       const refundCreated = event.data.object;
-      // Define and call a function to handle the event refund.created
       console.log('Refund created:', refundCreated);
+      // Handle refund creation
       break;
 
     case 'refund.updated':
       const refundUpdated = event.data.object;
-      // Define and call a function to handle the event refund.updated
       console.log('Refund updated:', refundUpdated);
+      // Handle refund update
       break;
 
     default:
