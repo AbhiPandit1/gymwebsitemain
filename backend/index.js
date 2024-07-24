@@ -20,7 +20,7 @@ import forgotPasswordRouter from './route/forgotPasswordRoute.js';
 import afterBuyingRouter from './route/afterBuyingRoute.js';
 import adminRoute from './route/adminRoute.js';
 import settingRouter from './route/settingRoute.js';
-import { handleStripeWebhook } from './controller/paymentController.js';
+
 
 // Load environment variables from .env file
 dotenv.config();
@@ -68,11 +68,6 @@ app.use('/api/setting', settingRouter);
 // app.use(express.static(path.join(__dirname, 'public')));
 
 // Webhook route
-app.use(
-  '/webhook',
-  express.raw({ type: 'application/json' }),
-  handleStripeWebhook
-);
 
 // Error handling for unknown routes
 app.use((req, res, next) => {

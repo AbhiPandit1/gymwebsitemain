@@ -1,4 +1,4 @@
-import stripePackage, { Stripe } from 'stripe';
+import stripePackage from 'stripe';
 import dotenv from 'dotenv';
 import User from '../model/userModel.js';
 import Payment from '../model/payementModel.js';
@@ -8,77 +8,96 @@ import Programme from '../model/programmeModel.js';
 dotenv.config();
 
 const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
-const stripeClient = Stripe(process.env.STRIPE_WEBHOOK_KEY);
-const endpointSecret = process.env.WEBHOOK_SECRET;
 
 export const paymentCheckout = async (req, res) => {
-  const { amount, country } = req.body; // Destructure amount and country
-  const userId = req.user._id.toString(); // Ensure this is a string
-  console.log('User ID:', userId);
+  const { amount } = req.body;
+  const userId = req.user._id;
+  console.log(userId);
+  
+
+  // Validate id parameter
   const id = req.params.id;
 
   try {
-    // Ensure the currency is set correctly based on country if needed
-    const currency = 'usd'; // Assuming you are using USD for the example
-
+    // Check if the Programme exists
     const programme = await Programme.findById(id);
     if (!programme) {
       return res.status(404).json({ error: 'Programme not found' });
     }
-
     const user = await User.findById(userId);
+    
+    
+
     if (user.takenProgrammes.includes(id)) {
-      return res.status(400).json({ error: "You can't buy a programme twice" });
+      return res.status(404).json({ error: 'You cant buy a programme twice' });
     }
 
-    // Create payment intent
+    // Create a Payment Intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
-      currency: currency,
-      description: 'Product',
+      amount: amount * 100,
+      currency: 'usd',
+      description: 'Your Product Name',
     });
 
-    // Create checkout session
+    // Create a Checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
-            currency: currency,
+            currency: 'usd',
             product_data: {
-              name: 'product',
-              // Add description or other fields if needed
+              name: 'Your Product Name',
             },
-            unit_amount: amount, // Amount in the smallest currency unit (e.g., cents for USD)
+            unit_amount: amount * 100,
           },
-          quantity: 1, // Number of items
+          quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: `https://gymwebsitemain-1.onrender.com/payment/success`,
-      cancel_url: `https://gymwebsitemain-1.onrender.com/payment/cancel`,
-      client_reference_id: userId, // Ensure this is a valid string
-      metadata: {
-        paymentIntentId: paymentIntent.id,
-        programmeId: id,
+      success_url: 'http://localhost:5173/payment/success',
+      cancel_url: 'http://localhost:5173/payment/cancel',
+      payment_intent_data: {
+        metadata: { paymentIntentId: paymentIntent.id },
       },
     });
+
+    // Update user's hasTakenProgramme to true
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { hasTakenProgramme: true },
+      { new: true }
+    );
 
     // Save payment details
     const paymentDetails = new Payment({
       userId: userId,
-      amount: amount / 100, // Convert amount to dollars if needed for storage
-      currency: currency,
+      amount: amount,
+      currency: 'usd',
       paymentIntentId: paymentIntent.id,
-      programmes: [programme],
+      programmes: [programme], // Assuming id is the ObjectId of the programme
     });
     await paymentDetails.save();
-    console.log(user, paymentDetails, paymentIntent.id);
 
+    // Add the paymentIntentId to the user's paymentIntents array
+    updatedUser.paymentIntents.push(paymentIntent.id);
+    updatedUser.takenProgrammes.push(id);
+
+    await updatedUser.save();
+
+    // Send email confirmation
+    const emailData = {
+      email: updatedUser.email,
+      subject: 'Purchase Confirmation',
+      message: `Thank you for your purchase of ${amount} USD. Your payment ID is ${paymentIntent.id}. and details ${paymentDetails}`,
+    };
+    await sendEmail(emailData);
+
+    // Return session ID, Payment Intent ID, and updated user data to client
     res.json({
       id: session.id,
       paymentIntentId: paymentIntent.id,
-      user: user,
+      user: updatedUser,
       paymentDetails,
     });
   } catch (error) {
@@ -89,173 +108,16 @@ export const paymentCheckout = async (req, res) => {
   }
 };
 
-export const handleStripeWebhook = async (req, res) => {
-  console.log('Webhook triggered');
-  const sig = req.headers['stripe-signature'];
-  console.log('Stripe Signature:', sig);
-  let event;
-
-  try {
-    // Construct the Stripe event from the raw body and signature
-    event = stripeClient.webhooks.constructEvent(req.body, sig, endpointSecret);
-    console.log('Webhook Event:', event);
-  } catch (err) {
-    // Handle errors related to webhook signature verification
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-
-  // Handle the event
-  switch (event.type) {
-    case 'checkout.session.async_payment_failed':
-      const checkoutSessionAsyncPaymentFailed = event.data.object;
-      console.log(
-        'Checkout session async payment failed:',
-        checkoutSessionAsyncPaymentFailed
-      );
-      // Handle async payment failure
-      break;
-
-    case 'checkout.session.async_payment_succeeded':
-      const checkoutSessionAsyncPaymentSucceeded = event.data.object;
-      console.log(
-        'Checkout session async payment succeeded:',
-        checkoutSessionAsyncPaymentSucceeded
-      );
-      // Handle async payment success
-      break;
-
-    case 'checkout.session.completed':
-      const checkoutSessionCompleted = event.data.object;
-      const userId = checkoutSessionCompleted.client_reference_id;
-      const paymentIntentId = checkoutSessionCompleted.payment_intent;
-      const programmeId = checkoutSessionCompleted.metadata.programmeId;
-
-      try {
-        const user = await User.findById(userId);
-        if (user && !user.takenProgrammes.includes(programmeId)) {
-          user.takenProgrammes.push(programmeId);
-          user.paymentIntents.push(paymentIntentId);
-          await user.save();
-
-          const emailData = {
-            email: user.email,
-            subject: 'Purchase Confirmation',
-            message: `Thank you for your purchase. Your payment ID is ${paymentIntentId}.`,
-          };
-          await sendEmail(emailData);
-        }
-      } catch (error) {
-        console.error('Error updating user after successful payment:', error);
-      }
-      break;
-
-    case 'checkout.session.expired':
-      const checkoutSessionExpired = event.data.object;
-      console.log('Checkout session expired:', checkoutSessionExpired);
-      // Handle expired checkout session
-      break;
-
-    case 'payment_intent.amount_capturable_updated':
-      const paymentIntentAmountCapturableUpdated = event.data.object;
-      console.log(
-        'Payment intent amount capturable updated:',
-        paymentIntentAmountCapturableUpdated
-      );
-      // Handle capturable amount update
-      break;
-
-    case 'payment_intent.canceled':
-      const paymentIntentCanceled = event.data.object;
-      console.log('Payment intent canceled:', paymentIntentCanceled);
-      // Handle payment intent cancellation
-      break;
-
-    case 'payment_intent.created':
-      const paymentIntentCreated = event.data.object;
-      console.log('Payment intent created:', paymentIntentCreated);
-      // Handle payment intent creation
-      break;
-
-    case 'payment_intent.partially_funded':
-      const paymentIntentPartiallyFunded = event.data.object;
-      console.log(
-        'Payment intent partially funded:',
-        paymentIntentPartiallyFunded
-      );
-      // Handle partially funded payment intent
-      break;
-
-    case 'payment_intent.payment_failed':
-      const paymentIntentPaymentFailed = event.data.object;
-      try {
-        const user = await User.findOne({
-          paymentIntents: paymentIntentPaymentFailed.id,
-        });
-        if (user) {
-          const emailData = {
-            email: user.email,
-            subject: 'Unsuccessful Transaction',
-            message: `Your transaction for ${
-              paymentIntentPaymentFailed.amount / 100
-            } USD was unsuccessful. Please try again.`,
-          };
-          await sendEmail(emailData);
-        }
-      } catch (error) {
-        console.error('Error handling payment failure:', error);
-      }
-      break;
-
-    case 'payment_intent.processing':
-      const paymentIntentProcessing = event.data.object;
-      console.log('Payment intent processing:', paymentIntentProcessing);
-      // Handle payment intent processing
-      break;
-
-    case 'payment_intent.requires_action':
-      const paymentIntentRequiresAction = event.data.object;
-      console.log(
-        'Payment intent requires action:',
-        paymentIntentRequiresAction
-      );
-      // Handle payment intent requiring action
-      break;
-
-    case 'payment_intent.succeeded':
-      const paymentIntentSucceeded = event.data.object;
-      console.log('Payment intent succeeded:', paymentIntentSucceeded);
-      // Handle successful payment intent
-      break;
-
-    case 'refund.created':
-      const refundCreated = event.data.object;
-      console.log('Refund created:', refundCreated);
-      // Handle refund creation
-      break;
-
-    case 'refund.updated':
-      const refundUpdated = event.data.object;
-      console.log('Refund updated:', refundUpdated);
-      // Handle refund update
-      break;
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  // Respond to Stripe indicating the event was received and processed
-  res.status(200).send('Event received');
-};
-
-// Refund Method
+//Refund Meathod
 export const refundForPayment = async (req, res) => {
   const { paymentIntentId } = req.body;
   const userId = req.user._id;
 
   try {
+    // Retrieve the Payment Intent to check its details
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
+    // Check if the payment intent has a successful charge
     if (paymentIntent.status !== 'succeeded') {
       return res.status(400).json({
         error: 'Cannot refund',
@@ -264,8 +126,9 @@ export const refundForPayment = async (req, res) => {
       });
     }
 
+    // Check if the payment was created within the last 7 days
     const paymentCreatedAt = paymentIntent.created;
-    const sevenDaysAgo = Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60;
+    const sevenDaysAgo = Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60; // Timestamp for 7 days ago
 
     if (paymentCreatedAt < sevenDaysAgo) {
       return res.status(400).json({
@@ -274,6 +137,7 @@ export const refundForPayment = async (req, res) => {
       });
     }
 
+    // Check if the payment intent belongs to the same user
     const paymentRecord = await Payment.findOne({ paymentIntentId, userId });
     if (!paymentRecord) {
       return res.status(403).json({
@@ -282,6 +146,7 @@ export const refundForPayment = async (req, res) => {
       });
     }
 
+    // Process the refund
     const refund = await stripe.refunds.create({
       payment_intent: paymentIntentId,
     });
@@ -295,7 +160,6 @@ export const refundForPayment = async (req, res) => {
   }
 };
 
-// Payment Details Method
 export const paymentDetails = async (req, res) => {
   const { id } = req.params;
 
@@ -305,12 +169,18 @@ export const paymentDetails = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const paymentRecords = await Payment.find({ userId: id }).populate(
-      'programmes',
-      'name'
+    // Assuming user.paymentIntents is an array of payment intent IDs
+    const paymentIds = await Promise.all(
+      user.paymentIntents.map(async (paymentIntentId) => {
+        const payments = await Payment.find({ paymentIntentId }).populate(
+          'programmes',
+          'name'
+        ); // Fetch payments based on paymentIntentId
+        return payments;
+      })
     );
 
-    return res.status(200).json({ payments: paymentRecords });
+    return res.status(200).json({ payments: paymentIds });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
