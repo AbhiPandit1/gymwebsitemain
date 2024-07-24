@@ -51,7 +51,7 @@ const ReviewForm = () => {
 
       if (response.status === 201) {
         setReviewSubmitted(true);
-        toast.success('Reviewed Succcessfully')
+        toast.success('Reviewed Succcessfully');
         setRating(0); // Clear rating
         setReview(''); // Clear the review field
         setName(''); // Clear the name field
@@ -62,7 +62,7 @@ const ReviewForm = () => {
       setLoading(false); // End loading
       setTimeout(() => {
         setReviewSubmitted(false);
-      }, 30000); // 30 seconds
+      }, 3000); // 30 seconds
     }
   };
 

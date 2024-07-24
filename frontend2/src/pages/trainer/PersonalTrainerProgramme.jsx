@@ -8,9 +8,7 @@ import { MdDelete, MdEdit } from 'react-icons/md';
 import { GiAbdominalArmor } from 'react-icons/gi';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 import { toast } from 'react-toastify';
-
-// Import a modal library if needed, e.g.:
-// import Modal from 'react-modal';
+import { BiSolidRightArrow } from 'react-icons/bi';
 
 const PersonalTrainerProgramme = () => {
   const { user } = useSelector((state) => state.user);
@@ -18,6 +16,7 @@ const PersonalTrainerProgramme = () => {
   const [trainerDatas, setTrainerDatas] = useState([]);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [hoverDashboard, setHoverDashboard] = useState(false);
   const dashBoardLink = useDashboardLinks();
 
   useEffect(() => {
@@ -34,13 +33,13 @@ const PersonalTrainerProgramme = () => {
           }
         );
         setTrainerDatas(response.data.programmes);
-        console.log(trainerDatas._id);
       } catch (error) {
         console.log(error);
+        toast.error('Failed to fetch programmes.');
       }
     };
     getProgramme();
-  }, [id]);
+  }, [id, user.token]);
 
   const handleDelete = async () => {
     try {
@@ -53,88 +52,112 @@ const PersonalTrainerProgramme = () => {
           data: { programmeId: deleteId },
         }
       );
-      setTrainerDatas(
-        trainerDatas.filter((data) => {
-          data._id !== deleteId;
-        })
-      );
-      window.location.reload();
+      setTrainerDatas(trainerDatas.filter((data) => data._id !== deleteId));
       setShowDeletePopup(false);
+      toast.success('Programme deleted successfully.');
     } catch (error) {
       console.log(error);
       toast.error('Failed to delete programme.');
     }
   };
 
+  const handleClick = () => {
+    setHoverDashboard((prevState) => !prevState);
+  };
+
   return (
-    <div className="grid sm:grid-cols-7 text-white font-sans max-w-[100vw]">
-      <div className="col-span-2 hidden sm:grid">
-        <DashboardComponent dashBoardLink={dashBoardLink} />
+    <div className="grid grid-cols-7 min-h-screen max-h-screen max-w-full overflow-y-auto sm:overflow-hidden text-white scrollbar-hide">
+      <div
+        className={`transition-transform duration-300 ${
+          hoverDashboard ? 'hidden' : 'col-span-7'
+        } sm:${hoverDashboard ? 'hidden' : 'col-span-2'}`}
+        onClick={handleClick}
+      >
+        <DashboardComponent
+          dashBoardLink={dashBoardLink}
+          hoverDashboard={hoverDashboard}
+        />
       </div>
-      <div className="col-span-5">
-        <div>
-          <DashboardHeader />
-        </div>
-        <div className="grid grid-cols-3 m-auto sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-auto">
-          <div className="col-span-3 items-start justify-center overflow-auto">
-            <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-2 overflow-auto">
-              {trainerDatas.map((card) => (
+      <div
+        className={`transition-transform duration-300 ${
+          hoverDashboard ? 'col-span-7' : 'col-span-7'
+        } sm:${hoverDashboard ? 'col-span-7' : 'col-span-5'}`}
+      >
+        <DashboardHeader />
+        <div className="p-2 overflow-x-hidden">
+          <div className="bg-primary h-full w-full flex flex-col mb-1">
+            <div className="relative">
+              {hoverDashboard && (
                 <div
-                  key={card.id}
-                  className="bg rounded-[32px] gap-[5px] min-h-[400px] p-4 bg-tertiary w-full sm:w-[300.4px] m-[1rem] p-auto"
+                  className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+                  onClick={handleClick}
                 >
-                  <img
-                    src={card.categoryPhoto.url || <GiAbdominalArmor />}
-                    alt={card.type}
-                    className="h-[249px] object-cover rounded-[50px] p-4 opacity-1"
-                  />
-                  <div className="h-[2rem] max-w-[5rem] m-[5%] text-[0.8rem] rounded-[10px] bg-paraColor font-sans flex justify-center items-center">
-                    Category
+                  <BiSolidRightArrow size={80} color="white" />
+                </div>
+              )}
+              <div className="grid grid-cols-3 m-auto sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-auto">
+                <div className="col-span-3 items-start justify-center overflow-auto">
+                  <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-2 overflow-auto">
+                    {trainerDatas.map((card) => (
+                      <div
+                        key={card._id}
+                        className="bg rounded-[32px] gap-[5px] min-h-[400px] p-4 bg-tertiary w-full sm:w-[300.4px] m-[1rem] p-auto"
+                      >
+                        <img
+                          src={card.categoryPhoto?.url || <GiAbdominalArmor />}
+                          alt={card.type}
+                          className="h-[249px] object-cover rounded-[50px] p-4 opacity-1"
+                        />
+                        <div className="h-[2rem] max-w-[5rem] m-[5%] text-[0.8rem] rounded-[10px] bg-paraColor font-sans flex justify-center items-center">
+                          Category
+                        </div>
+                        <div className="p-4">
+                          <h2 className="text-xl text-white font-sans font-bold">
+                            {card.category}
+                          </h2>
+                        </div>
+                        <div className="font-sans text-1xl text-paraColor w-[90%] m-[5%]">
+                          {card.desc}
+                        </div>
+                        <div className="flex justify-between">
+                          <div className="text-xl text-white font-sans font-bold flex justify-center items-center m-2">
+                            ${card.price}
+                          </div>
+                          <button
+                            onClick={() => {
+                              setDeleteId(card._id);
+                              setShowDeletePopup(true);
+                            }}
+                            className="w-[3.6rem] h-[3.2rem] bg-red-500 flex items-center justify-center ml-4 mr-2 rounded-xl float-right"
+                          >
+                            <MdDelete color="black" className="w-14 h-10" />
+                          </button>
+                          <Link to={`/trainer/programme/edit/${card._id}`}>
+                            <button className="w-[3.6rem] h-[3.2rem] bg-green-500 flex items-center justify-center ml-4 mr-2 rounded-xl float-right">
+                              <MdEdit color="black" className="w-14 h-10" />
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="p-4">
-                    <h2 className="text-xl text-white font-sans font-bold">
-                      {card.category}
-                    </h2>
-                  </div>
-                  <div className="font-sans text-1xl text-paraColor w-[90%] m-[5%]">
-                    {card.desc}
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="text-xl text-white font-sans font-bold flex justify-center items-center m-2">
-                      ${card.price}
+                  <Link to={`/trainer/create/programme/${user.user._id}`}>
+                    <div className="bg-tertiary m-auto w-[80%] sm:w-[40%] flex justify-center gap-3 items-center rounded-lg mb-[5rem]">
+                      <div className="flex justify-center items-center">
+                        <span className="text-white text-[2.5rem] flex justify-center items-center">
+                          +
+                        </span>
+                      </div>
+                      <div className="flex justify-center items-center placeholder">
+                        <p className="text-white font-sans text-[2rem] font-bold">
+                          Create New
+                        </p>
+                      </div>
                     </div>
-                    <button
-                      onClick={() => {
-                        setDeleteId(card._id);
-                        setShowDeletePopup(true);
-                      }}
-                      className="w-[3.6rem] h-[3.2rem] bg-red-500 flex items-center justify-center ml-4 mr-2 rounded-xl float-right"
-                    >
-                      <MdDelete color="black" className="w-14 h-10" />
-                    </button>
-                    <Link to={`/trainer/programme/edit/${card._id}`}>
-                      <button className="w-[3.6rem] h-[3.2rem] bg-red-500 flex items-center justify-center ml-4 mr-2 rounded-xl float-right">
-                        <MdEdit color="black" className="w-14 h-10" />
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <Link to={`/trainer/create/programme/${user.user._id}`}>
-              <div className="bg-tertiary m-auto w-[80%] sm:w-[40%] flex justify-center gap-3 items-center rounded-lg mb-[5rem]">
-                <div className="flex justify-center items-center">
-                  <span className="text-white text-[2.5rem] flex justify-center items-center">
-                    +
-                  </span>
-                </div>
-                <div className="flex justify-center items-center placeholder">
-                  <p className="text-white font-sans text-[2rem] font-bold">
-                    Create New
-                  </p>
+                  </Link>
                 </div>
               </div>
-            </Link>
+            </div>
           </div>
         </div>
       </div>

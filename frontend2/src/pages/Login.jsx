@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import LoginLogo from '../component/LoginLogo';
 import { useDispatch } from 'react-redux';
 import { signInuser } from '../action/userActions';
-import LoadingSpinner from '../../LoadingSpinner';
+import SmallSpinner from '../../SmallSpinner';
 
 const Login = () => {
   const [seePassword, setSeePassword] = useState(false);
@@ -135,7 +135,7 @@ const Login = () => {
 
             <div className="flex justify-center items-center text-white sm:ml-[10%]">
               <button className="h-[3rem] w-[80%] bg-secondary rounded-xl">
-                {loading ? '... Loading' : 'Log In'}
+                {loading ? <SmallSpinner /> : 'Log In'}
               </button>
             </div>
 

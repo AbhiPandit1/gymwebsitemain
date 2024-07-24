@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import cardData from '../data/cardData'; // default import
 import Marquee from 'react-fast-marquee';
 import { IoIosArrowRoundForward } from 'react-icons/io';
+import { Link } from 'react-router-dom';
 
-const Card = ({ title, backgroundColor }) => {
+const Card = ({ title, backgroundColor, buttonTrue }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -37,11 +38,16 @@ const Card = ({ title, backgroundColor }) => {
           </div>
         ))}
       </Marquee>
+
       <div className="flex justify-center mb-2">
-        <button className="w-[8rem] h-[4rem] bg-secondary flex items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem] font-sans text-white pl-3">
-          See All
-          <IoIosArrowRoundForward color="white" className="w-14 h-10" />
-        </button>
+        <Link to="/programmes">
+          {buttonTrue && (
+            <button className="w-[8rem] h-[4rem] bg-secondary flex items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem] font-sans text-white pl-3">
+              See all
+              <IoIosArrowRoundForward color="white" className="w-14 h-10" />
+            </button>
+          )}
+        </Link>
       </div>
     </div>
   );

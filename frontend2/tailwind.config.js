@@ -29,6 +29,16 @@ export default {
         custom: '-0.8%', // -0.8%
       },
     },
+    keyframes: {
+      shake: {
+        '0%': { transform: 'translateX(-10px)' },
+        '50%': { transform: 'translateX(10px)' },
+        '100%': { transform: 'translateX(-10px)' },
+      },
+    },
+    animation: {
+      shake: 'shake 0.5s ease-in-out', // Adjust duration and easing as needed
+    },
   },
   plugins: [
     function ({ addUtilities }) {

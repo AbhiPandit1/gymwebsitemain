@@ -54,7 +54,7 @@ const ProgrammeComponentCardMobile = ({ programmeData }) => {
       </div>
       <div className="flex justify-center mt-4">
         <button
-          className="w-40 h-12 text-lg bg-white text-black px-5 flex items-center justify-between rounded-lg shadow-md"
+          className="w-40 h-12 text-lg bg-secondary text-white px-5 flex items-center justify-between rounded-lg shadow-md"
           onClick={handleLoadMore}
         >
           {loadButton ? (

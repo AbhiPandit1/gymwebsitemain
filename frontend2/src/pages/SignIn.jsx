@@ -9,6 +9,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import LoginLogo from '../component/LoginLogo';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../action/userActions';
+import LoadingSpinner from '../../LoadingSpinner';
+import SmallSpinner from '../../SmallSpinner';
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -175,7 +177,7 @@ const SignIn = () => {
                 type="submit"
                 className="h-[3rem] w-[80%] bg-secondary rounded-xl"
               >
-                {loading ? '... Loading' : 'Sign In'}
+                {loading ? <SmallSpinner /> : 'Sign In'}
               </button>
             </div>
 

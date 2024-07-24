@@ -3,11 +3,16 @@ import { IoIosArrowRoundForward } from 'react-icons/io';
 import Card from '../component/Card';
 import ReviewCard from '../component/ReviewCard';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Home = () => {
   {
     /*http://localhost:5173/ */
   }
+
+  const { user } = useSelector((state) => state.user);
+  const role = user.user.role;
+
   return (
     <>
       {/*Starting Section */}
@@ -41,9 +46,14 @@ const Home = () => {
               </p>
             </div>
             <div className="text-white  flex items-start justify-center     w-full mt-8">
-              <Link to="/user/programmes">
-                {' '}
-                <button className="w-[17rem] sm:[18rem] h-[4rem] bg-secondary flex items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem]">
+              <Link
+                to={
+                  role === 'user'
+                    ? '/user/programmes'
+                    : `trainer/programmes/${user.user._id}`
+                }
+              >
+                <button className="w-[17rem] sm:w-[18rem] h-[4rem] bg-secondary flex items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem]">
                   <span className="ml-4 font-sans">your own programme</span>
                   <IoIosArrowRoundForward color="white" className="w-14 h-10" />
                 </button>
@@ -71,7 +81,11 @@ const Home = () => {
           <Card title="Trending" backgroundColor="primary" />
         </div>
         <div className="bg-primary h-full">
-          <Card title="Our Picks" backgroundColor="boxColor" />
+          <Card
+            title="Our Picks"
+            backgroundColor="boxColor"
+            buttonTrue="true"
+          />
         </div>
       </div>
 

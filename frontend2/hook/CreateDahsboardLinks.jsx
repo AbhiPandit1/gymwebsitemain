@@ -2,16 +2,13 @@ import { useSelector } from 'react-redux';
 
 const useDashboardLinks = () => {
   const { user } = useSelector((state) => state.user);
-  console.log(user.user.role);
-  console.log(user.user._id);
 
-  // Compute the link based on the user's role
   const programLink =
     user.user.role === 'user'
       ? '/user/programmes'
       : `/trainer/programmes/${user.user._id}`;
 
-  return [
+  const userLinks = [
     {
       id: '1',
       name: 'Home',
@@ -35,6 +32,45 @@ const useDashboardLinks = () => {
       link: `/user/detail/${user.user._id}`,
     },
   ];
+
+  const adminLinks = [
+    {
+      id: '1',
+      name: 'Home',
+      link: '/',
+      role: 'user',
+    },
+    {
+      id: '2',
+      name: 'Programmes',
+      link: '/admin/programmes',
+      role: '',
+    },
+    {
+      id: '3',
+      name: 'Users',
+      link: '/admin/user',
+      role: '',
+    },
+    {
+      id: '4',
+      name: 'Invoices',
+      link: '/admin/invoices',
+      role: '',
+    },
+    {
+      id: '5',
+      name: 'Settings',
+      link: '/settings',
+    },
+    {
+      id: '6',
+      name: 'Edit',
+      link: `/admin/detail/${user.user._id}`,
+    },
+  ];
+
+  return user.user.role === 'admin' ? adminLinks : userLinks;
 };
 
 export default useDashboardLinks;

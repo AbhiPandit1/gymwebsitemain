@@ -117,7 +117,7 @@ const TrainerCardMobile = () => {
         ) : (
           <button
             disabled
-            className="px-4 py-2 bg-secondary text-white rounded-lg cursor-not-allowed"
+            className="px-4 py-2 bg-primary text-white rounded-lg cursor-not-allowed"
           >
             No More Trainers
           </button>

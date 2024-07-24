@@ -5,56 +5,76 @@ import { IoIosArrowRoundForward } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
+import { useState } from 'react';
+import { BiSolidRightArrow } from 'react-icons/bi';
 
 const UserDashboard = () => {
-  {
-    /*"/user/dashboard/:id" */
-  }
-  const { user } = useSelector((state) => state.user);
+  const [hoverDashboard, setHoverDashboard] = useState(false);
 
+  const handleClick = () => {
+    setHoverDashboard((prevState) => !prevState);
+  };
+
+  const { user } = useSelector((state) => state.user);
+  const role = user.user.role;
   const dashBoardLink = useDashboardLinks();
+
   return (
-    <div className="grid grid-cols-7 min-h-[100vh] max-h-[100vh] overflow-hidden text-white">
-      <div className="col-span-2 hidden sm:grid">
-        <DashboardComponent dashBoardLink={dashBoardLink} />
+    <div className="grid grid-cols-7 min-h-screen max-h-screen overflow-hidden text-white">
+      <div
+        className={`${hoverDashboard ? 'hidden' : 'col-span-7'} sm:${
+          hoverDashboard ? 'hidden' : 'col-span-2'
+        }`}
+        onClick={handleClick}
+      >
+        <DashboardComponent
+          dashBoardLink={dashBoardLink}
+          hoverDashboard={hoverDashboard}
+        />
       </div>
-      <div className="col-span-5">
+      <div
+        className={`${hoverDashboard ? 'col-span-7' : 'col-span-5'} sm:${
+          hoverDashboard ? 'col-span-7' : 'col-span-5'
+        }`}
+      >
         <DashboardHeader />
         <div className="p-2">
-          <div className="bg-primary h-full w-[100vw] sm:w-full flex flex-col mb-1">
+          <div className="bg-primary h-full w-full flex flex-col mb-1">
             <div className="relative">
               <img
                 src={homeGirl}
                 alt="homeGirl"
-                className="h-[100vh] sm:w-full object-center object-cover transform scale-100"
+                className="h-screen w-full object-cover"
               />
-
-              {/* First Page Section */}
-              <div className="absolute flex flex-col justify-center top-[30%] w-full">
+              <div className="absolute flex flex-col justify-center top-1/3 w-full">
                 <div className="text-white flex flex-col justify-center items-center">
-                  <div className="flex justify-center m-auto font-extrabold font-sans text-3xl leading-none tracking-tighter sm:text-[2rem] md:text-[4rem] sm:leading-none sm:tracking-normal w-full">
+                  <div className="text-3xl font-extrabold tracking-tighter sm:text-2xl md:text-4xl">
                     ACHIEVE MORE
                   </div>
-
-                  <div className="flex justify-center mx-auto w-full items-center font-bold font-sans text-4xl leading-none tracking-tighter md:text-[4rem] sm:text-[2rem] sm:leading-none sm:tracking-normal text-white">
+                  <div className="text-4xl font-bold tracking-tighter md:text-4xl sm:text-2xl mt-2">
                     THAN JUST FITNESS
                   </div>
+                  {hoverDashboard && (
+                    <div
+                      className="absolute left-0 top-0 animate-shake cursor-pointer"
+                      onClick={handleClick}
+                    >
+                      <BiSolidRightArrow size={80} color="white" />
+                    </div>
+                  )}
                 </div>
-
                 <div className="text-white flex items-start justify-center w-full mt-8">
                   <Link
                     to={
-                      user.hasTakenProgramme
+                      role === 'user'
                         ? '/user/programmes'
-                        : `/user/programmes`
-                    } // Adjusted the structure to correct syntax
+                        : `/trainer/programmes/${user.user._id}`
+                    }
                     className="text-white-500 hover:text-gray-300 focus:outline-none"
                   >
-                    <button
-                      className={`w-[17rem] sm:[18rem] h-[4rem] bg-secondary flex justify-between items-center ml-4 mr-2 pr-4 rounded-l-[1rem] rounded-r-[1rem]`}
-                    >
-                      <span className={`ml-4 font-sans text-xl `}>
-                        {user.hasTakenProgramme
+                    <button className="w-[17rem] sm:w-[18rem] h-[4rem] bg-secondary flex justify-between items-center ml-4 mr-2 pr-4 rounded-xl">
+                      <span className="ml-4 text-xl">
+                        {role === 'trainer'
                           ? 'Make your own programme'
                           : 'Your Programme'}
                       </span>
