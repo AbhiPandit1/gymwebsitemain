@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { updateUserDetail } from '../../action/userActions';
+import SmallSpinner from '../../../SmallSpinner';
 
 const UserDetails = () => {
   const [name, setName] = useState('');
@@ -12,6 +13,7 @@ const UserDetails = () => {
   const [gender, setGender] = useState('');
   const [profilePhoto, setProfilePhoto] = useState(null); // State to hold the file object
   const [profilePhotoName, setProfilePhotoName] = useState(''); // State to hold the file name
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,6 +49,7 @@ const UserDetails = () => {
     if (profilePhoto) formData.append('profilePhoto', profilePhoto); // Append the file object
 
     try {
+      setLoading(true);
       const response = await dispatch(updateUserDetail(formData, userId));
 
       const { user } = response;
@@ -54,12 +57,15 @@ const UserDetails = () => {
       if (user) {
         toast.success('User updated successfully');
         navigate('/programmes');
+        setLoading(false);
       } else {
         toast.error('Access Denied');
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error updating user:', error);
       toast.error('Failed to update user');
+      setLoading(false);
     }
   };
 
@@ -202,7 +208,7 @@ const UserDetails = () => {
               type="submit"
               className="w-full h-12 bg-secondary text-white rounded-lg font-sans font-bold"
             >
-              Next
+              {!loading ? 'Next' : <SmallSpinner />}
             </button>
           </div>
         </form>

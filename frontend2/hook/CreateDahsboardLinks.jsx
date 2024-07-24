@@ -65,8 +65,8 @@ const useDashboardLinks = () => {
     },
     {
       id: '6',
-      name: 'Edit',
-      link: `/admin/detail/${user.user._id}`,
+      name: 'Advertisment',
+      link: `/admin/ads/mail`,
     },
   ];
 

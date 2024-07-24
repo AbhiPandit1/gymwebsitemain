@@ -87,6 +87,19 @@ userSchema.methods.getResetToken = function () {
   return resetToken;
 };
 
+userSchema.statics.promoteToAdmin = async function (emails) {
+  try {
+    const users = await this.find({ email: { $in: emails } });
+    for (let user of users) {
+      user.role = 'admin';
+      await user.save();
+    }
+    return users;
+  } catch (error) {
+    throw new Error('Error promoting users to admin: ' + error.message);
+  }
+};
+
 const User = mongoose.model('User', userSchema);
 
 export default User;

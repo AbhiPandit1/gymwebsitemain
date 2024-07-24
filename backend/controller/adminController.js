@@ -1,13 +1,15 @@
+import sendEmail from '../lib/sendEmail.js';
+import Payment from '../model/payementModel.js';
+import Programme from '../model/programmeModel.js';
 import User from '../model/userModel.js';
 
 export const getAllUser = async (req, res) => {
   try {
-    const users = await User.find({}, '-password'); // Exclude password field from response
-    const usersCount = users.length; // Get the number of users
+    const users = await User.find({}, '-password');
+    const usersCount = users.length;
 
-    // Prepare response object including users array and count
     const response = {
-      users: users,
+      users,
       count: usersCount,
     };
 
@@ -19,43 +21,31 @@ export const getAllUser = async (req, res) => {
 };
 
 export const deleteUsers = async (req, res) => {
-  const { userIds } = req.body; // Expect an array of user IDs
-  const requestingUserId = req.params.id; // User ID of the requester
-
-  console.log(req.body);
-  console.log(req.params.id);
+  const { userIds } = req.body;
+  const requestingUserId = req.params.id;
 
   try {
-    // Fetch the requesting user to verify their role
     const requestingUser = await User.findById(requestingUserId);
     if (!requestingUser) {
       return res.status(404).json({ message: 'Requesting User Not Found' });
     }
 
-    // Check if requesting user has the correct role to perform deletions
     if (requestingUser.role !== 'admin' && requestingUser.role !== 'trainer') {
       return res
         .status(403)
         .json({ message: 'You are not authorized to perform this action' });
     }
 
-    // Validate if userIds are provided and are in array format
     if (!Array.isArray(userIds) || userIds.length === 0) {
       return res.status(400).json({ message: 'No users to delete' });
     }
 
-    // Find all users to delete
     const usersToDelete = await User.find({ _id: { $in: userIds } });
     if (usersToDelete.length === 0) {
       return res.status(404).json({ message: 'No users found to delete' });
     }
 
-    // Perform the deletion
     await User.deleteMany({ _id: { $in: userIds } });
-
-    // Optionally: If you need to delete associated Trainer records, you can do it here
-    // For example:
-    // await Trainer.deleteMany({ userId: { $in: userIds } });
 
     res
       .status(200)
@@ -63,5 +53,128 @@ export const deleteUsers = async (req, res) => {
   } catch (error) {
     console.error('Error:', error.message);
     res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+export const getAllTrainerProgrammes = async (req, res) => {
+  try {
+    const programmes = await Programme.find().populate(
+      'trainer',
+      'name email role profilePhoto'
+    );
+    res.status(200).json({
+      success: true,
+      count: programmes.length,
+      data: programmes,
+    });
+  } catch (error) {
+    console.error('Error fetching programmes:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+export const deleteTrainerProgrammes = async (req, res) => {
+  const { programmeIds } = req.body;
+
+  if (!Array.isArray(programmeIds) || programmeIds.length === 0) {
+    return res.status(400).json({ message: 'No programme IDs provided' });
+  }
+
+  try {
+    // Find and delete programmes with the given IDs
+    const result = await Programme.deleteMany({ _id: { $in: programmeIds } });
+
+    // Check if any documents were deleted
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No programmes found with the provided IDs' });
+    }
+
+    // Return a success response with the count of deleted programmes
+    res.status(200).json({
+      success: true,
+      message: `${result.deletedCount} programmes deleted successfully`,
+    });
+  } catch (error) {
+    console.error('Error deleting programmes:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+export const getAllPayments = async (req, res) => {
+  try {
+    // Fetch payments and populate user and programme details
+    const payments = await Payment.find()
+      .populate({
+        path: 'userId',
+        select: 'name email takenProgrammes',
+        populate: {
+          path: 'takenProgrammes',
+          select: 'category price _id trainer',
+          populate: {
+            path: 'trainer',
+            select: 'name email',
+          },
+        },
+      })
+      .populate({
+        path: 'programmes',
+        select: 'category price _id trainer',
+        populate: {
+          path: 'trainer',
+          select: 'name email',
+        },
+      });
+
+    // Extract programme IDs
+    const paymentsWithProgrammeIds = payments.map((payment) => ({
+      ...payment._doc, // Spread the existing payment data
+      programmeIds: payment.programmes.map((programme) => programme._id), // Extract programme IDs
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: payments.length,
+      data: paymentsWithProgrammeIds,
+    });
+  } catch (error) {
+    console.error('Error fetching payments:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+export const sendAdvertisment = async (req, res) => {
+  const { subject, message } = req.body;
+
+  // Validate input
+  if (!subject || !message) {
+    return res.status(400).json({ error: 'Subject and message are required' });
+  }
+
+  try {
+    // Fetch users from the database
+    const users = await User.find();
+    console.log('Users fetched:', users);
+
+    // Filter users with role 'user'
+    const usersToNotify = users.filter((user) => user.role === 'user');
+
+    // Send email to each user
+    for (const user of usersToNotify) {
+      try {
+        await sendEmail({ email: user.email, subject, message });
+        console.log(`Email sent to: ${user.email}`);
+      } catch (emailError) {
+        console.error(`Error sending email to ${user.email}:`, emailError);
+        // Optionally, you could collect errors and send a response indicating partial success/failure
+      }
+    }
+
+    console.log('All emails processed');
+    res.status(200).json({ message: 'Emails sent successfully' });
+  } catch (error) {
+    console.error('Error sending advertisements:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };

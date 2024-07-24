@@ -52,10 +52,11 @@ const AdminCreatingNewProgramme = () => {
       const response = await dispatch(createProgramme(formData, id, token));
 
       // Check response status and provide feedback
-      if (response?.status === 200) {
+      if (response?.status === 201) {
         toast.success(
           response?.data.message || 'Programme created successfully'
         );
+
         // Reset form fields after successful submission
         resetForm();
       }

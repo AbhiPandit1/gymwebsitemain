@@ -30,7 +30,7 @@ const DashboardHeader = () => {
               color="white"
               aria-label="Notifications"
             />
-            {user && !user.hasTakenProgram && (
+            {user && !user.name && (
               <Link to={`/user/detail/${user._id}`}>
                 <div className="absolute h-[1rem] w-[1rem] rounded-full bg-red-400 top-0 right-1 flex justify-center items-center">
                   1

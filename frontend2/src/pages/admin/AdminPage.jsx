@@ -146,7 +146,7 @@ const AdminPage = () => {
         <div
           className={`${
             !hoverDashboard ? 'sm:w-1/3' : 'hidden'
-          }  bg-tertiary rounded-lg p-4`}
+          }  bg-tertiary rounded-lg p-4 transition-width duration-300 rounded-[32px] ease-in-out`}
           onClick={handleClick}
         >
           <DashboardComponent

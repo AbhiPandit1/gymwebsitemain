@@ -6,6 +6,7 @@
 
 # Ignore dist directory in the frontend2 directory
 /frontend2/dist/
+/frontend2/.env/
 
 /node_modules/
 

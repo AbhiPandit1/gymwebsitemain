@@ -9,6 +9,9 @@ import LoadingSpinner from '../LoadingSpinner';
 import NotFound from '../NotFound';
 import EditTrainerProgramme from './pages/trainer/EditTrainerProgramme';
 import Setting from './pages/Setting/Setting';
+import AdminProgrammePage from './pages/admin/AdminProgrammePage';
+import AdminPaymentDetail from './pages/admin/AdminPaymentDetail';
+import AdminSendMail from './pages/admin/AdminSendMail';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -59,6 +62,7 @@ function App() {
     '/trainer/programmes',
     '/user/programme',
     '/programme/',
+    '/admin/programmes',
     '/user/forgot',
     '/resetpassword',
     '/payment/success',
@@ -67,6 +71,9 @@ function App() {
     '/user/programmes',
     '/user/payment/detail',
     '/settings',
+    '/admin/invoices',
+    '/admin/user',
+    '/admin/ads/mail',
   ];
 
   const showHeaderFooter = !noHeaderFooterPaths.some((path) =>
@@ -105,8 +112,44 @@ function App() {
           />
 
           <Route
-            path="/admin/page/:id"
-            element={token ? <AdminPage /> : <Navigate to="/login" />}
+            path="/admin/user/"
+            element={
+              token && user.user.role === 'admin' ? (
+                <AdminPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/admin/ads/mail"
+            element={
+              token && user.user.role === 'admin' ? (
+                <AdminSendMail />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/admin/programmes"
+            element={
+              token && user.user.role === 'admin' ? (
+                <AdminProgrammePage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/admin/invoices"
+            element={
+              token && user.user.role === 'admin' ? (
+                <AdminPaymentDetail />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
           />
           <Route
             path="/settings"
