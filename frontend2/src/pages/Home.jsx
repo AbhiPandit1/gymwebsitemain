@@ -11,7 +11,8 @@ const Home = () => {
   }
 
   const { user } = useSelector((state) => state.user);
-  const role = user.user.role;
+
+  const role = user?.user?.role || 'user';
 
   return (
     <>
