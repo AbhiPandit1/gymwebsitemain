@@ -97,11 +97,7 @@ export const handleStripeWebhook = async (req, res) => {
 
   try {
     // Construct the Stripe event from the raw body and signature
-    event = stripeClient.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
+    event = stripeClient.webhooks.constructEvent(req.body, sig, endpointSecret);
     console.log('Webhook Event:', event);
   } catch (err) {
     // Handle errors related to webhook signature verification
