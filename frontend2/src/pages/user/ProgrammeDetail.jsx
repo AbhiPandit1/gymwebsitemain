@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -62,8 +62,9 @@ const ProgrammeDetail = () => {
       const response = await axios.post(
         `${backendapi}/api/payment/checkout/${programmeId}`,
         {
-          amount: singleProgramme.price * 100,
+          amount: singleProgramme.price * 100, // Ensure amount is in cents
           country: 'usa',
+          client_reference_id: user.id, // Assuming user ID as client_reference_id
         },
         {
           headers: {
@@ -77,6 +78,7 @@ const ProgrammeDetail = () => {
       const { error } = await stripe.redirectToCheckout({
         sessionId: session.id,
       });
+      console.log(session);
 
       if (error) {
         throw new Error(error.message);

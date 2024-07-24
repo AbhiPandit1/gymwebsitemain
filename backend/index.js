@@ -19,6 +19,7 @@ import forgotPasswordRouter from './route/forgotPasswordRoute.js';
 import afterBuyingRouter from './route/afterBuyingRoute.js';
 import adminRoute from './route/adminRoute.js';
 import settingRouter from './route/settingRoute.js';
+import { handleStripeWebhook } from './controller/paymentController.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -60,6 +61,12 @@ app.use('/api/after', afterBuyingRouter);
 app.use('/api/admin/route', adminRoute);
 app.use('/api/setting', settingRouter);
 
+app.use(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  handleStripeWebhook
+);
+
 // Serve static files (if any)
 // Uncomment and adjust the path if you have static files to serve
 // const __filename = fileURLToPath(import.meta.url);
@@ -92,8 +99,6 @@ const startServer = async () => {
     process.exit(1); // Exit the process with failure
   }
 };
-
-
 
 // Call startServer function to start the server
 startServer();
