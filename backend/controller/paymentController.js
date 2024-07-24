@@ -1,4 +1,4 @@
-import stripePackage from 'stripe';
+import stripePackage, { Stripe } from 'stripe';
 import dotenv from 'dotenv';
 import User from '../model/userModel.js';
 import Payment from '../model/payementModel.js';
@@ -8,6 +8,9 @@ import Programme from '../model/programmeModel.js';
 dotenv.config();
 
 const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
+const stripeClient = Stripe(
+  sk_test_51Pa814I7lJRhp8GEfxdTKl1CiSzCV5HvYitT8qVBnsuq5vioyI1e78OQKbXxoY70oyoAStSicfbk9CKqYftaYH7o00GHpismzE
+);
 const endpointSecret =
   'whsec_141d5dd7bbd1b74262e4bd332047195dd18083ae6ba9f9b4a9f32f8b020e0b23';
 
