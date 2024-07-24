@@ -68,7 +68,7 @@ app.use('/api/setting', settingRouter);
 // app.use(express.static(path.join(__dirname, 'public')));
 
 // Webhook route
-app.use(
+app.post(
   '/webhook',
   express.raw({ type: 'application/json' }),
   handleStripeWebhook
