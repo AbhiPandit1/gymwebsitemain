@@ -6,10 +6,11 @@ import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import cloudinary from 'cloudinary';
+import bodyParser from 'body-parser';
 
 // Import route modules
-import databaseConnection from './databaseConnection/database.js'; // Adjust path as necessary
-import userRoute from './route/userRoute.js'; // Adjust paths for all routes as necessary
+import databaseConnection from './databaseConnection/database.js';
+import userRoute from './route/userRoute.js';
 import userAuthRoute from './route/userAuthRoute.js';
 import userDetailRoute from './route/userDetailRoute.js';
 import programmeRoute from './route/programmeRoute.js';
@@ -20,30 +21,20 @@ import afterBuyingRouter from './route/afterBuyingRoute.js';
 import adminRoute from './route/adminRoute.js';
 import settingRouter from './route/settingRoute.js';
 import { handleStripeWebhook } from './controller/paymentController.js';
-import bodyParser from 'body-parser';
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Initialize Express application
 const app = express();
-app.use(bodyParser.json()); // For parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
-
-app.use(
-  '/webhook',
-  express.raw({ type: 'application/json' }),
-  handleStripeWebhook
-);
-
-// Define port to listen on, default to 3001 if not specified in .env
-const port = process.env.PORT || 3001;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Configure CORS
 const corsOptions = {
-  origin: '*', // Consider specifying the allowed origin(s) for better security
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow only specific methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specific headers
+  origin: '*', // For security, specify allowed origins if possible
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 app.use(cors(corsOptions));
 
@@ -76,6 +67,13 @@ app.use('/api/setting', settingRouter);
 // const __dirname = path.dirname(__filename);
 // app.use(express.static(path.join(__dirname, 'public')));
 
+// Webhook route
+app.use(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  handleStripeWebhook
+);
+
 // Error handling for unknown routes
 app.use((req, res, next) => {
   res.status(404).send('Not Found');
@@ -94,8 +92,10 @@ const startServer = async () => {
     await databaseConnection();
 
     // Start listening on the defined port
-    app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
+    app.listen(process.env.PORT || 3001, () => {
+      console.log(
+        `Server is running on http://localhost:${process.env.PORT || 3001}`
+      );
     });
   } catch (err) {
     console.error('Unable to start server:', err);
