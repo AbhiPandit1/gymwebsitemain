@@ -55,8 +55,8 @@ export const paymentCheckout = async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/payment/success`,
-      cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
+      success_url: `https://gymwebsitemain-1.onrender.com/payment/success`,
+      cancel_url: `https://gymwebsitemain-1.onrender.com/payment/cancel`,
       client_reference_id: userId, // Ensure this is a valid string
       metadata: {
         paymentIntentId: paymentIntent.id,
