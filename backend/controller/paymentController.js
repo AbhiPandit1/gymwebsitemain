@@ -8,11 +8,8 @@ import Programme from '../model/programmeModel.js';
 dotenv.config();
 
 const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
-const stripeClient = Stripe(
-  sk_test_51Pa814I7lJRhp8GEfxdTKl1CiSzCV5HvYitT8qVBnsuq5vioyI1e78OQKbXxoY70oyoAStSicfbk9CKqYftaYH7o00GHpismzE
-);
-const endpointSecret =
-  'whsec_141d5dd7bbd1b74262e4bd332047195dd18083ae6ba9f9b4a9f32f8b020e0b23';
+const stripeClient = Stripe(process.env.STRIPE_WEBHOOK_KEY);
+const endpointSecret = process.env.WEBHOOK_SECRET;
 
 export const paymentCheckout = async (req, res) => {
   const { amount, country } = req.body; // Destructure amount and country
