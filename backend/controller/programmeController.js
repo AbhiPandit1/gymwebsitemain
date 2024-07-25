@@ -300,16 +300,16 @@ export const getSingleProgramme = async (req, res) => {
 
 export const getByTrainer = async (req, res) => {
   const id = req.params.id; // Assuming the trainer ID comes from the URL parameters
+  
 
   try {
     // Find all programmes where the trainer field matches the given ID
     const programmes = await Programme.find({ trainer: id });
+    
 
     // Check if any programmes were found
     if (programmes.length === 0) {
-      return res
-        .status(404)
-        .json({ message: 'No programmes found for this trainer' });
+      return res.status(404).json({ message: 'Please add a programme' });
     }
 
     // Send the response with the programmes

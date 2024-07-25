@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaAngleDown } from 'react-icons/fa';
 import { IoMdNotifications } from 'react-icons/io';
 import { RxAvatar } from 'react-icons/rx';
 import Menu from './Menu';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const DashboardHeader = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -14,6 +15,12 @@ const DashboardHeader = () => {
   const handleMenu = () => {
     setShowMenu((prevShowMenu) => !prevShowMenu);
   };
+
+  useEffect(() => {
+    if (user && user.role === 'trainer') {
+      toast.info('Please update your profile in settings.');
+    }
+  }, [user]);
 
   return (
     <div className="col-span-5 min-w-[100vw] sm:min-w-full max-w-[100vw]">

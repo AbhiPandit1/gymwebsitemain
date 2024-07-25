@@ -29,7 +29,7 @@ const ShowProgramme = () => {
     };
   }, []);
   return (
-    <div className="grid grid-cols-7 text-white font-sans ">
+    <div className="grid grid-cols-7 text-white font-sans scrollbar-hide">
       <div className="grid col-span-2 ">
         <DashboardComponent dashBoardLink={dashBoardLink} />
       </div>

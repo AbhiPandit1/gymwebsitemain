@@ -42,7 +42,9 @@ const ProgrammeDetail = () => {
       }
     } catch (error) {
       setError(error.message || 'Error fetching programme details.');
-      toast.error(error.message || 'Error fetching programme details.');
+      toast.error(
+        error.response.data.message || 'Error fetching programme details.'
+      );
     } finally {
       setLoading(false);
     }
@@ -81,11 +83,12 @@ const ProgrammeDetail = () => {
       console.log(session);
 
       if (error) {
+        console.log(error);
         throw new Error(error.message);
       }
     } catch (error) {
-      console.error('Error making payment:', error);
-      toast.error(error.message || 'Error making payment.');
+      console.error('Error making payment:', error.response);
+      toast.error(error.response.data.error || 'Error making payment.');
     }
   };
 

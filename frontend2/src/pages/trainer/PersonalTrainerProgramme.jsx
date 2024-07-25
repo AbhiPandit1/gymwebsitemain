@@ -34,8 +34,7 @@ const PersonalTrainerProgramme = () => {
         );
         setTrainerDatas(response.data.programmes);
       } catch (error) {
-        console.log(error);
-        toast.error('Failed to fetch programmes.');
+        toast.error(error.response.data.message);
       }
     };
     getProgramme();

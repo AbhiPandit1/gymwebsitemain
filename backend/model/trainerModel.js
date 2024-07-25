@@ -9,7 +9,6 @@ const trainerSchema = new mongoose.Schema({
   socialMediaLink: {
     facebook: {
       type: String,
-      // You can optionally add a validator here if needed
       validate: {
         validator: function (v) {
           return /^(http|https):\/\/[^ "]+$/.test(v);
@@ -20,7 +19,6 @@ const trainerSchema = new mongoose.Schema({
     },
     instagram: {
       type: String,
-      // You can optionally add a validator here if needed
       validate: {
         validator: function (v) {
           return /^(http|https):\/\/[^ "]+$/.test(v);
@@ -31,7 +29,6 @@ const trainerSchema = new mongoose.Schema({
     },
     linkedin: {
       type: String,
-      // You can optionally add a validator here if needed
       validate: {
         validator: function (v) {
           return /^(http|https):\/\/[^ "]+$/.test(v);
@@ -48,7 +45,7 @@ const trainerSchema = new mongoose.Schema({
   programmes: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Programme',
     },
   ],
 });

@@ -97,22 +97,42 @@ export const changeSocialMedia = async (req, res) => {
   const { facebook, instagram, linkedin } = req.body; // Extract social media links from request body
 
   try {
-    // Find the trainer by user ID
-    const trainer = await Trainer.findOne({ user: userId });
-    if (!trainer) {
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if the user is a trainer
+    if (user.role !== 'trainer') {
       return res
         .status(404)
         .json({ error: 'Trainer not found for the given user ID' });
     }
 
-    // Update the social media links
-    trainer.socialMediaLink = {
-      facebook,
-      instagram,
-      linkedin,
-    };
+    // Find the trainer by user ID
+    let trainer = await Trainer.findOne({ user: userId });
 
-    // Save the updated trainer record
+    if (!trainer) {
+      // Create a new Trainer record if it doesn't exist
+      trainer = new Trainer({
+        user: userId,
+        socialMediaLink: {
+          facebook,
+          instagram,
+          linkedin,
+        },
+      });
+    } else {
+      // Update the social media links if the Trainer record exists
+      trainer.socialMediaLink = {
+        facebook,
+        instagram,
+        linkedin,
+      };
+    }
+
+    // Save the trainer record
     await trainer.save();
 
     // Respond with success

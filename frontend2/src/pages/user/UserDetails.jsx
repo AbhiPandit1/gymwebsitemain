@@ -64,7 +64,7 @@ const UserDetails = () => {
       }
     } catch (error) {
       console.error('Error updating user:', error);
-      toast.error('Failed to update user');
+      toast.error(error.response.data.error, 'Failed to update user');
       setLoading(false);
     }
   };
@@ -214,6 +214,15 @@ const UserDetails = () => {
         </form>
       ) : (
         <p className="text-white text-center">...Loading</p>
+      )}
+
+      {/* Message with Link for Trainers */}
+      {role === 'trainer' && (
+        <div className="flex justify-center items-center mt-4">
+          <Link to="/setting" className="text-white underline">
+            Update your social media links
+          </Link>
+        </div>
       )}
     </div>
   );
