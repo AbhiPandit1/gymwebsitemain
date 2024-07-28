@@ -25,13 +25,14 @@ const AdminCreatingNewProgramme = () => {
   const [loadings, setLoadings] = useState(false);
 
   const categoryOptions = [
-    'Nutrients',
+    'Nutrition',
     'Bodybuilding',
     'Sports',
     'Women',
     'WeightLoss',
     'PowerLifting',
     'General',
+    'Recovery',
   ];
 
   const handleMakeCategories = async (e) => {
@@ -105,7 +106,7 @@ const AdminCreatingNewProgramme = () => {
 
           {/* Title */}
           <h1 className="text-3xl font-extrabold text-center py-4">
-            Create Programme
+            Create Program
           </h1>
 
           {/* Form */}

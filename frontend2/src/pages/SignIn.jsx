@@ -9,7 +9,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import LoginLogo from '../component/LoginLogo';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../action/userActions';
-import LoadingSpinner from '../../LoadingSpinner';
 import SmallSpinner from '../../SmallSpinner';
 
 const SignIn = () => {

@@ -144,7 +144,7 @@ const Login = () => {
                 Dont have an account?
               </div>
               <div className="text-sans text-secondary">
-                <Link to="/signin">Log In</Link>
+                <Link to="/signin">Sign In</Link>
               </div>
             </div>
           </div>

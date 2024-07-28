@@ -1,6 +1,6 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { CiHome, CiMail, CiLocationOn } from 'react-icons/ci';
-import logoHeader from '../assets/logoHeader.png';
+import logoHeader from '../assets/header.png';
 import { RxDashboard } from 'react-icons/rx';
 import Logo from './Logo';
 import { Link } from 'react-router-dom';

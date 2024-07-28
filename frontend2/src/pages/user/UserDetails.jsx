@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { updateUserDetail } from '../../action/userActions';
 import SmallSpinner from '../../../SmallSpinner';
+import SocialMediaLinkChange from '../Setting/Component/SocialMediaLinkChange'; // Ensure this component is imported
 
 const UserDetails = () => {
   const [name, setName] = useState('');
@@ -31,12 +32,12 @@ const UserDetails = () => {
     setProfilePhotoName(file ? file.name : ''); // Update file name
   };
 
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
+  const handleRoleChange = (value) => {
+    setRole(value);
   };
 
-  const handleGenderChange = (e) => {
-    setGender(e.target.value);
+  const handleGenderChange = (value) => {
+    setGender(value);
   };
 
   const handleUserDetailSubmit = async (e) => {
@@ -52,19 +53,16 @@ const UserDetails = () => {
       setLoading(true);
       const response = await dispatch(updateUserDetail(formData, userId));
 
-      const { user } = response;
-
-      if (user) {
+      if (response.user) {
         toast.success('User updated successfully');
         navigate('/programmes');
-        setLoading(false);
       } else {
         toast.error('Access Denied');
-        setLoading(false);
       }
     } catch (error) {
       console.error('Error updating user:', error);
-      toast.error(error.response.data.error, 'Failed to update user');
+      toast.error(error?.response?.data?.error || 'Failed to update user');
+    } finally {
       setLoading(false);
     }
   };
@@ -79,12 +77,12 @@ const UserDetails = () => {
       {/* Form */}
       {user ? (
         <form
-          className="flex flex-col items-center justify-center mx-auto max-w-md w-full bg-gray-800 p-6 rounded-lg shadow-lg"
+          className="flex flex-col items-center justify-center mx-auto max-w-md w-full bg-gray-800 p-6 rounded-[32px] shadow-lg"
           onSubmit={handleUserDetailSubmit}
         >
           {/* Upload Profile Photo */}
           <div className="flex flex-col items-center mb-4">
-            <label className="bg-black w-full max-w-xs h-20 flex flex-col justify-center items-center cursor-pointer border rounded-2xl p-2 relative">
+            <label className="bg-tertiary border-b border-dotted border-spacing-5 w-full max-w-xs h-20 flex flex-col justify-center items-center cursor-pointer border rounded-2xl p-2 relative">
               <input
                 type="file"
                 className="absolute inset-0 opacity-0 cursor-pointer"
@@ -142,26 +140,19 @@ const UserDetails = () => {
           <div className="flex flex-col items-center w-full mb-4">
             <p className="text-white mb-2">I am a...</p>
             <div className="flex flex-wrap justify-center gap-4">
-              <div
-                className={`h-12 w-28 flex items-center justify-center rounded-lg cursor-pointer ${
-                  role === 'trainer'
-                    ? 'bg-secondary text-white'
-                    : 'bg-gray-700 text-gray-300'
-                }`}
-                onClick={() => setRole('trainer')}
-              >
-                Trainer
-              </div>
-              <div
-                className={`h-12 w-28 flex items-center justify-center rounded-lg cursor-pointer ${
-                  role === 'user'
-                    ? 'bg-secondary text-white'
-                    : 'bg-gray-700 text-gray-300'
-                }`}
-                onClick={() => setRole('user')}
-              >
-                User
-              </div>
+              {['trainer', 'user'].map((roleType) => (
+                <div
+                  key={roleType}
+                  className={`h-12 w-28 flex items-center justify-center rounded-lg cursor-pointer ${
+                    role === roleType
+                      ? 'bg-secondary text-white'
+                      : 'bg-gray-700 text-gray-300'
+                  }`}
+                  onClick={() => handleRoleChange(roleType)}
+                >
+                  {roleType.charAt(0).toUpperCase() + roleType.slice(1)}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -169,36 +160,19 @@ const UserDetails = () => {
           <div className="flex flex-col items-center w-full mb-4">
             <p className="text-white mb-2">Gender</p>
             <div className="flex flex-wrap justify-center gap-4">
-              <div
-                className={`h-12 w-24 flex items-center justify-center rounded-lg cursor-pointer ${
-                  gender === 'male'
-                    ? 'bg-secondary text-white'
-                    : 'bg-gray-700 text-gray-300'
-                }`}
-                onClick={() => setGender('male')}
-              >
-                Male
-              </div>
-              <div
-                className={`h-12 w-24 flex items-center justify-center rounded-lg cursor-pointer ${
-                  gender === 'female'
-                    ? 'bg-secondary text-white'
-                    : 'bg-gray-700 text-gray-300'
-                }`}
-                onClick={() => setGender('female')}
-              >
-                Female
-              </div>
-              <div
-                className={`h-12 w-24 flex items-center justify-center rounded-lg cursor-pointer ${
-                  gender === 'others'
-                    ? 'bg-secondary text-white'
-                    : 'bg-gray-700 text-gray-300'
-                }`}
-                onClick={() => setGender('others')}
-              >
-                Others
-              </div>
+              {['male', 'female', 'others'].map((genderType) => (
+                <div
+                  key={genderType}
+                  className={`h-12 w-24 flex items-center justify-center rounded-lg cursor-pointer ${
+                    gender === genderType
+                      ? 'bg-secondary text-white'
+                      : 'bg-gray-700 text-gray-300'
+                  }`}
+                  onClick={() => handleGenderChange(genderType)}
+                >
+                  {genderType.charAt(0).toUpperCase() + genderType.slice(1)}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -211,18 +185,16 @@ const UserDetails = () => {
               {!loading ? 'Next' : <SmallSpinner />}
             </button>
           </div>
+          {user.role === 'trainer' && (
+            <div className="flex justify-center items-center mt-4">
+              <Link to="/settings" className="text-white underline">
+                Update your social media links
+              </Link>
+            </div>
+          )}
         </form>
       ) : (
         <p className="text-white text-center">...Loading</p>
-      )}
-
-      {/* Message with Link for Trainers */}
-      {role === 'trainer' && (
-        <div className="flex justify-center items-center mt-4">
-          <Link to="/setting" className="text-white underline">
-            Update your social media links
-          </Link>
-        </div>
       )}
     </div>
   );

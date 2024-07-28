@@ -17,11 +17,10 @@ const EquipCard = () => {
       {/*Grid 2 */}
       <div className="flex flex-col gap-8 order-1 sm:order-2  p-8">
         <div className="flex justify-center items-center text-white font-bold leading-none font-sans text-[2rem] sm:text-[2.8rem] w-[100%] sm:w-[90%]">
-          Get Fitness & Diet Insights
+          Get free fitness and diet tips
         </div>
         <div className="text-center text-paraColor  flex justify-start">
-          Do you want to get more insight about AI Fitness? Then let’s
-          subscribe.
+          Sign up for our newsletter
         </div>
         <div className="flex font-sans relative">
           <IoMdMail size={30} color="black" className="absolute top-4 left-5" />

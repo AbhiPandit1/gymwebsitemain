@@ -4,13 +4,14 @@ const programmeSchema = new mongoose.Schema({
   category: {
     type: String,
     enum: [
-      'Nutrients',
+      'Nutrition',
       'Bodybuilding',
       'Sports',
       'Women',
       'WeightLoss',
       'PowerLifting',
       'General',
+      'Recovery',
     ],
   },
   categoryPhoto: {

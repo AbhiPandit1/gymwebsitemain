@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 
 const DashboardHeader = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [notification, setNotification] = useState(false);
 
   const { user, loading } = useSelector((state) => state.user.user);
 
@@ -18,9 +19,18 @@ const DashboardHeader = () => {
 
   useEffect(() => {
     if (user && user.role === 'trainer') {
-      toast.info('Please update your profile in settings.');
+      setNotification(true);
     }
   }, [user]);
+
+  const handleProfileHover = () => {
+    if ((user && !user.name) || user.role === 'trainer') {
+      toast.info('Complete your profile to enhance your experience!', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 5000, // Toast duration in milliseconds
+      });
+    }
+  };
 
   return (
     <div className="col-span-5 min-w-[100vw] sm:min-w-full max-w-[100vw]">
@@ -37,13 +47,14 @@ const DashboardHeader = () => {
               color="white"
               aria-label="Notifications"
             />
-            {user && !user.name && (
-              <Link to={`/user/detail/${user._id}`}>
-                <div className="absolute h-[1rem] w-[1rem] rounded-full bg-red-400 top-0 right-1 flex justify-center items-center">
-                  1
-                </div>
-              </Link>
-            )}
+            {(user && !user.name) ||
+              (notification && (
+                <Link to={`/user/detail/${user._id}`}>
+                  <div className="absolute h-[1rem] w-[1rem] rounded-full bg-red-400 top-0 right-1 flex justify-center items-center">
+                    1
+                  </div>
+                </Link>
+              ))}
           </div>
           <div className="flex items-center gap-2">
             {loading ? (
@@ -56,7 +67,10 @@ const DashboardHeader = () => {
                   <p className="text-xl sm:text-3xl font-sans text-white font-bold">
                     {user.name}
                   </p>
-                  <div className="h-[2rem] w-[2rem] sm:h-[3rem] sm:w-[3rem] bg-tertiary rounded-xl flex justify-center items-center">
+                  <div
+                    className="h-[2rem] w-[2rem] sm:h-[3rem] sm:w-[3rem] bg-tertiary rounded-xl flex justify-center items-center"
+                    onMouseEnter={handleProfileHover} // Add hover event handler
+                  >
                     {user.profilePhoto?.url ? (
                       <img
                         src={user.profilePhoto.url}

@@ -39,7 +39,7 @@ const Menu = () => {
     },
     {
       id: '4',
-      name: 'Trainers',
+      name: 'Creators',
       link: '/trainers',
       image: <GiClassicalKnowledge color="white" size={30} />,
     },
@@ -88,17 +88,20 @@ const Menu = () => {
       </div>
       <div className="gap-10 flex flex-col justify-center mt-5">
         {menuDatas.map((data) => (
-          <div
-            className="flex justify-between items-center gap-8 pb-4"
-            key={data.id}
-          >
+          <>
             <Link to={data.link}>
-              <div className="font-sans font-semibold text-white text-[1.2rem] hover:text-secondary">
-                {data.name}
+              <div
+                className="flex justify-between items-center gap-8 pb-4 transition-all duration-1000 ease-in-out  hover:bg-secondary hover:rounded-lg hover:p-4 hover:transition-all "
+                key={data.id}
+              >
+                <div className="font-sans font-semibold text-white text-[1.2rem] hover:text-secondary">
+                  {data.name}
+                </div>
+
+                <div>{data.image}</div>
               </div>
             </Link>
-            <div>{data.image}</div>
-          </div>
+          </>
         ))}
       </div>
     </div>
