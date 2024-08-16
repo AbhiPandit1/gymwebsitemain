@@ -75,8 +75,8 @@ const UserDashboard = () => {
                     <button className="w-[17rem] sm:w-[18rem] h-[4rem] bg-secondary flex justify-between items-center ml-4 mr-2 pr-4 rounded-xl">
                       <span className="ml-4 text-xl">
                         {role === 'trainer'
-                          ? 'Make your own programme'
-                          : 'Your Programme'}
+                          ? 'Make your own programs'
+                          : 'Your Programs'}
                       </span>
                       <IoIosArrowRoundForward
                         color="white"

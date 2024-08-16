@@ -102,7 +102,7 @@ const TrainerCard = () => {
           <div className="mt-[1rem] font-extrabold text-2xl font-sans text-white absolute bottom-5 left-5">
             {data.user.name}
             <div className="font-extrabold text-1xl font-sans text-paraColor mt-2">
-              Trainer
+              Creator
             </div>
           </div>
         </div>
@@ -120,7 +120,7 @@ const TrainerCard = () => {
             disabled
             className="px-4 py-2 bg-primary text-white rounded-lg cursor-not-allowed"
           >
-            No More Trainers
+            No More Creators
           </button>
         )}
       </div>

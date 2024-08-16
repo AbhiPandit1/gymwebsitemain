@@ -12,6 +12,14 @@ import Setting from './pages/Setting/Setting';
 import AdminProgrammePage from './pages/admin/AdminProgrammePage';
 import AdminPaymentDetail from './pages/admin/AdminPaymentDetail';
 import AdminSendMail from './pages/admin/AdminSendMail';
+import ProgrammeKind from './pages/trainer/trainerProgrammeCreation/ProgrammeKind';
+import DietPlan from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DietPlan';
+import SevenDayPlan from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DayPlan';
+
+import DynamicDayPlanComponent from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DynamicDayPlanComponent';
+
+import DynamicDietPlanComponent from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DynamicDietPlanComponent';
+import NewMenu from './component/NewMenu';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -23,7 +31,7 @@ const UserDashboard = lazy(() => import('./pages/user/UserDashboard'));
 const Login = lazy(() => import('./pages/Login'));
 const Signin = lazy(() => import('./pages/SignIn'));
 const AdminCreatingNewProgramme = lazy(() =>
-  import('./pages/trainer/AdminCreatingNewProgramme')
+  import('./pages/trainer/trainerProgrammeCreation/AdminCreatingNewProgramme')
 );
 const StripePayment = lazy(() => import('./pages/payment/StripePayment'));
 
@@ -90,7 +98,7 @@ function App() {
 
   return (
     <div className="bg-primary">
-      {showHeaderFooter && <Header />}
+      {showHeaderFooter && <Header /> }
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -160,6 +168,34 @@ function App() {
             path="/trainer/create/programme/:id"
             element={
               token ? <AdminCreatingNewProgramme /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/trainer/create/programme/type/:id"
+            element={token ? <ProgrammeKind /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/trainer/create/programme/diet/:id"
+            element={token ? <DietPlan /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/trainer/programme/diet/plan/:id"
+            element={
+              token ? <DynamicDietPlanComponent /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/trainer/create/programme/seven/day/:id"
+            element={token ? <SevenDayPlan /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/trainer/create/programme/both/:id"
+            element={token ? <SevenDayPlan /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/trainer/programme/day/plan/:id"
+            element={
+              token ? <DynamicDayPlanComponent /> : <Navigate to="/login" />
             }
           />
 

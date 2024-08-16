@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProgramme } from '../../action/programmeActions';
-import DashboardComponent from '../../component/DashboardComponent';
-import DashboardHeader from '../../component/DashboardHeader';
-import { useParams } from 'react-router-dom';
-import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
+import { createProgramme } from '../../../action/programmeActions';
+import DashboardComponent from '../../../component/DashboardComponent';
+import DashboardHeader from '../../../component/DashboardHeader';
+import { Link, useParams } from 'react-router-dom';
+import useDashboardLinks from '../../../../hook/CreateDahsboardLinks';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
@@ -217,15 +217,17 @@ const AdminCreatingNewProgramme = () => {
 
               {/* Submit Button */}
               <div className="flex justify-center mt-4">
-                <button
-                  type="submit"
-                  className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded ${
-                    loadings ? 'cursor-not-allowed opacity-50' : ''
-                  }`}
-                  disabled={loadings}
-                >
-                  {loadings ? 'Submitting...' : 'Submit'}
-                </button>
+                <Link to={`/trainer/create/programme/type/${user.user._id}`}>
+                  <button
+                    type="submit"
+                    className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded ${
+                      loadings ? 'cursor-not-allowed opacity-50' : ''
+                    }`}
+                    disabled={loadings}
+                  >
+                    {loadings ? 'Next...' : 'Next'}
+                  </button>
+                </Link>
               </div>
             </form>
           </div>

@@ -17,7 +17,7 @@ const Home = () => {
   return (
     <>
       {/*Starting Section */}
-      <div className="bg-primary h-[100vh] w-[100vw]  p-5 flex flex-col mb-1  ">
+      <div className="bg-primary h-[100vh] w-[100vw]  p-5 flex flex-col mb-1 max-w-[100vw] overflow-hidden  ">
         <div className="relative">
           <img
             src={homeGirl}
@@ -26,18 +26,18 @@ const Home = () => {
           />
 
           {/*First Page Section*/}
-          <div className="absolute flex flex-col justify-center  z-200 top-[30%] w-full bg-red  ">
+          <div className="absolute flex flex-col justify-center  z-200 top-[30%] w-full bg-red overflow-hidden   ">
             <div className="text-white flex flex-col justify-center items-center">
-              <div className=" flex justify-center    font-extrabold font-sans text-3xl  leading-none tracking-tighter sm:text-[6rem] sm:leading-none sm:tracking-normal w-full ">
+              <div className=" flex justify-center    font-extrabold font-sans text-3xl  leading-none tracking-tighter sm:text-[6rem] sm:leading-none sm:tracking-normal w-full overflow-hidden  ">
                 ACHIEVE MORE
               </div>
 
-              <div className="flex justify-center   items-center   font-bold font-sans text-4xl leading-none tracking-tighter sm:text-[6rem] sm:leading-none sm:tracking-normal text-white   ">
+              <div className="flex justify-center   items-center   font-bold font-sans text-4xl leading-none tracking-tighter sm:text-[6rem] sm:leading-none sm:tracking-normal text-white overflow-hidden   ">
                 THAN JUST FITNESS
               </div>
             </div>
 
-            <div className="text-paraColor flex flex-col   w-full  ">
+            <div className="text-paraColor flex flex-col   w-full overflow-hidden   ">
               <p className="text-center font-sans text-[1rem] w-[95%] sm:text-[1.6rem] text-wrap">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet
                 Lorem ipsum dolor sit.
@@ -46,7 +46,7 @@ const Home = () => {
                 labore autem tempora libero consequuntur Lorem ipsum .?
               </p>
             </div>
-            <div className="text-white  flex items-start justify-center     w-full mt-8">
+            <div className="text-white  flex items-start justify-center overflow-hidden    w-full mt-8">
               <Link
                 to={
                   role === 'user'
@@ -54,8 +54,8 @@ const Home = () => {
                     : `trainer/programmes/${user.user._id}`
                 }
               >
-                <button className="w-[17rem] sm:w-[18rem] h-[4rem] bg-secondary flex items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem]">
-                  <span className="ml-4 font-sans">your own programme</span>
+                <button className="w-[17rem] sm:w-[18rem] h-[4rem] bg-secondary flex items-center rounded-l-[1rem] rounded-r-[1rem]">
+                  <span className="ml-4 font-sans">your own programs</span>
                   <IoIosArrowRoundForward color="white" className="w-14 h-10" />
                 </button>
               </Link>
@@ -74,8 +74,8 @@ const Home = () => {
 
       {/*Moving Cards Section */}
       <div className="flex flex-col p-5 ">
-        <div className="h-full w-full mt-4">
-          <Card title="Top Programs" backgroundColor="boxColor" />
+        <div className="h-full w-full mt-4 ml-4">
+          <Card title="Top Programs" backgroundColor="primary" />
         </div>
         <div className="bg-boxColor h-full rounded-[32px]">
           {/* Removed m-[3%] class from here */}

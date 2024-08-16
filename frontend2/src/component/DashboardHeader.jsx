@@ -18,13 +18,13 @@ const DashboardHeader = () => {
   };
 
   useEffect(() => {
-    if (user && user.role === 'trainer') {
+    if (user && user.role === 'creator') {
       setNotification(true);
     }
   }, [user]);
 
   const handleProfileHover = () => {
-    if ((user && !user.name) || user.role === 'trainer') {
+    if ((user && !user.name) || user.role === 'creator') {
       toast.info('Complete your profile to enhance your experience!', {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 5000, // Toast duration in milliseconds

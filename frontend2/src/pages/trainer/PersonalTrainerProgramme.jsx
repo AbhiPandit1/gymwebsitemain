@@ -65,7 +65,7 @@ const PersonalTrainerProgramme = () => {
   };
 
   return (
-    <div className="grid grid-cols-7 min-h-screen max-h-screen max-w-full overflow-y-auto sm:overflow-hidden text-white scrollbar-hide">
+    <div className="grid grid-cols-7 min-h-screen  max-h-screen max-w-full overflow-y-auto sm:overflow-hidden text-white scrollbar-hide">
       <div
         className={`transition-transform duration-300 ${
           hoverDashboard ? 'hidden' : 'col-span-7'
@@ -140,6 +140,7 @@ const PersonalTrainerProgramme = () => {
                       </div>
                     ))}
                   </div>
+                  {/*new */}
                   <Link to={`/trainer/create/programme/${user.user._id}`}>
                     <div className="bg-tertiary m-auto w-[80%] sm:w-[40%] flex justify-center gap-3 items-center rounded-lg mb-[5rem]">
                       <div className="flex justify-center items-center">

@@ -106,7 +106,7 @@ const ProductPage = () => {
                 <span className="font-bold text-3xl">Country:</span> {country}
               </p>
               <p className="font-bold flex justify-center items-center gap-5">
-                <span className="font-bold text-3xl">Trainer Name:</span>{' '}
+                <span className="font-bold text-3xl">Creator Name:</span>{' '}
                 {trainerName}
               </p>
               <p className="font-bold flex justify-center items-center gap-5">
@@ -115,7 +115,7 @@ const ProductPage = () => {
               </p>
             </div>
             <div className="text-white text-xl mb-8">
-              <p className="font-bold mb-2">Connect with the Trainer:</p>
+              <p className="font-bold mb-2">Connect with the Creator:</p>
               <div className="flex gap-4">
                 <a
                   href={instagramLink}

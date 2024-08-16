@@ -33,7 +33,7 @@ const Menu = () => {
     },
     {
       id: '3',
-      name: 'Programmes',
+      name: 'Explore',
       link: '/programmes',
       image: <MdSportsGymnastics color="white" size={30} />,
     },

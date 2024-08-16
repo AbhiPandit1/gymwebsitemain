@@ -5,6 +5,7 @@ import { RxDashboard } from 'react-icons/rx';
 import Logo from './Logo';
 import { Link } from 'react-router-dom';
 import Menu from './Menu';
+import NewMenu from './NewMenu';
 
 const Header = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -15,6 +16,9 @@ const Header = () => {
 
   return (
     <div className="flex justify-between items-center bg-secondary w-[90%] h-20 m-[4%] absolute rounded-l-[1.2rem] rounded-r-[1.2rem] z-20">
+      <div className="hidden sm:flex">
+        <NewMenu />
+      </div>
       <div className="hidden sm:flex justify-center items-center p-2 gap-1">
         <div className="block w-[48px] h-[48px] bg-black bg-opacity-25 p-3 rounded-[1rem]">
           <CiHome
@@ -24,12 +28,6 @@ const Header = () => {
         </div>
         <div className="block w-[48px] h-[48px] bg-black bg-opacity-25 p-3 rounded-[1rem]">
           <CiMail
-            className="w-[24px] h-[24px] m-auto rounded-[1rem]"
-            color="white"
-          />
-        </div>
-        <div className="block w-[48px] h-[48px] bg-black bg-opacity-25 p-3 rounded-[1rem]">
-          <CiLocationOn
             className="w-[24px] h-[24px] m-auto rounded-[1rem]"
             color="white"
           />
@@ -58,6 +56,7 @@ const Header = () => {
           {isMenuVisible && <Menu />}
         </div>
       </div>
+      <div> </div>
     </div>
   );
 };
