@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import DashboardComponent from '../../component/DashboardComponent';
 import DashboardHeader from '../../component/DashboardHeader';
 import { useSelector } from 'react-redux';

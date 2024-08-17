@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
@@ -19,7 +19,7 @@ import SevenDayPlan from './pages/trainer/trainerProgrammeCreation/trainerProgra
 import DynamicDayPlanComponent from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DynamicDayPlanComponent';
 
 import DynamicDietPlanComponent from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DynamicDietPlanComponent';
-import NewMenu from './component/NewMenu';
+import useToastHook from '../hook/useToastHook';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -58,6 +58,7 @@ function App() {
   const location = useLocation();
   const { user } = useSelector((state) => state.user);
   const token = user?.token;
+  const { showToast } = useToastHook();
 
   const noHeaderFooterPaths = [
     '/signin',
@@ -98,7 +99,7 @@ function App() {
 
   return (
     <div className="bg-primary">
-      {showHeaderFooter && <Header /> }
+      {showHeaderFooter && <Header />}
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -179,13 +180,13 @@ function App() {
             element={token ? <DietPlan /> : <Navigate to="/login" />}
           />
           <Route
-            path="/trainer/programme/diet/plan/:id"
+            path="s/:id"
             element={
               token ? <DynamicDietPlanComponent /> : <Navigate to="/login" />
             }
           />
           <Route
-            path="/trainer/create/programme/seven/day/:id"
+            path="/trainer/create/programme/day/plan/:id"
             element={token ? <SevenDayPlan /> : <Navigate to="/login" />}
           />
           <Route
@@ -252,7 +253,25 @@ function App() {
         </Routes>
       </Suspense>
       {showHeaderFooter && <Footer />}
-      <ToastContainer />
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        className="toast-container fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
+      />
+      <button onClick={() => showToast('Success!', 'success')}>
+        Show Success Toast
+      </button>
+      <button onClick={() => showToast('Error!', 'error')}>
+        Show Error Toast
+      </button>
+
       {loading && <LoadingSpinner />}
     </div>
   );

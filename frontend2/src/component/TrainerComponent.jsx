@@ -7,9 +7,9 @@ const TrainerComponent = () => {
     <>
       <div>
         <HeroSection
-          category="Search Trainers"
+          category="Search Creators"
           para="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae distinctio laborum ex veritatis saepe iste? In iure animi commodi rem, vel asperiores."
-          searchCategory="See all Trainers"
+          searchCategory="See all Creators"
         />
       </div>
       {/*Trainers */}

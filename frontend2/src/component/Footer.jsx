@@ -22,20 +22,20 @@ const Footer = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-10   h-full p-2 sm:p-10 w-full mt-10 bg-footerColor">
-      {/* First diision */}
-      <div className="flex flex-col sm:flex sm:flex-row justify-between  sm:m-0">
+    <div className="flex flex-col gap-10 h-full p-2 sm:p-10 w-full mt-10 bg-footerColor">
+      {/* First Division */}
+      <div className="flex flex-col sm:flex sm:flex-row justify-between sm:m-0">
         <div className="mt-20 mb-10 sm:m-20">
           <Logo backgroundImage={footerImage} />
         </div>
-        <div className="text-white font-sans text-[24px] w-[95%] sm:w-[40%] sm:m-20 ">
+        <div className="text-white font-sans text-[24px] w-[95%] sm:w-[40%] sm:m-20">
           Lorem ipsum dolor sit, amet consectetur adipisicing elit.
         </div>
       </div>
-      {/*Second Division */}
-      <div className="flex flex-col   sm:flex-row sm:justify-between   gap-10 ">
+      {/* Second Division */}
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-10">
         <div className="ml-5 sm:ml-20">
-          <div className="flex ">
+          <div className="flex">
             <div className="h-[60px] w-[60px] flex justify-center items-center bg-footerColor border-2 border-x-paraColor rounded-[15px]">
               <FaInstagram size={25} color="white" />
             </div>
@@ -46,61 +46,53 @@ const Footer = () => {
               <FaYoutube size={25} color="white" />
             </div>
           </div>
-          <div className="flex flex-col gap-1">
+          {/* Commented Out Newsletter Section */}
+          {/* <div className="flex flex-col gap-1">
             <div className="text-white font-sans font-semibold mt-10">
               Subscribe to news letter
             </div>
             <div className="flex font-sans relative">
-              <IoMdMail
-                size={30}
-                color="white"
-                className="absolute top-4 left-5"
-              />
+              <IoMdMail size={30} color="white" className="absolute top-4 left-5" />
               <input
                 type="email"
                 placeholder="          Enter Your email....."
-                className="w-[80%]  sm:w-[35rem] h-[4rem] font-sans rounded-l-[1rem] rounded-r-[1rem] p-4 bg-tertiary border-secondary border-[1px]"
+                className="w-[80%] sm:w-[35rem] h-[4rem] font-sans rounded-l-[1rem] rounded-r-[1rem] p-4 bg-tertiary border-secondary border-[1px]"
               />
-              <PiArrowRightLight
-                size={30}
-                color="white"
-                className="absolute right-[30%] sm:right-[5%] top-5"
-              />
+              <PiArrowRightLight size={30} color="white" className="absolute right-[30%] sm:right-[5%] top-5" />
             </div>
-          </div>
+          </div> */}
           <div className="text-copyrightColor font-sans font-semibold mt-10">
             Copyright ©2024, All Rights Reserved
           </div>
         </div>
 
-        {/*Data Content */}
-        <div className="flex justify-between ml-5  sm:w-[40vw]">
+        {/* Data Content */}
+        <div className="flex justify-between ml-5 sm:w-[40vw]">
           <div>
-            <SiteMap data={data} header=" Main Sitemap" />
+            <SiteMap data={data} header="Main Sitemap" />
           </div>
           <div>
-            {' '}
-            <SiteMap data={legaldata} header=" Legal" />
+            <SiteMap data={legaldata} header="Legal" />
           </div>
         </div>
       </div>
 
-      {/*Button Third division */}
-      <div className="w-full flex justify-between items-center relative sm:static mt-10 sm:mt-0">
-        <button className="w-[40%] sm:w-[12%] h-[4rem] flex justify-between p-3 bg-secondary text-white  items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem]">
+      {/* Commented Out Button Third Division */}
+      {/* <div className="w-full flex justify-between items-center relative sm:static mt-10 sm:mt-0">
+        <button className="w-[40%] sm:w-[12%] h-[4rem] flex justify-between p-3 bg-secondary text-white items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem]">
           <span className="ml-4 text-white font-sans">Play Store</span>
           <FiDownload color="white" size={30} />
-        </button>{' '}
-        <button className="w-[25%] absolute  bottom-[120%] left-[35%] sm:static  sm:w-[8%] h-[4rem] flex justify-center  bg-secondary text-white items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem]">
+        </button>
+        <button className="w-[25%] absolute bottom-[120%] left-[35%] sm:static sm:w-[8%] h-[4rem] flex justify-center bg-secondary text-white items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem]">
           <a href="#">
             <IoIosArrowRoundUp color="white" className="w-14 h-10" />
           </a>
         </button>
-        <button className="w-[40%] sm:w-[15%] h-[4rem] flex justify-between p-3 bg-secondary text-white  items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem]">
+        <button className="w-[40%] sm:w-[15%] h-[4rem] flex justify-between p-3 bg-secondary text-white items-center ml-4 mr-2 rounded-l-[1rem] rounded-r-[1rem]">
           <span className="ml-4 text-white font-sans">Apple Store</span>
           <FiDownload color="white" size={30} />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

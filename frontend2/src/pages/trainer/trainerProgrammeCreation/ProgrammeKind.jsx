@@ -1,26 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import useDashboardLinks from '../../../../hook/CreateDahsboardLinks';
 import DashboardComponent from '../../../component/DashboardComponent';
 import DashboardHeader from '../../../component/DashboardHeader';
-import { Link } from 'react-router-dom';
 import { BiSolidRightArrow } from 'react-icons/bi';
-import { useSelector } from 'react-redux';
 
 const ProgrammeKind = () => {
   const dashBoardLink = useDashboardLinks();
   const [hoverDashboard, setHoverDashboard] = useState(false);
-  const [checkBox, setCheckBox] = useState(null);
-  const [boxName, setBoxName] = useState(null);
-  const { user } = useSelector((state) => state.user);
-  const token = user.token;
+  const [checkBox, setCheckBox] = useState('');
 
   const handleCheckBox = (id) => {
     setCheckBox(id);
   };
-
-  useEffect(() => {
-    setBoxName(checkBox);
-  }, [checkBox]);
 
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
@@ -28,11 +20,11 @@ const ProgrammeKind = () => {
 
   const getLinkPath = () => {
     if (checkBox === 'diet') {
-      return `/trainer/create/programme/diet/${user.user._id}`;
+      return `/trainer/create/programme/diet`;
     } else if (checkBox === 'training') {
-      return `/trainer/create/programme/seven/day/${user.user._id}`;
+      return `/trainer/create/programme/customizeDays`; // Navigate to customizable days page
     } else if (checkBox === 'both') {
-      return `/trainer/create/programme/both/${user.user._id}`;
+      return `/trainer/create/programme/both`;
     }
     return '#'; // Default or fallback link
   };

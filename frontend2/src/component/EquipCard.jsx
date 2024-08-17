@@ -4,8 +4,8 @@ import { PiArrowRightLight } from 'react-icons/pi';
 
 const EquipCard = () => {
   return (
-    <div className="grid sm:grid-cols-2 overflow-y-hidden  bg-secondary h-[100vh] sm:min-h-[40vh] sm:max-h-[50vh] pb-10 rounded-xl w-[95%] min-w-screen m-auto mt-5 overflow-hidden">
-      {/*Grid 1 */}
+    <div className="grid sm:grid-cols-2 overflow-y-hidden bg-secondary h-[100vh] sm:min-h-[40vh] sm:max-h-[50vh] pb-10 rounded-xl w-[95%] min-w-screen m-auto mt-5 overflow-hidden">
+      {/* Grid 1 */}
       <div className="flex justify-center order-2 sm:order-1 items-center">
         <img
           src={Equipment}
@@ -14,15 +14,20 @@ const EquipCard = () => {
         />
       </div>
 
-      {/*Grid 2 */}
-      <div className="flex flex-col gap-8 order-1 sm:order-2  p-8">
+      {/* Grid 2 */}
+      <div className="flex flex-col gap-8 order-1 sm:order-2 p-8">
         <div className="flex justify-center items-center text-white font-bold leading-none font-sans text-[2rem] sm:text-[2.8rem] w-[100%] sm:w-[90%]">
-          Get free fitness and diet tips
+          Elevate Your Fitness Journey with Expert Tips
         </div>
-        <div className="text-center text-paraColor  flex justify-start">
-          Sign up for our newsletter
+        <div className="text-center text-paraColor flex justify-start">
+          Our team of experts provides you with tailored advice to help you
+          achieve your fitness goals. From workout routines to nutritional
+          guidance, we offer resources that cater to your unique needs. Stay
+          motivated and informed with our comprehensive tips and
+          recommendations.
         </div>
-        <div className="flex font-sans relative">
+        {/* Commented Out Newsletter Section */}
+        {/* <div className="flex font-sans relative">
           <IoMdMail size={30} color="black" className="absolute top-4 left-5" />
           <input
             type="email"
@@ -34,7 +39,7 @@ const EquipCard = () => {
             color="black"
             className="absolute right-[5%] sm:right-[24%] top-5"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

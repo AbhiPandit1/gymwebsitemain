@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import loginImage from '../assets/loginImage.png';
 import { CiMail } from 'react-icons/ci';
 import { FaLock } from 'react-icons/fa';
@@ -24,6 +22,12 @@ const SignIn = () => {
     password: '',
     confirmPassword: '',
   });
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    terms: '',
+  });
 
   const handlePasswordField = () => {
     setSeePassword(!seePassword);
@@ -37,11 +41,50 @@ const SignIn = () => {
     setAgreedTerms(e.target.checked);
   };
 
+  const clearErrors = () => {
+    setErrors({
+      email: '',
+      password: '',
+      confirmPassword: '',
+      terms: '',
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let valid = true;
+    const newErrors = {
+      email: '',
+      password: '',
+      confirmPassword: '',
+      terms: '',
+    };
+
+    if (!signField.email) {
+      newErrors.email = 'Email is required.';
+      valid = false;
+    }
+
+    if (!signField.password) {
+      newErrors.password = 'Password is required.';
+      valid = false;
+    }
+
+    if (signField.password !== signField.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match.';
+      valid = false;
+    }
 
     if (!agreedTerms) {
-      toast.error('Please read and agree to the terms and conditions.');
+      newErrors.terms = 'Please agree to the terms and conditions.';
+      valid = false;
+    }
+
+    setErrors(newErrors);
+
+    if (!valid) {
+      // Clear errors after 5 seconds
+      setTimeout(clearErrors, 5000);
       return;
     }
 
@@ -51,21 +94,29 @@ const SignIn = () => {
 
       if (response.status === 201) {
         navigate('/');
-        setLoading(false);
       } else {
-        toast.error('Registration failed. Please try again.');
-        setLoading(false);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: 'Registration failed. Please try again.',
+        }));
       }
     } catch (error) {
       console.error('Error during registration:', error);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: 'An error occurred. Please try again.',
+      }));
+    } finally {
       setLoading(false);
+      // Clear errors after 5 seconds
+      setTimeout(clearErrors, 5000);
     }
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 sm:grid-cols-2  min-h-[100vh] overflow-scroll bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[100vh] overflow-scroll bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4">
           <div className="flex flex-col pt-[3%] gap-6">
             <LoginLogo />
 
@@ -87,6 +138,9 @@ const SignIn = () => {
                   <CiMail color="white" size={25} />
                 </div>
               </div>
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email}</p>
+              )}
             </div>
 
             <div className="flex flex-col sm:ml-[22%]">
@@ -117,6 +171,9 @@ const SignIn = () => {
                   )}
                 </div>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm">{errors.password}</p>
+              )}
             </div>
 
             <div className="flex flex-col sm:ml-[22%]">
@@ -150,10 +207,13 @@ const SignIn = () => {
                   )}
                 </div>
               </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+              )}
             </div>
 
-            <div className="flex justify-between sm:pl-[20%] sm:pr-[15%]">
-              <div className="flex gap-4 justify-center items-center">
+            <div className="flex flex-col justify-center sm:flex-col items-center gap-4 w-full mt-2">
+              <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="terms"
@@ -169,6 +229,9 @@ const SignIn = () => {
                   </label>
                 </div>
               </div>
+              {errors.terms && (
+                <p className="text-red-500 text-sm">{errors.terms}</p>
+              )}
             </div>
 
             <div className="flex justify-center items-center text-white sm:ml-[10%]">

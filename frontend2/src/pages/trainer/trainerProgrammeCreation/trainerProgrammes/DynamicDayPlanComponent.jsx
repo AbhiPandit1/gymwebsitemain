@@ -1,12 +1,12 @@
-// src/components/DynamicDayPlanComponent.js
 import { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable'; // Ensure this package is installed
+import 'jspdf-autotable';
 import useDashboardLinks from '../../../../../hook/CreateDahsboardLinks';
 import DashboardHeader from '../../../../component/DashboardHeader';
 import PlanTable from './PlanTable';
-import DashboardComponent from '../../../../component/DashboardComponent'; // Ensure correct import
-import { BiSolidRightArrow } from 'react-icons/bi'; // Import the icon if needed
+import DashboardComponent from '../../../../component/DashboardComponent';
+import { BiSolidRightArrow } from 'react-icons/bi';
+import { FaArrowRight } from 'react-icons/fa';
 
 const DynamicDayPlanComponent = () => {
   const dashBoardLink = useDashboardLinks();
@@ -15,14 +15,26 @@ const DynamicDayPlanComponent = () => {
     localStorage.getItem('headingColor') || '#000000'
   );
   const [textColor, setTextColor] = useState(
-    localStorage.getItem('textColor') || '#0000000'
+    localStorage.getItem('textColor') || '#000000'
   );
   const [textSize, setTextSize] = useState(
     localStorage.getItem('textSize') || '18px'
   );
   const [bgColor, setBgColor] = useState(
-    localStorage.getItem('bgColor') || '#1a202c'
+    localStorage.getItem('bgColor') || '#000000'
   );
+
+  // New state variables for table styling
+  const [tableHeadingColor, setTableHeadingColor] = useState(
+    localStorage.getItem('tableHeadingColor') || '#FFFFFF'
+  );
+  const [tableRowColor, setTableRowColor] = useState(
+    localStorage.getItem('tableRowColor') || '#000000'
+  );
+  const [tableColumnColor, setTableColumnColor] = useState(
+    localStorage.getItem('tableColumnColor') || '#000000'
+  );
+
   const [planType, setPlanType] = useState('four');
   const [planData, setPlanData] = useState([]);
 
@@ -31,7 +43,18 @@ const DynamicDayPlanComponent = () => {
     localStorage.setItem('textColor', textColor);
     localStorage.setItem('textSize', textSize);
     localStorage.setItem('bgColor', bgColor);
-  }, [headingColor, textColor, textSize, bgColor]);
+    localStorage.setItem('tableHeadingColor', tableHeadingColor);
+    localStorage.setItem('tableRowColor', tableRowColor);
+    localStorage.setItem('tableColumnColor', tableColumnColor);
+  }, [
+    headingColor,
+    textColor,
+    textSize,
+    bgColor,
+    tableHeadingColor,
+    tableRowColor,
+    tableColumnColor,
+  ]);
 
   useEffect(() => {
     setPlanData(getPlanData(planType));
@@ -57,14 +80,14 @@ const DynamicDayPlanComponent = () => {
       const tableStartY = startY + 10;
 
       doc.setFontSize(14);
-      doc.setTextColor(textColor);
+      doc.setTextColor(tableHeadingColor);
       doc.autoTable({
         startY: tableStartY,
         head: [['Exercise', 'Sets', 'Reps']],
         body: dayPlan.exercises.map((exercise) => [
-          exercise.name,
-          exercise.sets,
-          exercise.reps,
+          { content: exercise.name, styles: { textColor: tableColumnColor } },
+          { content: exercise.sets, styles: { textColor: tableRowColor } },
+          { content: exercise.reps, styles: { textColor: tableRowColor } },
         ]),
         theme: 'striped',
         styles: { fontSize: 12 },
@@ -81,12 +104,18 @@ const DynamicDayPlanComponent = () => {
     setTextColor('#ffffff');
     setTextSize('18px');
     setBgColor('#1a202c');
+    setTableHeadingColor('#000000');
+    setTableRowColor('#000000');
+    setTableColumnColor('#000000');
     setPlanType('four');
 
     localStorage.removeItem('headingColor');
     localStorage.removeItem('textColor');
     localStorage.removeItem('textSize');
     localStorage.removeItem('bgColor');
+    localStorage.removeItem('tableHeadingColor');
+    localStorage.removeItem('tableRowColor');
+    localStorage.removeItem('tableColumnColor');
   };
 
   const getPlanData = (type) => {
@@ -102,6 +131,8 @@ const DynamicDayPlanComponent = () => {
         day: 'Day 2',
         exercises: [
           { name: 'Pull-ups', sets: '3', reps: '10' },
+          { name: 'Lunges', sets: '3', reps: '15' },
+          { name: 'Lunges', sets: '3', reps: '15' },
           { name: 'Lunges', sets: '3', reps: '15' },
         ],
       },
@@ -215,54 +246,107 @@ const DynamicDayPlanComponent = () => {
                 />
               </label>
             </div>
+            <div className="flex  mb-4">
+              <label className="flex items-center space-x-2">
+                <span className="text-lg">Background Color:</span>
+                <input
+                  type="color"
+                  value={bgColor}
+                  onChange={(e) => setBgColor(e.target.value)}
+                  className="ml-2 w-16"
+                />
+              </label>
+            </div>
+            <div className="flex  mb-4">
+              <label className="flex items-center space-x-2">
+                <span className="text-lg">Table Heading Color:</span>
+                <input
+                  type="color"
+                  value={tableHeadingColor}
+                  onChange={(e) => setTableHeadingColor(e.target.value)}
+                  className="ml-2 w-16"
+                />
+              </label>
+            </div>
+            <div className="flex  mb-4">
+              <label className="flex items-center space-x-2">
+                <span className="text-lg">Table Row Color:</span>
+                <input
+                  type="color"
+                  value={tableRowColor}
+                  onChange={(e) => setTableRowColor(e.target.value)}
+                  className="ml-2 w-16"
+                />
+              </label>
+            </div>
+            <div className="flex  mb-4">
+              <label className="flex items-center space-x-2">
+                <span className="text-lg">Table Column Color:</span>
+                <input
+                  type="color"
+                  value={tableColumnColor}
+                  onChange={(e) => setTableColumnColor(e.target.value)}
+                  className="ml-2 w-16"
+                />
+              </label>
+            </div>
           </div>
-          <div className="mb-4 flex space-x-4">
-            <select
-              value={planType}
-              onChange={(e) => setPlanType(e.target.value)}
-              className="p-2 rounded border border-gray-600 bg-gray-700"
-            >
-              <option value="four">4-Day Plan</option>
-              <option value="seven">7-Day Plan</option>
-              <option value="thirty">30-Day Plan</option>
-            </select>
+          <div className="mb-4 flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+            <div>
+              <label className="flex items-center space-x-2">
+                <span className="text-lg">Plan Type:</span>
+                <select
+                  value={planType}
+                  onChange={(e) => setPlanType(e.target.value)}
+                  className="ml-2 p-2"
+                >
+                  <option value="four">4-Day Plan</option>
+                  <option value="seven">7-Day Plan</option>
+                  <option value="thirty">30-Day Plan</option>
+                </select>
+              </label>
+            </div>
             <button
               onClick={handleDownload}
-              className="p-2 bg-green-600 text-white rounded hover:bg-green-700"
+              className="bg-green-600 p-2 text-white rounded-lg"
             >
               Download PDF
             </button>
             <button
               onClick={handleReset}
-              className="p-2 bg-red-600 text-white rounded hover:bg-red-700"
+              className="bg-red-600 p-2 text-white rounded-lg"
             >
-              Reset Settings
+              Reset
+            </button>
+            <button
+              onClick={() =>
+                setPlanType(planType === 'four' ? 'seven' : 'four')
+              }
+              className="bg-blue-600 p-2 text-white rounded-lg"
+            >
+              Toggle Plan
             </button>
           </div>
-          <PlanTable
-            planData={planData}
-            headingColor={headingColor}
-            textColor={textColor}
-            textSize={textSize}
-          />
-        </div>
-        {hoverDashboard && (
-          <div
-            className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-            onClick={handleClick}
-          >
-            <BiSolidRightArrow size={80} color="white" />
+          <div className="overflow-x-auto">
+            <PlanTable
+              planData={planData}
+              textColor={textColor}
+              textSize={textSize}
+              headingColor={headingColor}
+              tableHeadingColor={tableHeadingColor}
+              tableRowColor={tableRowColor}
+              tableColumnColor={tableColumnColor}
+            />
           </div>
-        )}
-        <div className="flex justify-center items-center mb-4">
-          {' '}
-          <button
-            className="mt-4 p-4 w-[8rem] flex justify-center items-center bg-secondary text-white rounded hover:bg-blue-700"
-            onClick={() => console.log('Next button clicked')}
-          >
-            Next
-          </button>
         </div>
+      </div>
+      <div className="absolute bottom-4 right-4">
+        <button
+          className="bg-primary text-white p-2 rounded-full"
+          onClick={() => setHoverDashboard(!hoverDashboard)}
+        >
+          {hoverDashboard ? <FaArrowRight /> : <BiSolidRightArrow />}
+        </button>
       </div>
     </div>
   );

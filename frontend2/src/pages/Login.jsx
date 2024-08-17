@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import loginImage from '../assets/loginImage.png';
 import { CiMail } from 'react-icons/ci';
 import { FaLock } from 'react-icons/fa';
@@ -15,20 +13,58 @@ const Login = () => {
   const [seePassword, setSeePassword] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const [signField, setSignField] = useState({
     email: '',
     password: '',
+  });
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    terms: '',
   });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const clearErrors = () => {
+    setErrors({
+      email: '',
+      password: '',
+      terms: '',
+    });
+  };
+
+  const validateFields = () => {
+    let isValid = true;
+    const newErrors = {
+      email: '',
+      password: '',
+      terms: '',
+    };
+
+    if (!signField.email) {
+      newErrors.email = 'Email is required.';
+      isValid = false;
+    }
+    if (!signField.password) {
+      newErrors.password = 'Password is required.';
+      isValid = false;
+    }
+    if (!agreedTerms) {
+      newErrors.terms = 'You must agree to the terms and conditions.';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!agreedTerms) {
-      toast.error('Please read and agree to the terms and conditions.');
+    if (!validateFields()) {
+      // Clear errors after 5 seconds
+      setTimeout(clearErrors, 5000);
       return;
     }
 
@@ -38,10 +74,18 @@ const Login = () => {
 
       if (response.status === 201) {
         navigate('/');
-        setLoading(false);
+      } else {
+        // Handle other status codes if needed
       }
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.error('Error during login:', error);
+      setErrors({
+        ...errors,
+        email: 'An error occurred. Please try again.',
+      });
+      // Clear errors after 5 seconds
+      setTimeout(clearErrors, 5000);
+    } finally {
       setLoading(false);
     }
   };
@@ -49,7 +93,7 @@ const Login = () => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[100vh] bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[100vh] bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4">
           <div className="flex flex-col pt-[3%] gap-6">
             <LoginLogo />
 
@@ -66,12 +110,15 @@ const Login = () => {
                   onChange={(e) =>
                     setSignField({ ...signField, email: e.target.value })
                   }
-                  className={`flex w-full sm:w-[80%] justify-center items-center text-white bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[15%] sm:pl-[10%] font-sans`}
+                  className="flex w-full sm:w-[80%] justify-center items-center text-white bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[15%] sm:pl-[10%] font-sans"
                 />
                 <div className="absolute top-[20%] left-[4%]">
                   <CiMail color="white" size={25} />
                 </div>
               </div>
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
 
             <div className="flex flex-col sm:ml-[22%]">
@@ -87,13 +134,13 @@ const Login = () => {
                   onChange={(e) =>
                     setSignField({ ...signField, password: e.target.value })
                   }
-                  className={`flex w-full sm:w-[80%] justify-center text-white items-center bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[15%] sm:pl-[10%] font-sans`}
+                  className="flex w-full sm:w-[80%] justify-center text-white items-center bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[15%] sm:pl-[10%] font-sans"
                 />
                 <div className="absolute top-[20%] left-[4%]">
                   <FaLock color="white" size={25} />
                 </div>
                 <div
-                  className="absolute right-[10%] sm:right-[23%] top-[20%]"
+                  className="absolute right-[10%] sm:right-[23%] top-[20%] cursor-pointer"
                   onClick={() => setSeePassword((prev) => !prev)}
                 >
                   {!seePassword ? (
@@ -103,33 +150,31 @@ const Login = () => {
                   )}
                 </div>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
+            </div>
 
-              <div className="flex justify-between w-full mt-2">
-                <div className="flex gap-4 justify-between items-center w-full ">
-                  <div className="flex justify-between items-center gap-8">
-                    <div className=" flex gap-2">
-                      <input
-                        type="checkbox"
-                        id="terms"
-                        checked={agreedTerms}
-                        onChange={() => setAgreedTerms(!agreedTerms)}
-                      />
-                      <label
-                        htmlFor="terms"
-                        className="text-white text-[0.7rem] sm:text-xl"
-                      >
-                        Agree with terms and conditions
-                      </label>
-                    </div>
-                    <div>
-                      <Link to="/user/forgot/email">
-                        <p className="text-sans text-green-500 hover:text-green-700">
-                          forgot password
-                        </p>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+            <div className="flex flex-col justify-center sm:flex-col items-center gap-4 w-full mt-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={agreedTerms}
+                  onChange={() => setAgreedTerms(!agreedTerms)}
+                  className="cursor-pointer"
+                />
+                <label
+                  htmlFor="terms"
+                  className="text-white text-[0.7rem] sm:text-xl cursor-pointer"
+                >
+                  Agree with terms and conditions
+                </label>
+              </div>
+              <div>
+                {errors.terms && (
+                  <p className="text-red-500 text-sm mt-1">{errors.terms}</p>
+                )}
               </div>
             </div>
 
@@ -140,10 +185,10 @@ const Login = () => {
             </div>
 
             <div className="flex justify-end items-center pr-[20%] sm:pr-[30%]">
-              <div className="text-sans text-white pr-[2%]">
-                Dont have an account?
+              <div className="text-sans text-white text-[0.9rem] pr-[2%]">
+                Already have an account?
               </div>
-              <div className="text-sans text-secondary">
+              <div className="text-sans text-secondary text-[0.9rem]">
                 <Link to="/signin">Sign In</Link>
               </div>
             </div>

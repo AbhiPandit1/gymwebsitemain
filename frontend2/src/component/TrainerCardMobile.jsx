@@ -69,35 +69,37 @@ const TrainerCardMobile = () => {
               className="object-cover w-full h-full transition-opacity duration-500 ease-in-out opacity-100"
             />
           </div>
-          <div className="absolute top-5 left-5 flex gap-4 bg-secondary rounded-xl p-2">
-            {data.socialMediaLink.instagram && (
-              <a
-                href={data.socialMediaLink.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <AiFillInstagram size={40} color="white" />
-              </a>
-            )}
-            {data.socialMediaLink.linkedin && (
-              <a
-                href={data.socialMediaLink.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <AiFillLinkedin size={40} color="white" />
-              </a>
-            )}
-            {data.socialMediaLink.facebook && (
-              <a
-                href={data.socialMediaLink.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <AiFillFacebook size={40} color="white" />
-              </a>
-            )}
-          </div>
+          {data.socialMediaLink && (
+            <div className="absolute top-5 left-5 flex gap-4 bg-secondary rounded-xl p-2">
+              {data.socialMediaLink.instagram && (
+                <a
+                  href={data.socialMediaLink.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <AiFillInstagram size={40} color="white" />
+                </a>
+              )}
+              {data.socialMediaLink.linkedin && (
+                <a
+                  href={data.socialMediaLink.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <AiFillLinkedin size={40} color="white" />
+                </a>
+              )}
+              {data.socialMediaLink.facebook && (
+                <a
+                  href={data.socialMediaLink.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <AiFillFacebook size={40} color="white" />
+                </a>
+              )}
+            </div>
+          )}
           <div className="mt-[1rem] font-extrabold text-2xl font-sans text-white absolute bottom-5 left-5">
             {data.user.name}
             <div className="font-extrabold text-1xl font-sans text-paraColor mt-2">

@@ -14,16 +14,26 @@ const DynamicDietPlanComponent = () => {
   const [headingColor, setHeadingColor] = useState('#ffffff');
   const [textColor, setTextColor] = useState('#ffffff');
   const [textSize, setTextSize] = useState('16px');
+  const [rowColor, setRowColor] = useState('#ffffff');
+  const [columnColor, setColumnColor] = useState('#ffffff');
+  const [tableHeadingColor, setTableHeadingColor] = useState('#333333');
 
   // Load settings from local storage
   useEffect(() => {
     const savedHeadingColor = localStorage.getItem('headingColor') || '#ffffff';
     const savedTextColor = localStorage.getItem('textColor') || '#ffffff';
     const savedTextSize = localStorage.getItem('textSize') || '16px';
+    const savedRowColor = localStorage.getItem('rowColor') || '#ffffff';
+    const savedColumnColor = localStorage.getItem('columnColor') || '#ffffff';
+    const savedTableHeadingColor =
+      localStorage.getItem('tableHeadingColor') || '#333333';
 
     setHeadingColor(savedHeadingColor);
     setTextColor(savedTextColor);
     setTextSize(savedTextSize);
+    setRowColor(savedRowColor);
+    setColumnColor(savedColumnColor);
+    setTableHeadingColor(savedTableHeadingColor);
   }, []);
 
   // Save settings to local storage
@@ -31,7 +41,17 @@ const DynamicDietPlanComponent = () => {
     localStorage.setItem('headingColor', headingColor);
     localStorage.setItem('textColor', textColor);
     localStorage.setItem('textSize', textSize);
-  }, [headingColor, textColor, textSize]);
+    localStorage.setItem('rowColor', rowColor);
+    localStorage.setItem('columnColor', columnColor);
+    localStorage.setItem('tableHeadingColor', tableHeadingColor);
+  }, [
+    headingColor,
+    textColor,
+    textSize,
+    rowColor,
+    columnColor,
+    tableHeadingColor,
+  ]);
 
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
@@ -54,6 +74,8 @@ const DynamicDietPlanComponent = () => {
           ['Dinner', dayPlan.meals.dinner],
         ],
         theme: 'striped',
+        headStyles: { fillColor: tableHeadingColor },
+        bodyStyles: { fillColor: rowColor, textColor: columnColor },
       });
     });
     doc.save('diet-plan.pdf');
@@ -63,6 +85,9 @@ const DynamicDietPlanComponent = () => {
     setHeadingColor('#ffffff');
     setTextColor('#ffffff');
     setTextSize('16px');
+    setRowColor('#ffffff');
+    setColumnColor('#ffffff');
+    setTableHeadingColor('#333333');
   };
 
   return (
@@ -116,6 +141,33 @@ const DynamicDietPlanComponent = () => {
             </label>
           </div>
           <div className="mb-4">
+            <label>Row Color: </label>
+            <input
+              type="color"
+              value={rowColor}
+              onChange={(e) => setRowColor(e.target.value)}
+              className="ml-2"
+            />
+          </div>
+          <div className="mb-4">
+            <label>Column Text Color: </label>
+            <input
+              type="color"
+              value={columnColor}
+              onChange={(e) => setColumnColor(e.target.value)}
+              className="ml-2"
+            />
+          </div>
+          <div className="mb-4">
+            <label>Table Heading Color: </label>
+            <input
+              type="color"
+              value={tableHeadingColor}
+              onChange={(e) => setTableHeadingColor(e.target.value)}
+              className="ml-2"
+            />
+          </div>
+          <div className="mb-4">
             <button
               onClick={handleReset}
               className="p-2 bg-red-600 rounded mr-2"
@@ -146,7 +198,10 @@ const DynamicDietPlanComponent = () => {
               <div className="overflow-x-auto">
                 <table className="table-auto w-full mt-2 border border-gray-700 bg-gray-800">
                   <thead>
-                    <tr className="bg-gray-700">
+                    <tr
+                      className="bg-gray-700"
+                      style={{ backgroundColor: tableHeadingColor }}
+                    >
                       <th className="p-2 border-b border-gray-600">Meal</th>
                       <th className="p-2 border-b border-gray-600">
                         Description
@@ -154,15 +209,21 @@ const DynamicDietPlanComponent = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr
+                      style={{ backgroundColor: rowColor, color: columnColor }}
+                    >
                       <td className="p-2">Breakfast</td>
                       <td className="p-2">{dayPlan.meals.breakfast}</td>
                     </tr>
-                    <tr>
+                    <tr
+                      style={{ backgroundColor: rowColor, color: columnColor }}
+                    >
                       <td className="p-2">Lunch</td>
                       <td className="p-2">{dayPlan.meals.lunch}</td>
                     </tr>
-                    <tr>
+                    <tr
+                      style={{ backgroundColor: rowColor, color: columnColor }}
+                    >
                       <td className="p-2">Dinner</td>
                       <td className="p-2">{dayPlan.meals.dinner}</td>
                     </tr>
@@ -180,7 +241,7 @@ const DynamicDietPlanComponent = () => {
                 className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
                 onClick={handleClick}
               >
-                <BiSolidRightArrow size={80} color="white" />
+                <BiSolidRightArrow size={30} />
               </div>
             )}
           </div>
