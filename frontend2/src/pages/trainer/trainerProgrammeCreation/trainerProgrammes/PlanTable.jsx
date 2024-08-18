@@ -1,5 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 
+// Modal Component
+const VideoModal = ({ isOpen, videoUrl, onClose }) => {
+  if (!isOpen) return null;
+
+  // Determine if the videoUrl is a YouTube link
+  const isYouTube =
+    videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be');
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg relative max-w-4xl w-full">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 px-4 py-2 text-white bg-red-500 hover:bg-red-700 rounded-lg z-10"
+          aria-label="Close"
+        >
+          Close
+        </button>
+        {isYouTube ? (
+          <iframe
+            className="w-full h-96 rounded-lg border border-gray-300"
+            src={`https://www.youtube.com/embed/${new URL(
+              videoUrl
+            ).searchParams.get('v')}`}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title="Video"
+          ></iframe>
+        ) : (
+          <video
+            className="w-full h-auto rounded-lg border border-gray-300"
+            controls
+            src={videoUrl}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+// PlanTable Component
 const PlanTable = ({
   planData,
   headingColor,
@@ -9,6 +50,39 @@ const PlanTable = ({
   tableRowColor,
   tableColumnColor,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState('');
+
+  const handleVideoClick = (videoUrl) => {
+    setCurrentVideoUrl(videoUrl);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCurrentVideoUrl('');
+  };
+
+  const defaultStyles = {
+    heading: {
+      color: tableHeadingColor || headingColor,
+      fontSize: textSize,
+      backgroundColor: tableRowColor || 'transparent',
+      borderColor: tableHeadingColor || headingColor,
+    },
+    cell: {
+      color: textColor,
+      fontSize: textSize,
+      borderColor: tableHeadingColor || headingColor,
+    },
+    row: {
+      backgroundColor: tableRowColor || 'transparent',
+    },
+    alternateRow: {
+      backgroundColor: tableColumnColor || 'transparent',
+    },
+  };
+
   return (
     <div className="p-6 bg-gray-800 rounded-lg shadow-lg overflow-x-auto">
       <h3
@@ -26,50 +100,37 @@ const PlanTable = ({
               <th
                 scope="col"
                 className="border-b-2 py-2"
-                style={{
-                  color: tableHeadingColor || headingColor,
-                  fontSize: textSize,
-                  backgroundColor: tableRowColor || 'transparent',
-                  borderColor: tableHeadingColor || headingColor,
-                }}
+                style={defaultStyles.heading}
               >
                 Day
               </th>
               <th
                 scope="col"
                 className="border-b-2 py-2"
-                style={{
-                  color: tableHeadingColor || headingColor,
-                  fontSize: textSize,
-                  backgroundColor: tableRowColor || 'transparent',
-                  borderColor: tableHeadingColor || headingColor,
-                }}
+                style={defaultStyles.heading}
               >
                 Exercise
               </th>
               <th
                 scope="col"
                 className="border-b-2 py-2"
-                style={{
-                  color: tableHeadingColor || headingColor,
-                  fontSize: textSize,
-                  backgroundColor: tableRowColor || 'transparent',
-                  borderColor: tableHeadingColor || headingColor,
-                }}
+                style={defaultStyles.heading}
               >
                 Sets
               </th>
               <th
                 scope="col"
                 className="border-b-2 py-2"
-                style={{
-                  color: tableHeadingColor || headingColor,
-                  fontSize: textSize,
-                  backgroundColor: tableRowColor || 'transparent',
-                  borderColor: tableHeadingColor || headingColor,
-                }}
+                style={defaultStyles.heading}
               >
                 Reps
+              </th>
+              <th
+                scope="col"
+                className="border-b-2 py-2"
+                style={defaultStyles.heading}
+              >
+                Videos
               </th>
             </tr>
           </thead>
@@ -89,44 +150,31 @@ const PlanTable = ({
                     <td
                       rowSpan={dayPlan.exercises.length}
                       className="border-b py-2"
-                      style={{
-                        color: textColor,
-                        fontSize: textSize,
-                        borderColor: tableHeadingColor || headingColor,
-                      }}
+                      style={defaultStyles.cell}
                     >
                       <div className="font-semibold">{dayPlan.day}</div>
                     </td>
                   )}
-                  <td
-                    className="border-b py-2"
-                    style={{
-                      color: textColor,
-                      fontSize: textSize,
-                      borderColor: tableHeadingColor || headingColor,
-                    }}
-                  >
+                  <td className="border-b py-2" style={defaultStyles.cell}>
                     <div className="font-medium">{exercise.name}</div>
                   </td>
-                  <td
-                    className="border-b py-2"
-                    style={{
-                      color: textColor,
-                      fontSize: textSize,
-                      borderColor: tableHeadingColor || headingColor,
-                    }}
-                  >
+                  <td className="border-b py-2" style={defaultStyles.cell}>
                     {exercise.sets}
                   </td>
-                  <td
-                    className="border-b py-2"
-                    style={{
-                      color: textColor,
-                      fontSize: textSize,
-                      borderColor: tableHeadingColor || headingColor,
-                    }}
-                  >
+                  <td className="border-b py-2" style={defaultStyles.cell}>
                     {exercise.reps}
+                  </td>
+                  <td className="border-b py-2" style={defaultStyles.cell}>
+                    {exercise.video ? (
+                      <button
+                        onClick={() => handleVideoClick(exercise.video.url)}
+                        className="text-blue-400 hover:underline"
+                      >
+                        Watch Video
+                      </button>
+                    ) : (
+                      'No Video'
+                    )}
                   </td>
                 </tr>
               ))
@@ -136,6 +184,11 @@ const PlanTable = ({
       ) : (
         <p className="text-center text-gray-400">No data available</p>
       )}
+      <VideoModal
+        isOpen={isModalOpen}
+        videoUrl={currentVideoUrl}
+        onClose={closeModal}
+      />
     </div>
   );
 };

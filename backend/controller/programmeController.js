@@ -2,25 +2,41 @@ import Programme from '../model/programmeModel.js';
 import User from '../model/userModel.js';
 import uploadToCloudinary from '../middleware/uploadToCloudinary.js';
 import deleteFile from '../middleware/removeMulterFile.js';
+import mongoose from 'mongoose';
 
 //Create Programme  || Categories
 export const createProgramme = async (req, res) => {
-  const { category, price, desc, trainerEmail } = req.body;
+  const { category, title, price, desc, trainerEmail } = req.body;
   const userId = req.params.id;
+  console.log(title);
 
-  // Validate input fields
-  if (!category || !price || !desc) {
+  let parsedCategory;
+  try {
+    parsedCategory = JSON.parse(category); // Convert JSON string back to an array
+  } catch (error) {
+    return res.status(400).json({ error: 'Invalid category format.' });
+  }
+
+  console.log(parsedCategory); // Log parsed category to verify
+
+  // Check for missing required fields
+  if (!Array.isArray(parsedCategory) || parsedCategory.length === 0) {
+    return res.status(400).json({
+      error: 'Category must be an array with at least one valid value.',
+    });
+  }
+
+  if (!price || !desc) {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
-  // Validate price
-  if (isNaN(price) || price <= 0) {
-    return res.status(400).json({ error: 'Invalid price.' });
+  if (isNaN(price) || price <= 10) {
+    return res.status(400).json({ error: 'Price should be greater than 10.' });
   }
 
   try {
-    // Handle trainerEmail validation and retrieve trainerId
     let trainerId = userId;
+
     if (trainerEmail) {
       const trainerUser = await User.findOne({ email: trainerEmail });
       if (!trainerUser) {
@@ -34,7 +50,10 @@ export const createProgramme = async (req, res) => {
       trainerId = trainerUser._id;
     }
 
-    // Handle file upload to Cloudinary if a category photo is uploaded
+    if (!mongoose.Types.ObjectId.isValid(trainerId)) {
+      return res.status(400).json({ error: 'Invalid trainer ID.' });
+    }
+
     let categoryPhoto = null;
     if (req.file) {
       if (req.file.mimetype !== 'image/jpeg') {
@@ -48,34 +67,19 @@ export const createProgramme = async (req, res) => {
       };
     }
 
-    // Check if a programme with the same category already exists for the user
-    const existingProgramme = await Programme.findOne({
-      category,
-      trainer: trainerId,
-    });
-
-    if (existingProgramme) {
-      return res.status(400).json({
-        error:
-          'A programme with this category already exists for this trainer.',
-      });
-    }
-
-    // Create a new Programme document
     const newProgramme = new Programme({
-      category,
+      category: parsedCategory, // Use parsedCategory
       categoryPhoto,
       desc,
-      price: Number(price), // Ensure price is stored as a number
+      title,
+      price: Number(price),
       trainer: trainerId,
     });
 
-    // Save the new programme to the database
     const savedProgramme = await newProgramme.save();
-    console.log(savedProgramme);
 
     return res.status(201).json({
-      message: 'Programme created and added to user.',
+      message: 'Programme created successfully.',
       programme: savedProgramme,
     });
   } catch (error) {
@@ -160,7 +164,6 @@ export const updateProgramme = async (req, res) => {
 
   // Log the request body for debugging
   console.log('Request Body:', req.body);
-  console.log('Category:', category);
 
   try {
     // Find the programme by ID
@@ -177,26 +180,28 @@ export const updateProgramme = async (req, res) => {
         public_id: result.public_id,
         url: result.secure_url,
       };
+      console.log('Updated Category Photo:', updatedCategoryPhoto);
     }
-    console.log(updatedCategoryPhoto);
+
+    // Parse category if provided
+    let parsedCategory = programme.category;
+    if (category) {
+      try {
+        parsedCategory = JSON.parse(category); // Convert JSON string back to an array
+        if (!Array.isArray(parsedCategory)) {
+          throw new Error('Parsed category is not an array.');
+        }
+      } catch (error) {
+        return res.status(400).json({ error: 'Invalid category format.' });
+      }
+    }
 
     // Update programme fields if provided, otherwise retain current values
-    programme.category =
-      category !== undefined && category !== 'undefined'
-        ? category
-        : programme.category;
-    programme.price =
-      price !== undefined && price !== 'undefined'
-        ? Number(price)
-        : programme.price;
-    programme.trainerMail =
-      trainerMail !== undefined && trainerMail !== 'undefined'
-        ? trainerMail
-        : programme.trainerMail;
-    programme.desc =
-      desc !== undefined && desc !== 'undefined' ? desc : programme.desc;
-    programme.title =
-      title !== undefined && title !== 'undefined' ? title : programme.title;
+    programme.category = parsedCategory; // Use parsedCategory here
+    programme.price = price ? Number(price) : programme.price;
+    programme.trainerMail = trainerMail || programme.trainerMail;
+    programme.desc = desc || programme.desc;
+    programme.title = title || programme.title;
     programme.categoryPhoto = updatedCategoryPhoto;
 
     // Save the updated programme
@@ -300,12 +305,10 @@ export const getSingleProgramme = async (req, res) => {
 
 export const getByTrainer = async (req, res) => {
   const id = req.params.id; // Assuming the trainer ID comes from the URL parameters
-  
 
   try {
     // Find all programmes where the trainer field matches the given ID
     const programmes = await Programme.find({ trainer: id });
-    
 
     // Check if any programmes were found
     if (programmes.length === 0) {

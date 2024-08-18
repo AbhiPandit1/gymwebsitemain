@@ -17,10 +17,13 @@ export const createProgramme =
       dispatch(createProgrammeStart()); // Dispatch the action creator function
 
       const formData = new FormData();
-      formData.append('category', programmeData.category);
+      formData.append('category', JSON.stringify(programmeData.category));
       formData.append('price', programmeData.price);
       if (programmeData.categoryPhoto) {
         formData.append('categoryPhoto', programmeData.categoryPhoto);
+      }
+      if (programmeData.title) {
+        formData.append('title', programmeData.title);
       }
       if (programmeData.trainerMail) {
         formData.append('trainerMail', programmeData.trainerMail);

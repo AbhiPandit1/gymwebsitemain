@@ -1,22 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+
+import { FaPlus, FaTimes } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+
 import DashboardComponent from '../../component/DashboardComponent';
 import DashboardHeader from '../../component/DashboardHeader';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
-import { toast } from 'react-toastify';
 import { updateProgramme } from '../../action/programmeActions';
-import Spinner from '../../component/Spinner';
-import { FaPlus, FaTimes } from 'react-icons/fa';
 
 const EditTrainerProgramme = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { user } = useSelector((state) => state.user);
   const token = user?.token;
   const { programme } = useSelector((state) => state.programme);
 
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState([]);
   const [price, setPrice] = useState('');
   const [categoryPhoto, setCategoryPhoto] = useState(null);
   const [categoryPhotoName, setCategoryPhotoName] = useState('');
@@ -26,13 +29,14 @@ const EditTrainerProgramme = () => {
   const [loading, setLoading] = useState(false);
 
   const categoryOptions = [
-    'Nutrients',
+    'Nutrition',
     'Bodybuilding',
     'Sports',
     'Women',
     'WeightLoss',
     'PowerLifting',
     'General',
+    'Recovery',
   ];
 
   useEffect(() => {
@@ -52,8 +56,8 @@ const EditTrainerProgramme = () => {
   const handleUpdateProgramme = async (e) => {
     e.preventDefault();
 
-    if (!category) {
-      toast.error('Please select a category.');
+    if (category.length === 0) {
+      toast.error('Please select at least one category.');
       return;
     }
 
@@ -61,17 +65,18 @@ const EditTrainerProgramme = () => {
 
     try {
       const formData = new FormData();
-      formData.append('category', category || ''); // Use empty string if category is undefined
-      formData.append('price', price || ''); // Use empty string if price is undefined
+      formData.append('category', JSON.stringify(category));
+      formData.append('price', price || '');
       if (categoryPhoto) formData.append('categoryPhoto', categoryPhoto);
-      formData.append('trainerMail', trainerMail || ''); // Use empty string if trainerMail is undefined
-      formData.append('title', title || ''); // Use empty string if title is undefined
-      formData.append('desc', desc || ''); // Use empty string if desc is undefined
+      formData.append('trainerMail', trainerMail || '');
+      formData.append('title', title || '');
+      formData.append('desc', desc || '');
 
       const response = await dispatch(updateProgramme(formData, id, token));
 
       if (response?.status === 200 || response?.status === 201) {
-        resetForm();
+        toast.success('Programme updated successfully');
+        navigate(`/trainer/create/programme/type/${user.user._id}`);
       } else {
         toast.error(response?.data?.error || 'Failed to update programme');
       }
@@ -82,18 +87,9 @@ const EditTrainerProgramme = () => {
       setLoading(false);
     }
   };
-  console.log('FormData Values:', {
-    category,
-    price,
-    title,
-    desc,
-    categoryPhoto,
-
-    trainerMail,
-  });
 
   const resetForm = () => {
-    setCategory('');
+    setCategory([]);
     setPrice('');
     setCategoryPhoto(null);
     setCategoryPhotoName('');
@@ -105,13 +101,27 @@ const EditTrainerProgramme = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setCategoryPhoto(file);
-    console.log(categoryPhoto);
     setCategoryPhotoName(file ? file.name : '');
   };
 
   const handleClearFile = () => {
     setCategoryPhoto(null);
     setCategoryPhotoName('');
+  };
+
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    setCategory((prevCategory) =>
+      checked
+        ? [...prevCategory, value]
+        : prevCategory.filter((cat) => cat !== value)
+    );
+  };
+
+  const handleRemoveCategory = (categoryToRemove) => {
+    setCategory((prevCategory) =>
+      prevCategory.filter((cat) => cat !== categoryToRemove)
+    );
   };
 
   const dashBoardLink = useDashboardLinks();
@@ -172,27 +182,49 @@ const EditTrainerProgramme = () => {
                 </label>
               </div>
 
-              {/* Category, Price, and Title */}
-              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
-                <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
-                  <label className="text-white mb-2">Category</label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
+              {/* Selected Categories */}
+              <div className="flex flex-wrap gap-2">
+                {category.map((cat, index) => (
+                  <div
+                    key={index}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center"
                   >
-                    <option value="">Select Category</option>
-                    {categoryOptions.map((option, idx) => (
-                      <option
-                        key={idx}
-                        value={option}
-                        className="bg-white text-primary"
-                      >
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                    <span>{cat}</span>
+                    <button
+                      type="button"
+                      className="ml-2"
+                      onClick={() => handleRemoveCategory(cat)}
+                    >
+                      <FaTimes />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Category Checkboxes */}
+              <div className="flex flex-wrap gap-4">
+                {categoryOptions.map((option, idx) => (
+                  <div key={idx} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`category-${idx}`}
+                      value={option}
+                      checked={category.includes(option)}
+                      onChange={handleCategoryChange}
+                      className="mr-2"
+                    />
+                    <label
+                      htmlFor={`category-${idx}`}
+                      className="text-white cursor-pointer"
+                    >
+                      {option}
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+              {/* Price, Title, and Trainer Mail */}
+              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
                 <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
                   <label className="text-white mb-2">Price</label>
                   <input
@@ -203,10 +235,6 @@ const EditTrainerProgramme = () => {
                     onChange={(e) => setPrice(e.target.value)}
                   />
                 </div>
-              </div>
-
-              {/* Title and Trainer Mail */}
-              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
                 <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
                   <label className="text-white mb-2">Programme Title</label>
                   <input
@@ -216,6 +244,9 @@ const EditTrainerProgramme = () => {
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
                 <div className="flex flex-col w-full sm:w-[45%]">
                   <label className="text-white mb-2">Trainer Mail</label>
                   <input
@@ -232,24 +263,29 @@ const EditTrainerProgramme = () => {
               <div className="flex flex-col">
                 <label className="text-white mb-2">Description</label>
                 <textarea
-                  rows={5}
-                  className="w-full bg-tertiary text-white p-2 rounded resize-none"
-                  placeholder="...desc"
+                  className="h-36 bg-tertiary text-white p-2 rounded-[16px]"
                   value={desc}
                   onChange={(e) => setDesc(e.target.value)}
-                ></textarea>
+                />
               </div>
 
-              {/* Submit Button */}
-              <div className="flex justify-center mt-4">
+              {/* Buttons */}
+              <div className="flex justify-center items-center gap-4 mt-4">
                 <button
                   type="submit"
-                  className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded ${
-                    loading ? 'cursor-not-allowed opacity-50' : ''
+                  className={`w-full sm:w-[30%] h-12 bg-primary text-white rounded-[16px] ${
+                    loading ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                   disabled={loading}
                 >
-                  {loading ? <Spinner /> : 'Update'}
+                  {loading ? 'Updating...' : 'Update Programme'}
+                </button>
+                <button
+                  type="button"
+                  className="w-full sm:w-[30%] h-12 bg-red-600 text-white rounded-[16px]"
+                  onClick={resetForm}
+                >
+                  Reset
                 </button>
               </div>
             </form>

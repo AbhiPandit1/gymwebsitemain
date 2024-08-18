@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createProgramme } from '../../../action/programmeActions';
 import DashboardComponent from '../../../component/DashboardComponent';
 import DashboardHeader from '../../../component/DashboardHeader';
-import { Link, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import useDashboardLinks from '../../../../hook/CreateDahsboardLinks';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -11,11 +11,12 @@ import { toast } from 'react-toastify';
 const AdminCreatingNewProgramme = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.user);
   const token = user.token;
 
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState([]);
   const [price, setPrice] = useState('');
   const [categoryPhoto, setCategoryPhoto] = useState(null);
   const [categoryPhotoName, setCategoryPhotoName] = useState('');
@@ -23,6 +24,7 @@ const AdminCreatingNewProgramme = () => {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [loadings, setLoadings] = useState(false);
+  console.log(category);
 
   const categoryOptions = [
     'Nutrition',
@@ -47,7 +49,7 @@ const AdminCreatingNewProgramme = () => {
       title,
       desc,
     };
-
+    console.log('FormData:', formData);
     try {
       setLoadings(true);
       const response = await dispatch(createProgramme(formData, id, token));
@@ -60,6 +62,9 @@ const AdminCreatingNewProgramme = () => {
 
         // Reset form fields after successful submission
         resetForm();
+
+        // Navigate to the desired route
+        navigate(`/trainer/create/programme/type/${user.user._id}`);
       }
     } catch (error) {
       console.error('Error creating programme:', error);
@@ -70,11 +75,11 @@ const AdminCreatingNewProgramme = () => {
   };
 
   const resetForm = () => {
-    setCategory('');
+    setCategory([]);
     setPrice('');
     setCategoryPhoto(null);
     setCategoryPhotoName('');
-    setTrainerMail('');
+    setTrainerMail(user.user.email);
     setTitle('');
     setDesc('');
   };
@@ -88,6 +93,21 @@ const AdminCreatingNewProgramme = () => {
   const handleClearFile = () => {
     setCategoryPhoto(null);
     setCategoryPhotoName('');
+  };
+
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    setCategory((prevCategory) =>
+      checked
+        ? [...prevCategory, value]
+        : prevCategory.filter((cat) => cat !== value)
+    );
+  };
+
+  const handleRemoveCategory = (categoryToRemove) => {
+    setCategory((prevCategory) =>
+      prevCategory.filter((cat) => cat !== categoryToRemove)
+    );
   };
 
   const dashBoardLink = useDashboardLinks();
@@ -148,27 +168,49 @@ const AdminCreatingNewProgramme = () => {
                 </label>
               </div>
 
-              {/* Category, Price, Title, and Trainer Mail */}
-              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
-                <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
-                  <label className="text-white mb-2">Category</label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
+              {/* Selected Categories */}
+              <div className="flex flex-wrap gap-2">
+                {category.map((cat, index) => (
+                  <div
+                    key={index}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center"
                   >
-                    <option value="">Select Category</option>
-                    {categoryOptions.map((option, idx) => (
-                      <option
-                        key={idx}
-                        value={option}
-                        className="bg-white text-primary"
-                      >
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                    <span>{cat}</span>
+                    <button
+                      type="button"
+                      className="ml-2"
+                      onClick={() => handleRemoveCategory(cat)}
+                    >
+                      <FaTimes />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Category Checkboxes */}
+              <div className="flex flex-wrap gap-4">
+                {categoryOptions.map((option, idx) => (
+                  <div key={idx} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`category-${idx}`}
+                      value={option}
+                      checked={category.includes(option)}
+                      onChange={handleCategoryChange}
+                      className="mr-2"
+                    />
+                    <label
+                      htmlFor={`category-${idx}`}
+                      className="text-white cursor-pointer"
+                    >
+                      {option}
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+              {/* Price, Title, and Trainer Mail */}
+              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
                 <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
                   <label className="text-white mb-2">Price</label>
                   <input
@@ -179,9 +221,6 @@ const AdminCreatingNewProgramme = () => {
                     onChange={(e) => setPrice(e.target.value)}
                   />
                 </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
                 <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
                   <label className="text-white mb-2">Programme Title</label>
                   <input
@@ -191,6 +230,9 @@ const AdminCreatingNewProgramme = () => {
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
                 <div className="flex flex-col w-full sm:w-[45%]">
                   <label className="text-white mb-2">Trainer Mail</label>
                   <input
@@ -217,17 +259,15 @@ const AdminCreatingNewProgramme = () => {
 
               {/* Submit Button */}
               <div className="flex justify-center mt-4">
-                <Link to={`/trainer/create/programme/type/${user.user._id}`}>
-                  <button
-                    type="submit"
-                    className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded ${
-                      loadings ? 'cursor-not-allowed opacity-50' : ''
-                    }`}
-                    disabled={loadings}
-                  >
-                    {loadings ? 'Next...' : 'Next'}
-                  </button>
-                </Link>
+                <button
+                  type="submit"
+                  className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded ${
+                    loadings ? 'cursor-not-allowed opacity-50' : ''
+                  }`}
+                  disabled={loadings}
+                >
+                  {loadings ? 'Creating...' : 'Create Program'}
+                </button>
               </div>
             </form>
           </div>

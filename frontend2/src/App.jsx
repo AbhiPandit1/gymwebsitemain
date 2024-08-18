@@ -20,6 +20,7 @@ import DynamicDayPlanComponent from './pages/trainer/trainerProgrammeCreation/tr
 
 import DynamicDietPlanComponent from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DynamicDietPlanComponent';
 import useToastHook from '../hook/useToastHook';
+import DayPlan from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DayPlan';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -187,7 +188,7 @@ function App() {
           />
           <Route
             path="/trainer/create/programme/day/plan/:id"
-            element={token ? <SevenDayPlan /> : <Navigate to="/login" />}
+            element={token ? <DayPlan /> : <Navigate to="/login" />}
           />
           <Route
             path="/trainer/create/programme/both/:id"

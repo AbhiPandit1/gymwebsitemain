@@ -123,31 +123,111 @@ const DynamicDayPlanComponent = () => {
       {
         day: 'Day 1',
         exercises: [
-          { name: 'Push-ups', sets: '3', reps: '15' },
-          { name: 'Squats', sets: '3', reps: '20' },
+          {
+            name: 'Push-ups',
+            sets: '3',
+            reps: '15',
+            video: {
+              name: 'Push-up Tutorial',
+              url: 'https://www.youtube.com/watch?v=kmy_YNhl0mw',
+            },
+          },
+          {
+            name: 'Squats',
+            sets: '3',
+            reps: '20',
+            video: {
+              name: 'Squat Technique',
+              url: 'https://rr5---sn-qxaelney.googlevideo.com/videoplayback?expire=1724026720&ei=ADvCZvyaOvG4mLAPlcKeaQ&ip=41.133.216.51&id=o-AB1Fu9ACJPpl8L4Q-V8yev8Qcv1rfNwOdHIeOLpSlAQM&itag=18&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&bui=AQmm2ewNIFNnKAar1Jnh7lVSPo1AEt6oqn-_IX1TFOADKP7J-xb7x21_eEPVOKCdQ_OROb8tPLrJ31BK&spc=Mv1m9qkuUPe1NQ8aOJgqb0gh7UbCEpK-s7TjAyUPO_7uAzQcpoquQjI&vprv=1&svpuc=1&mime=video%2Fmp4&ns=1Xprev8RyUOcU5IDMFqin7IQ&rqh=1&gir=yes&clen=462489582&ratebypass=yes&dur=19928.015&lmt=1723846685038232&c=WEB_CREATOR&sefc=1&txp=6309224&n=KBug31AIXLHsmA&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Crqh%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AJfQdSswRQIgZx0gR2BZ0Lg_agg72tHCd9d6DPuaJc_W2qnurkNM_cMCIQDmUEf2VZ3z7ldpdPMXb5KACurqTqPtLUc2K7ahIcyefQ%3D%3D&title=Build%20a%20Full%20Stack%20React%20Native%20App%20with%20Payments%20%7C%20PostgreSQL%2C%20TypeScript%2C%20Stripe%2C%20Tailwind&rm=sn-wocee7z&rrc=104,80&fexp=24350516,24350517,24350557,24350561&req_id=7cc7958e1c8ba3ee&ipbypass=yes&redirect_counter=2&cm2rm=sn-xmjpuxa-qxal7d&cms_redirect=yes&cmsv=e&mh=Dz&mip=45.118.158.164&mm=29&mn=sn-qxaelney&ms=rdu&mt=1724010081&mv=m&mvi=5&pl=24&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pl&lsig=AGtxev0wRQIhAKYVcVd-yBvxEN2TQH4mcRgf21x9cGWku0xoSIZLu7v4AiAZzcw6oOZdDT4M46QUBb05v5WSDlE1rU8xR6x0nK1xyQ%3D%3D',
+            },
+          },
         ],
       },
       {
         day: 'Day 2',
         exercises: [
-          { name: 'Pull-ups', sets: '3', reps: '10' },
-          { name: 'Lunges', sets: '3', reps: '15' },
-          { name: 'Lunges', sets: '3', reps: '15' },
-          { name: 'Lunges', sets: '3', reps: '15' },
+          {
+            name: 'Pull-ups',
+            sets: '3',
+            reps: '10',
+            video: {
+              name: 'Pull-up Guide',
+              url: 'https://www.youtube.com/watch?v=2yM4vJt5wa8',
+            },
+          },
+          {
+            name: 'Lunges',
+            sets: '3',
+            reps: '15',
+            video: {
+              name: 'Lunges Tutorial',
+              url: 'https://www.youtube.com/watch?v=1j5vJgRjS5Q',
+            },
+          },
+          {
+            name: 'Lunges',
+            sets: '3',
+            reps: '15',
+            video: {
+              name: 'Lunges Tutorial',
+              url: 'https://www.youtube.com/watch?v=1j5vJgRjS5Q',
+            },
+          },
+          {
+            name: 'Lunges',
+            sets: '3',
+            reps: '15',
+            video: {
+              name: 'Lunges Tutorial',
+              url: 'https://www.youtube.com/watch?v=1j5vJgRjS5Q',
+            },
+          },
         ],
       },
       {
         day: 'Day 3',
         exercises: [
-          { name: 'Bench Press', sets: '4', reps: '12' },
-          { name: 'Deadlift', sets: '4', reps: '10' },
+          {
+            name: 'Bench Press',
+            sets: '4',
+            reps: '12',
+            video: {
+              name: 'Bench Press Form',
+              url: 'https://www.youtube.com/watch?v=Bp1HkZg4F5s',
+            },
+          },
+          {
+            name: 'Deadlift',
+            sets: '4',
+            reps: '10',
+            video: {
+              name: 'Deadlift Technique',
+              url: 'https://www.youtube.com/watch?v=ytCmoJ8E_WU',
+            },
+          },
         ],
       },
       {
         day: 'Day 4',
         exercises: [
-          { name: 'Plank', sets: '3', reps: '60s' },
-          { name: 'Burpees', sets: '3', reps: '15' },
+          {
+            name: 'Plank',
+            sets: '3',
+            reps: '60s',
+            video: {
+              name: 'Plank Position',
+              url: 'https://www.youtube.com/watch?v=pSHjTRCQxIw',
+            },
+          },
+          {
+            name: 'Burpees',
+            sets: '3',
+            reps: '15',
+            video: {
+              name: 'Burpees Guide',
+              url: 'https://www.youtube.com/watch?v=7lD6AjKr8g4',
+            },
+          },
         ],
       },
     ];
@@ -157,18 +237,53 @@ const DynamicDayPlanComponent = () => {
       {
         day: 'Day 5',
         exercises: [
-          { name: 'Mountain Climbers', sets: '3', reps: '20' },
-          { name: 'Jumping Jacks', sets: '3', reps: '30' },
+          {
+            name: 'Mountain Climbers',
+            sets: '3',
+            reps: '20',
+            video: {
+              name: 'Mountain Climbers',
+              url: 'https://www.youtube.com/watch?v=3_3xDFt6yt4',
+            },
+          },
+          {
+            name: 'Jumping Jacks',
+            sets: '3',
+            reps: '30',
+            video: {
+              name: 'Jumping Jacks',
+              url: 'https://www.youtube.com/watch?v=c4D9I4zj9M4',
+            },
+          },
         ],
       },
       {
         day: 'Day 6',
         exercises: [
-          { name: 'Bicep Curls', sets: '3', reps: '15' },
-          { name: 'Tricep Dips', sets: '3', reps: '15' },
+          {
+            name: 'Bicep Curls',
+            sets: '3',
+            reps: '15',
+            video: {
+              name: 'Bicep Curls Tutorial',
+              url: 'https://www.youtube.com/watch?v=ykJmrZ5v0F4',
+            },
+          },
+          {
+            name: 'Tricep Dips',
+            sets: '3',
+            reps: '15',
+            video: {
+              name: 'Tricep Dips',
+              url: 'https://www.youtube.com/watch?v=6kALZikXxLc',
+            },
+          },
         ],
       },
-      { day: 'Day 7', exercises: [{ name: 'Rest Day', sets: '', reps: '' }] },
+      {
+        day: 'Day 7',
+        exercises: [{ name: 'Rest Day', sets: '', reps: '', video: null }],
+      },
     ];
 
     const thirtyDayPlan = [
@@ -176,11 +291,27 @@ const DynamicDayPlanComponent = () => {
       {
         day: 'Day 8',
         exercises: [
-          { name: 'Running', sets: '1', reps: '30m' },
-          { name: 'Cycling', sets: '1', reps: '45m' },
+          {
+            name: 'Running',
+            sets: '1',
+            reps: '30m',
+            video: {
+              name: 'Running Tips',
+              url: 'https://www.youtube.com/watch?v=0Oln0U-LzOs',
+            },
+          },
+          {
+            name: 'Cycling',
+            sets: '1',
+            reps: '45m',
+            video: {
+              name: 'Cycling Basics',
+              url: 'https://www.youtube.com/watch?v=RHhBIL4L0D4',
+            },
+          },
         ],
       },
-      // Continue adding plans for the remaining days
+      // Continue adding plans for the remaining days with video details
     ];
 
     return type === 'four'

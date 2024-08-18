@@ -10,7 +10,8 @@ const ProgrammeComponent = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [searchBox, setSearchBox] = useState('');
   const [filter, setFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState(''); // New state for category filter
+  const [categoryFilter, setCategoryFilter] = useState(''); // State for category filter
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false); // State for dropdown visibility
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -50,15 +51,20 @@ const ProgrammeComponent = () => {
 
   const handleCategoryChange = (e) => {
     setCategoryFilter(e.target.value);
+    setIsCategoryDropdownOpen(false); // Close dropdown after selecting
+  };
+
+  const toggleCategoryDropdown = () => {
+    setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
   };
 
   // Filter programmes based on search box input and selected category
   const filteredProgrammes = programmeData.filter((programme) => {
-    const matchesSearch = programme.category
+    const matchesSearch = programme.title
       ?.toLowerCase()
       .includes(searchBox.toLowerCase());
     const matchesCategory = categoryFilter
-      ? programme.category === categoryFilter
+      ? programme.category.some((cat) => cat === categoryFilter)
       : true;
     return matchesSearch && matchesCategory;
   });
@@ -67,27 +73,33 @@ const ProgrammeComponent = () => {
     <div>
       <HeroSection
         category="Programs"
-        para="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae distinctio laborum ex veritatis saepe iste? In iure animi commodi rem, vel asperiores."
-        searchCategory="See all Programmes"
+        para="Explore our wide range of programs designed to help you achieve your fitness goals. Whether you're looking to build muscle, lose weight, or improve your overall health, we have something for everyone."
+        searchCategory="Browse All Programs"
       />
       <div className="w-full bg-footerColor flex flex-col items-center text-white pl-5 sm:p-5 min-h-screen max-w-[90%] mx-auto rounded-xl p-10">
-        <div className="flex flex-col sm:flex-row items-center gap-2 justify-start">
-          <div className="sm:pl-[10%] p-2">
-            Search
-            <div className="flex justify-between items-center w-full">
-              <input
-                type="text"
-                placeholder="Search ..."
-                className="w-full sm:w-[30rem] h-12 px-4 rounded-l-[1rem] rounded-r-[1rem] bg-tertiary border border-secondary focus:outline-none focus:ring-2 focus:ring-secondary"
-                onChange={(e) => setSearchBox(e.target.value)}
-              />
-            </div>
+        <h1 className="text-2xl font-bold mb-6">Our Programs</h1>
+        <div className="flex flex-col sm:flex-row items-center gap-2 justify-start mb-6">
+          <div className="sm:pl-[10%] p-2 flex flex-col">
+            <label htmlFor="search" className="mb-2 font-semibold">
+              Search
+            </label>
+            <input
+              type="text"
+              id="search"
+              placeholder="Search for programs..."
+              className="w-full sm:w-[30rem] h-12 px-4 rounded-l-[1rem] rounded-r-[1rem] bg-tertiary border border-secondary focus:outline-none focus:ring-2 focus:ring-secondary"
+              onChange={(e) => setSearchBox(e.target.value)}
+            />
           </div>
-          <div className="mt-3 p-4">
+          <div className="mt-3 p-4 flex flex-col">
+            <label htmlFor="filter" className="mb-2 font-semibold">
+              Sort By
+            </label>
             <select
+              id="filter"
               value={filter}
               onChange={handleFilterChange}
-              className="p-2 border bg-tertiary rounded-lg border-gray-300 ml-2"
+              className="p-2 border bg-tertiary rounded-lg border-gray-300"
             >
               <option value="">Select Filter</option>
               <option value="priceLowToHigh">Price Low to High</option>
@@ -95,22 +107,33 @@ const ProgrammeComponent = () => {
               <option value="bestsellers">Bestsellers</option>
             </select>
           </div>
-          <div className="mt-3 p-4">
-            <select
-              value={categoryFilter}
-              onChange={handleCategoryChange}
-              className="p-2 border bg-tertiary rounded-lg border-gray-300 ml-2"
+          <div className="mt-3 p-4 flex flex-col">
+            <button
+              id="category"
+              onClick={toggleCategoryDropdown}
+              className="p-2 border bg-tertiary rounded-lg border-gray-300"
             >
-              <option value="">All Categories</option>
-              <option value="Nutrition">Nutrition</option>
-              <option value="Bodybuilding">Bodybuilding</option>
-              <option value="Sports">Sports</option>
-              <option value="Women">Women</option>
-              <option value="WeightLoss">Weight Loss</option>
-              <option value="PowerLifting">Power Lifting</option>
-              <option value="General">General</option>
-              <option value="Recovery">Recovery</option>
-            </select>
+              {categoryFilter ? categoryFilter : 'Select Category'}
+            </button>
+            {isCategoryDropdownOpen && (
+              <div className="absolute mt-2 bg-tertiary border border-gray-300 rounded-lg">
+                <select
+                  value={categoryFilter}
+                  onChange={handleCategoryChange}
+                  className="p-2 border-none bg-tertiary rounded-lg"
+                >
+                  <option value="">All Categories</option>
+                  <option value="Nutrition">Nutrition</option>
+                  <option value="Bodybuilding">Bodybuilding</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Women">Women</option>
+                  <option value="WeightLoss">Weight Loss</option>
+                  <option value="PowerLifting">Power Lifting</option>
+                  <option value="General">General</option>
+                  <option value="Recovery">Recovery</option>
+                </select>
+              </div>
+            )}
           </div>
         </div>
 

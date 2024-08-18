@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DashboardComponent from '../../component/DashboardComponent';
 import DashboardHeader from '../../component/DashboardHeader';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ const PersonalTrainerProgramme = () => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [hoverDashboard, setHoverDashboard] = useState(false);
+  const [showCategory, setShowCategory] = useState({}); // Track category visibility
   const dashBoardLink = useDashboardLinks();
 
   useEffect(() => {
@@ -64,8 +65,12 @@ const PersonalTrainerProgramme = () => {
     setHoverDashboard((prevState) => !prevState);
   };
 
+  const handleCategoryToggle = (id) => {
+    setShowCategory((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
   return (
-    <div className="grid grid-cols-7 min-h-screen  max-h-screen max-w-full overflow-y-auto sm:overflow-hidden text-white scrollbar-hide">
+    <div className="grid grid-cols-7 min-h-screen max-h-screen max-w-full overflow-y-auto sm:overflow-hidden text-white scrollbar-hide">
       <div
         className={`transition-transform duration-300 ${
           hoverDashboard ? 'hidden' : 'col-span-7'
@@ -107,14 +112,19 @@ const PersonalTrainerProgramme = () => {
                           alt={card.type}
                           className="h-[249px] object-cover rounded-[50px] p-4 opacity-1"
                         />
-                        <div className="h-[2rem] max-w-[5rem] m-[5%] text-[0.8rem] rounded-[10px] bg-paraColor font-sans flex justify-center items-center">
-                          Category
-                        </div>
-                        <div className="p-4">
-                          <h2 className="text-xl text-white font-sans font-bold">
-                            {card.category}
-                          </h2>
-                        </div>
+                        <button
+                          onClick={() => handleCategoryToggle(card._id)}
+                          className="text-sm font-semibold h-[2rem] w-[8rem] py-1 px-4 rounded-lg bg-primary text-white shadow-md hover:bg-gray-500 transition-colors duration-300"
+                        >
+                          {showCategory[card._id] ? 'Category' : 'Show'}
+                        </button>
+                        {showCategory[card._id] && (
+                          <div className="mt-2">
+                            <p className="text-sm text-white">
+                              {card.category.join(', ')}
+                            </p>
+                          </div>
+                        )}
                         <div className="font-sans text-1xl text-paraColor w-[90%] m-[5%]">
                           {card.desc}
                         </div>
@@ -140,7 +150,7 @@ const PersonalTrainerProgramme = () => {
                       </div>
                     ))}
                   </div>
-                  {/*new */}
+                  {/* New Programme Button */}
                   <Link to={`/trainer/create/programme/${user.user._id}`}>
                     <div className="bg-tertiary m-auto w-[80%] sm:w-[40%] flex justify-center gap-3 items-center rounded-lg mb-[5rem]">
                       <div className="flex justify-center items-center">

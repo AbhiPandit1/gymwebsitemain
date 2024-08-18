@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const programmeSchema = new mongoose.Schema({
   category: {
-    type: String,
+    type: [String],
     enum: [
       'Nutrition',
       'Bodybuilding',
@@ -13,20 +13,29 @@ const programmeSchema = new mongoose.Schema({
       'General',
       'Recovery',
     ],
+    required: true,
   },
   categoryPhoto: {
-    public_id: { type: String }, // Add these fields to store Cloudinary data
+    public_id: { type: String },
     url: { type: String },
   },
-  price: Number,
-  desc: String,
+  price: {
+    type: Number,
+    required: true,
+    min: 10, // Ensuring the price is always greater than 10
+  },
+  desc: {
+    type: String,
+    required: true,
+  },
+  title: { type: String, required: true },
   trainer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
   },
 });
 
-// Middleware to ensure trainer is a user with the role 'trainer'
 programmeSchema.pre('save', async function (next) {
   if (this.trainer) {
     const User = mongoose.model('User');
