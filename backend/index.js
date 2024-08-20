@@ -20,7 +20,8 @@ import forgotPasswordRouter from './route/forgotPasswordRoute.js';
 import afterBuyingRouter from './route/afterBuyingRoute.js';
 import adminRoute from './route/adminRoute.js';
 import settingRouter from './route/settingRoute.js';
-
+import programmeDietPlanRouter from './route/programmeDietPlanRoute.js';
+import programmeDayPlanRouter from './route/programmeDayPlanRoute.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -60,6 +61,8 @@ app.use('/api/forgot', forgotPasswordRouter);
 app.use('/api/after', afterBuyingRouter);
 app.use('/api/admin/route', adminRoute);
 app.use('/api/setting', settingRouter);
+app.use('/api/trainer', programmeDietPlanRouter);
+app.use('/api/trainer', programmeDayPlanRouter);
 
 // Serve static files (if any)
 // Uncomment and adjust the path if you have static files to serve

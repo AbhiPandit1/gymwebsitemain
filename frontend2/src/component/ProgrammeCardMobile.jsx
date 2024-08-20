@@ -20,20 +20,24 @@ const ProgrammeCardMobile = () => {
   }
 
   // Filter out items without `categoryPhoto` and ensure only one item per category
-  const filteredProgrammes = programme.categories
+  const flattenedProgrammes = programme.categories
     .filter((data) => data.categoryPhoto?.url) // Ensure item has a photo
     .reduce((acc, current) => {
-      if (!acc.some((item) => item.category === current.category)) {
-        acc.push(current);
-      }
+      current.category.forEach((cat) => {
+        if (!acc.some((item) => item.category.includes(cat))) {
+          acc.push({
+            ...current,
+            category: [cat], // Keep only one category for unique representation
+          });
+        }
+      });
       return acc;
     }, []);
 
-  // Display up to 3 items when loadButton is false, otherwise display all items
+  // Display up to 4 items when loadButton is false, otherwise display all items
   const visibleProgrammes = loadButton
-    ? filteredProgrammes
-    : filteredProgrammes.slice(0, 3);
-
+    ? flattenedProgrammes
+    : flattenedProgrammes.slice(0, 4);
   return (
     <div className="bg-trainerColor p-4 text-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-4">

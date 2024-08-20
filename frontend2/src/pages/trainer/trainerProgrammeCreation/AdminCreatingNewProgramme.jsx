@@ -60,11 +60,13 @@ const AdminCreatingNewProgramme = () => {
           response?.data.message || 'Programme created successfully'
         );
 
-        // Reset form fields after successful submission
-        resetForm();
+        const programmeId = response?.data.programme._id;
+        console.log(programmeId);
 
         // Navigate to the desired route
-        navigate(`/trainer/create/programme/type/${user.user._id}`);
+        navigate(
+          `/trainer/create/programme/day/plan/${user.user._id}/${programmeId}`
+        );
       }
     } catch (error) {
       console.error('Error creating programme:', error);
@@ -72,6 +74,7 @@ const AdminCreatingNewProgramme = () => {
     } finally {
       setLoadings(false);
     }
+    resetForm();
   };
 
   const resetForm = () => {

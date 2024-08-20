@@ -22,19 +22,25 @@ const ProgrammeCard = () => {
   }
 
   // Filter out items without a categoryPhoto and ensure only one item per category
-  const filteredProgrammes = programme.categories
+  const flattenedProgrammes = programme.categories
     .filter((data) => data.categoryPhoto?.url)
     .reduce((acc, current) => {
-      if (!acc.some((item) => item.category === current.category)) {
-        acc.push(current);
-      }
+      // Extract unique categories
+      current.category.forEach((cat) => {
+        if (!acc.some((item) => item.category.includes(cat))) {
+          acc.push({
+            ...current,
+            category: [cat], // Keep only one category for unique representation
+          });
+        }
+      });
       return acc;
     }, []);
 
   // Display up to 4 items when loadButton is false, otherwise display all items
   const visibleProgrammes = loadButton
-    ? filteredProgrammes
-    : filteredProgrammes.slice(0, 4);
+    ? flattenedProgrammes
+    : flattenedProgrammes.slice(0, 4);
 
   // Check for small screen size
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 640);
@@ -57,7 +63,7 @@ const ProgrammeCard = () => {
             Our Core Services
           </h1>
           <div className="h-[2.5rem] w-[3.5rem] sm:h-[3rem] sm:w-[4em] rounded-xl flex justify-center items-center border bg-white text-black">
-            {filteredProgrammes.length} total
+            {flattenedProgrammes.length} total
           </div>
         </div>
 

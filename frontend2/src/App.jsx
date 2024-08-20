@@ -177,17 +177,17 @@ function App() {
             element={token ? <ProgrammeKind /> : <Navigate to="/login" />}
           />
           <Route
-            path="/trainer/create/programme/diet/:id"
+            path="/trainer/create/programme/diet/:id/:programmeId"
             element={token ? <DietPlan /> : <Navigate to="/login" />}
           />
           <Route
-            path="s/:id"
+            path="/trainer/programme/diet/plan/:id"
             element={
               token ? <DynamicDietPlanComponent /> : <Navigate to="/login" />
             }
           />
           <Route
-            path="/trainer/create/programme/day/plan/:id"
+            path="/trainer/create/programme/day/plan/:id/:programmeId"
             element={token ? <DayPlan /> : <Navigate to="/login" />}
           />
           <Route
@@ -195,7 +195,7 @@ function App() {
             element={token ? <SevenDayPlan /> : <Navigate to="/login" />}
           />
           <Route
-            path="/trainer/programme/day/plan/:id"
+            path="/trainer/programme/day/plan/:id/:programmeId"
             element={
               token ? <DynamicDayPlanComponent /> : <Navigate to="/login" />
             }

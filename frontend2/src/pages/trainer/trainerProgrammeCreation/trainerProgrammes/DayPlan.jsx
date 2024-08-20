@@ -3,24 +3,26 @@ import { useParams, useNavigate } from 'react-router-dom';
 import useDashboardLinks from '../../../../../hook/CreateDahsboardLinks';
 import DashboardComponent from '../../../../component/DashboardComponent';
 import DashboardHeader from '../../../../component/DashboardHeader';
-import { BiSolidRightArrow, BiArrowBack } from 'react-icons/bi';
+import { BiSolidRightArrow, BiArrowBack, BiCross } from 'react-icons/bi';
 import ReactPlayer from 'react-player';
 import Modal from 'react-modal';
-import { useDropzone } from 'react-dropzone';
+import { useSelector } from 'react-redux';
+import usePostDayPlan from '../../../../../hook/usePostDayPlan';
+import { toast } from 'react-toastify';
 
 const DayPlan = () => {
-  const { days } = useParams();
+  const { programmeId } = useParams();
   const navigate = useNavigate();
   const dashBoardLink = useDashboardLinks();
   const [hoverDashboard, setHoverDashboard] = useState(false);
   const [trainingPlan, setTrainingPlan] = useState([]);
-  const [numDays, setNumDays] = useState(days ? parseInt(days, 10) : 1);
+  const [numDays, setNumDays] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
   const [currentVideoName, setCurrentVideoName] = useState('');
-  const [videoInputRefs, setVideoInputRefs] = useState({});
-  const [uploadOption, setUploadOption] = useState('upload'); // 'upload' or 'link'
-  const [videoLink, setVideoLink] = useState('');
+
+  const { user } = useSelector((state) => state.user);
+  const { loading, error, success, postDayPlan } = usePostDayPlan();
 
   useEffect(() => {
     if (numDays > 0) {
@@ -28,7 +30,14 @@ const DayPlan = () => {
         Array.from({ length: numDays }, (_, i) => ({
           day: `Day ${i + 1}`,
           exercises: [
-            { name: '', sets: '', reps: '', video: '', videoName: '' },
+            {
+              name: '',
+              sets: '',
+              reps: '',
+              video: '',
+              videoName: '',
+              showVideo: true,
+            },
           ],
         }))
       );
@@ -58,8 +67,32 @@ const DayPlan = () => {
               ...day,
               exercises: [
                 ...day.exercises,
-                { name: '', sets: '', reps: '', video: '', videoName: '' },
+                {
+                  name: '',
+                  sets: '',
+                  reps: '',
+                  video: '',
+                  videoName: '',
+                  showVideo: true,
+                },
               ],
+            }
+          : day
+      )
+    );
+  };
+
+  const toggleShowVideo = (dayIndex, exerciseIndex) => {
+    setTrainingPlan((prevPlan) =>
+      prevPlan.map((day, i) =>
+        i === dayIndex
+          ? {
+              ...day,
+              exercises: day.exercises.map((exercise, j) =>
+                j === exerciseIndex
+                  ? { ...exercise, showVideo: !exercise.showVideo }
+                  : exercise
+              ),
             }
           : day
       )
@@ -84,21 +117,12 @@ const DayPlan = () => {
   };
 
   const handleBack = () => {
-    navigate('/trainer/create/programme/customizeDays');
+    navigate(`/trainer/create/programme/${user.user._id}`);
   };
 
   const handleDaysChange = (e) => {
     const newDays = parseInt(e.target.value, 10);
     setNumDays(newDays > 0 ? newDays : 1);
-  };
-
-  const onDrop = (acceptedFiles, dayIndex, exerciseIndex) => {
-    const file = acceptedFiles[0];
-    if (file) {
-      const fileUrl = URL.createObjectURL(file);
-      handleExerciseChange(dayIndex, exerciseIndex, 'video', fileUrl);
-      handleExerciseChange(dayIndex, exerciseIndex, 'videoName', file.name);
-    }
   };
 
   const openModal = (videoUrl, videoName) => {
@@ -113,22 +137,20 @@ const DayPlan = () => {
     setCurrentVideoName('');
   };
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      // Handle drop for all files at once (you can customize this)
-      const file = acceptedFiles[0];
-      if (file) {
-        // Update video info for the first selected exercise (customize if needed)
-        const dayIndex = 0;
-        const exerciseIndex = 0;
-        const fileUrl = URL.createObjectURL(file);
-        handleExerciseChange(dayIndex, exerciseIndex, 'video', fileUrl);
-        handleExerciseChange(dayIndex, exerciseIndex, 'videoName', file.name);
-      }
-    },
-    accept: 'video/*',
-    multiple: false,
-  });
+  const handleRemoveVideo = (dayIndex, exerciseIndex) => {
+    handleExerciseChange(dayIndex, exerciseIndex, 'video', '');
+    handleExerciseChange(dayIndex, exerciseIndex, 'videoName', '');
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await postDayPlan(programmeId, trainingPlan);
+      navigate(`/trainer/programme/day/plan/${user.user._id}/${programmeId}`);
+    } catch (err) {
+      // Handle error (e.g., show an error message)
+      toast.error('Failed to submit day plan.');
+    }
+  };
 
   return (
     <div className="grid grid-cols-7 h-screen max-w-[100vw] text-white font-sans relative">
@@ -242,67 +264,66 @@ const DayPlan = () => {
                     />
 
                     <div className="p-4">
-                      <label className="block text-lg mb-2 font-semibold">
-                        Video Option:
-                      </label>
-                      <select
-                        value={uploadOption}
-                        onChange={(e) => setUploadOption(e.target.value)}
-                        className="border p-3 rounded w-full bg-white text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      <button
+                        onClick={() => toggleShowVideo(dayIndex, exerciseIndex)}
+                        className="bg-blue-500 text-white rounded px-4 py-2 mb-2"
                       >
-                        <option value="upload">Upload Video</option>
-                        <option value="link">Video Link</option>
-                      </select>
-                      {uploadOption === 'upload' ? (
-                        <div
-                          {...getRootProps()}
-                          className="border p-3 rounded mt-4 bg-gray-700 cursor-pointer hover:bg-gray-600"
-                        >
-                          <input {...getInputProps()} />
-                          <p className="text-center">
-                            Drag & drop a video here, or click to select one
-                          </p>
-                        </div>
-                      ) : (
-                        <input
-                          type="text"
-                          value={videoLink}
-                          onChange={(e) => setVideoLink(e.target.value)}
-                          placeholder="Enter Video Link"
-                          className="border p-3 rounded mt-4 w-full bg-white text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                        />
+                        {exercise.showVideo ? 'Remove Video' : 'Show Video'}
+                      </button>
+                      {exercise.showVideo && (
+                        <>
+                          <input
+                            type="text"
+                            value={exercise.videoName}
+                            onChange={(e) =>
+                              handleExerciseChange(
+                                dayIndex,
+                                exerciseIndex,
+                                'videoName',
+                                e.target.value
+                              )
+                            }
+                            placeholder="Video Name"
+                            className="border p-3 rounded w-full bg-white text-black mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          />
+                          <input
+                            type="text"
+                            value={exercise.video}
+                            onChange={(e) =>
+                              handleExerciseChange(
+                                dayIndex,
+                                exerciseIndex,
+                                'video',
+                                e.target.value
+                              )
+                            }
+                            placeholder="Video URL"
+                            className="border p-3 rounded w-full bg-white text-black mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          />
+                          {exercise.video && (
+                            <button
+                              onClick={() =>
+                                openModal(exercise.video, exercise.videoName)
+                              }
+                              className="bg-blue-500 text-white rounded px-4 py-2"
+                            >
+                              Play Video
+                            </button>
+                          )}
+                        </>
                       )}
                       <button
-                        onClick={() =>
-                          openModal(exercise.video, exercise.videoName)
-                        }
-                        className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-400"
+                        onClick={() => removeExercise(dayIndex, exerciseIndex)}
+                        className="bg-red-500 text-white rounded px-4 py-2 mt-2"
                       >
-                        View Video
+                        Remove Exercise
                       </button>
                     </div>
-
-                    {exercise.video && (
-                      <div className="relative mt-4">
-                        <ReactPlayer
-                          url={exercise.video}
-                          controls
-                          width="100%"
-                          height="auto"
-                        />
-                      </div>
-                    )}
-                    <button
-                      onClick={() => removeExercise(dayIndex, exerciseIndex)}
-                      className="bg-red-500 text-white py-2 px-4 rounded mt-4 hover:bg-red-400"
-                    >
-                      Remove Exercise
-                    </button>
                   </div>
                 ))}
                 <button
                   onClick={() => addExercise(dayIndex)}
-                  className="bg-blue-500 text-white py-2 px-4 rounded mt-4 hover:bg-blue-400"
+                  className="bg-green-500 text-white rounded px-4 py-2"
                 >
                   Add Exercise
                 </button>
@@ -310,54 +331,36 @@ const DayPlan = () => {
             ))}
           </div>
         )}
-      </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        contentLabel="Video Modal"
-        className="modal"
-        overlayClassName="overlay"
-      >
-        <h2 className="text-xl font-bold mb-4">{currentVideoName}</h2>
-        <div className="flex justify-center items-center">
+        <button
+          onClick={handleSubmit}
+          className="bg-green-500 text-white rounded px-4 py-2 mt-8 mb-4"
+        >
+          Submit Day Plan
+        </button>
+
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          contentLabel="Video Modal"
+          className="fixed inset-0 bg-black text-white p-4 rounded-lg mx-auto max-w-4xl w-full max-h-full flex items-center justify-center"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-75"
+        >
+          <button
+            onClick={closeModal}
+            className="absolute top-2 right-2 text-2xl text-white"
+          >
+            <BiCross />
+          </button>
+          <h2 className="text-3xl mb-4">{currentVideoName}</h2>
           <ReactPlayer
             url={currentVideoUrl}
             controls
-            width="80%"
+            width="100%"
             height="auto"
           />
-        </div>
-        <button
-          onClick={closeModal}
-          className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-400"
-        >
-          Close
-        </button>
-      </Modal>
-
-      <style jsx>{`
-        .modal {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: #333;
-          padding: 20px;
-          border-radius: 10px;
-          width: 80%;
-          max-width: 900px;
-          color: white;
-        }
-        .overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.75);
-        }
-      `}</style>
+        </Modal>
+      </div>
     </div>
   );
 };

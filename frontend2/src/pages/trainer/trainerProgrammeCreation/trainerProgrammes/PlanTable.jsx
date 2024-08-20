@@ -6,7 +6,8 @@ const VideoModal = ({ isOpen, videoUrl, onClose }) => {
 
   // Determine if the videoUrl is a YouTube link
   const isYouTube =
-    videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be');
+    videoUrl &&
+    (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'));
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 p-4">
@@ -40,15 +41,17 @@ const VideoModal = ({ isOpen, videoUrl, onClose }) => {
     </div>
   );
 };
+
 // PlanTable Component
+
 const PlanTable = ({
-  planData,
-  headingColor,
-  textColor,
-  textSize,
-  tableHeadingColor,
-  tableRowColor,
-  tableColumnColor,
+  planData = [],
+  headingColor = 'black',
+  textColor = 'black',
+  textSize = '1rem',
+  tableHeadingColor = 'black',
+  tableRowColor = 'white',
+  tableColumnColor = 'gray',
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
@@ -165,9 +168,9 @@ const PlanTable = ({
                     {exercise.reps}
                   </td>
                   <td className="border-b py-2" style={defaultStyles.cell}>
-                    {exercise.video ? (
+                    {exercise.videoUrl ? (
                       <button
-                        onClick={() => handleVideoClick(exercise.video.url)}
+                        onClick={() => handleVideoClick(exercise.videoUrl)}
                         className="text-blue-400 hover:underline"
                       >
                         Watch Video
@@ -182,7 +185,7 @@ const PlanTable = ({
           </tbody>
         </table>
       ) : (
-        <p className="text-center text-gray-400">No data available</p>
+        <p className="text-center text-gray-400">No plans available.</p>
       )}
       <VideoModal
         isOpen={isModalOpen}

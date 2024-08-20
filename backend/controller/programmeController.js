@@ -3,6 +3,7 @@ import User from '../model/userModel.js';
 import uploadToCloudinary from '../middleware/uploadToCloudinary.js';
 import deleteFile from '../middleware/removeMulterFile.js';
 import mongoose from 'mongoose';
+import DayPlan from '../model/programmeDayPlanModel.js';
 
 //Create Programme  || Categories
 export const createProgramme = async (req, res) => {
@@ -223,7 +224,7 @@ export const updateProgramme = async (req, res) => {
 //delete programme
 export const deleteProgramme = async (req, res) => {
   const { programmeId } = req.body;
-  console.log(req.body);
+  console.log('Received request body:', req.body);
 
   // Validate programmeId
   if (!programmeId) {
@@ -231,6 +232,11 @@ export const deleteProgramme = async (req, res) => {
   }
 
   try {
+    // Validate the format of programmeId if needed (e.g., for MongoDB ObjectId)
+    if (!mongoose.Types.ObjectId.isValid(programmeId)) {
+      return res.status(400).json({ message: 'Invalid Programme ID format' });
+    }
+
     // Find the programme by programmeId
     const programme = await Programme.findById(programmeId);
 
@@ -238,14 +244,21 @@ export const deleteProgramme = async (req, res) => {
       return res.status(404).json({ message: 'Programme not found' });
     }
 
+    // Delete associated DayPlans
+    await DayPlan.deleteMany({ programme: programmeId });
+
     // Delete the programme
-    await Programme.deleteOne({ _id: programmeId });
+    await Programme.findByIdAndDelete(programmeId);
 
     // Respond with success message
-    return res.status(200).json({ message: 'Programme deleted successfully' });
+    return res
+      .status(200)
+      .json({
+        message: 'Programme and associated DayPlans deleted successfully',
+      });
   } catch (error) {
     console.error('Error deleting programme:', error);
-    return res.status(500).json({ message: 'Server Error' });
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
