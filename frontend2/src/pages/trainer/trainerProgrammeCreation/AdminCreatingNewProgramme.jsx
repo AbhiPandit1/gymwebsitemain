@@ -24,7 +24,7 @@ const AdminCreatingNewProgramme = () => {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [loadings, setLoadings] = useState(false);
-  console.log(category);
+  const [planType, setPlanType] = useState('');
 
   const categoryOptions = [
     'Nutrition',
@@ -40,7 +40,6 @@ const AdminCreatingNewProgramme = () => {
   const handleMakeCategories = async (e) => {
     e.preventDefault();
 
-    // Form data preparation
     const formData = {
       category,
       price,
@@ -48,35 +47,35 @@ const AdminCreatingNewProgramme = () => {
       trainerMail,
       title,
       desc,
+      planType,
     };
-    console.log('FormData:', formData);
+
     try {
       setLoadings(true);
       const response = await dispatch(createProgramme(formData, id, token));
 
-      // Check response status and provide feedback
       if (response?.status === 201) {
         toast.success(
           response?.data.message || 'Programme created successfully'
         );
 
         const programmeId = response?.data.programme._id;
-        console.log(programmeId);
 
-        // Navigate to the desired route
-        navigate(
-          `/trainer/create/programme/day/plan/${user.user._id}/${programmeId}`
-        );
+        if (planType === 'Day') {
+          navigate(
+            `/trainer/programme/day/plan/${user.user._id}/${programmeId}`
+          );
+        } else {
+          navigate(`/trainer/create/programme/diet/plan/${user.user._id}/${programmeId}`);
+        }
       }
     } catch (error) {
-      console.error('Error creating programme:', error);
       toast.error('Error creating programme: ' + error.message);
     } finally {
       setLoadings(false);
     }
     resetForm();
   };
-
   const resetForm = () => {
     setCategory([]);
     setPrice('');
@@ -85,6 +84,7 @@ const AdminCreatingNewProgramme = () => {
     setTrainerMail(user.user.email);
     setTitle('');
     setDesc('');
+    setPlanType('');
   };
 
   const handleFileChange = (e) => {
@@ -113,26 +113,26 @@ const AdminCreatingNewProgramme = () => {
     );
   };
 
+  const handlePlanTypeChange = (e) => {
+    setPlanType(e.target.value);
+  };
+
   const dashBoardLink = useDashboardLinks();
 
   return (
     <div className="grid grid-cols-7 h-screen max-w-[100vw]">
-      {/* Sidebar */}
       <div className="hidden sm:col-span-2 sm:grid bg-black text-white">
         <DashboardComponent dashBoardLink={dashBoardLink} />
       </div>
 
-      {/* Main Content */}
       <div className="col-span-7 sm:col-span-5 bg-primary text-white">
         <div className="h-full">
           <DashboardHeader />
 
-          {/* Title */}
           <h1 className="text-3xl font-extrabold text-center py-4">
             Create Program
           </h1>
 
-          {/* Form */}
           <div className="h-[80vh] overflow-auto p-6 w-full">
             <form
               className="flex flex-col gap-8"
@@ -172,7 +172,7 @@ const AdminCreatingNewProgramme = () => {
               </div>
 
               {/* Selected Categories */}
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-4">
                 {category.map((cat, index) => (
                   <div
                     key={index}
@@ -191,7 +191,7 @@ const AdminCreatingNewProgramme = () => {
               </div>
 
               {/* Category Checkboxes */}
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 mb-4">
                 {categoryOptions.map((option, idx) => (
                   <div key={idx} className="flex items-center">
                     <input
@@ -212,9 +212,67 @@ const AdminCreatingNewProgramme = () => {
                 ))}
               </div>
 
+              {/* Plan Type Selection */}
+              <div className="flex flex-col mb-4">
+                <label className="text-white mb-2">Plan Type</label>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="diet-plan"
+                      name="planType"
+                      value="Diet"
+                      checked={planType === 'Diet'}
+                      onChange={handlePlanTypeChange}
+                      className="mr-2"
+                    />
+                    <label
+                      htmlFor="diet-plan"
+                      className="text-white cursor-pointer"
+                    >
+                      Diet Plan
+                    </label>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="day-plan"
+                      name="planType"
+                      value="Day"
+                      checked={planType === 'Day'}
+                      onChange={handlePlanTypeChange}
+                      className="mr-2"
+                    />
+                    <label
+                      htmlFor="day-plan"
+                      className="text-white cursor-pointer"
+                    >
+                      Day Plan
+                    </label>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="both-plan"
+                      name="planType"
+                      value="Both"
+                      checked={planType === 'Both'}
+                      onChange={handlePlanTypeChange}
+                      className="mr-2"
+                    />
+                    <label
+                      htmlFor="both-plan"
+                      className="text-white cursor-pointer"
+                    >
+                      Both
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               {/* Price, Title, and Trainer Mail */}
-              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
-                <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
+              <div className="flex flex-col sm:flex-row gap-4 mb-4">
+                <div className="flex flex-col w-full sm:w-[50%]">
                   <label className="text-white mb-2">Price</label>
                   <input
                     type="number"
@@ -224,7 +282,7 @@ const AdminCreatingNewProgramme = () => {
                     onChange={(e) => setPrice(e.target.value)}
                   />
                 </div>
-                <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
+                <div className="flex flex-col w-full sm:w-[50%]">
                   <label className="text-white mb-2">Programme Title</label>
                   <input
                     type="text"
@@ -235,43 +293,37 @@ const AdminCreatingNewProgramme = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
-                <div className="flex flex-col w-full sm:w-[45%]">
-                  <label className="text-white mb-2">Trainer Mail</label>
-                  <input
-                    type="email"
-                    className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
-                    placeholder="Enter trainer email"
-                    value={trainerMail}
-                    onChange={(e) => setTrainerMail(e.target.value)}
-                  />
-                </div>
+              {/* Trainer Email */}
+              <div className="mb-4">
+                <label className="text-white mb-2">Trainer Email</label>
+                <input
+                  type="email"
+                  className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
+                  value={trainerMail}
+                  onChange={(e) => setTrainerMail(e.target.value)}
+                />
               </div>
 
               {/* Description */}
-              <div className="flex flex-col">
+              <div className="mb-4">
                 <label className="text-white mb-2">Description</label>
                 <textarea
-                  rows={5}
-                  className="w-full bg-tertiary text-white p-2 rounded resize-none"
-                  placeholder="...desc"
+                  className="w-full h-32 bg-tertiary text-white p-2 rounded-[16px]"
                   value={desc}
                   onChange={(e) => setDesc(e.target.value)}
-                ></textarea>
+                />
               </div>
 
               {/* Submit Button */}
-              <div className="flex justify-center mt-4">
-                <button
-                  type="submit"
-                  className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded ${
-                    loadings ? 'cursor-not-allowed opacity-50' : ''
-                  }`}
-                  disabled={loadings}
-                >
-                  {loadings ? 'Creating...' : 'Create Program'}
-                </button>
-              </div>
+              <button
+                type="submit"
+                className={`w-full h-12 bg-secondary text-white rounded-[16px] ${
+                  loadings ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                disabled={loadings}
+              >
+                {loadings ? 'Creating...' : 'Create Programme'}
+              </button>
             </form>
           </div>
         </div>

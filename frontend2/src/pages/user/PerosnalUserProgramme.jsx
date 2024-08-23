@@ -18,6 +18,7 @@ const PersonalUserProgramme = () => {
   const dashBoardLink = useDashboardLinks();
   const [trainerDatas, setTrainerDatas] = useState([]);
   const [hoverDashboard, setHoverDashboard] = useState(false);
+  const [showCategory, setShowCategory] = useState({});
 
   useEffect(() => {
     const getPersonalProgramme = async () => {
@@ -30,10 +31,11 @@ const PersonalUserProgramme = () => {
             },
           }
         );
-        setTrainerDatas(response.data.programmeDetails);
+        setTrainerDatas(response.data.availableProgrammes);
+        console.log(response.data);
       } catch (error) {
         console.error(error);
-        toast.error(error.response.data.error);
+        toast.error(error.response?.data?.error || 'Something went wrong');
       }
     };
 
@@ -44,10 +46,17 @@ const PersonalUserProgramme = () => {
     setHoverDashboard((prevState) => !prevState);
   };
 
+  const handleCategoryToggle = (id) => {
+    setShowCategory((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
   return (
     <>
-      {trainerDatas ? (
-        <div className="grid grid-cols-7 min-h-screen overflow-hidden text-white font-sans scrollbar-hide-body">
+      {trainerDatas.length > 0 ? (
+        <div className="grid grid-cols-7 min-h-screen overflow-hidden text-white font-sans">
           <div
             className={`transition-transform duration-300 ${
               hoverDashboard ? 'hidden' : 'col-span-7'
@@ -73,27 +82,35 @@ const PersonalUserProgramme = () => {
                       <IoIosArrowRoundForward size={80} color="white" />
                     </div>
                   )}
-                  <div className="grid grid-cols-3 m-auto sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-auto">
+                  <div className="grid grid-cols-3 sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-auto">
                     <div className="col-span-3 items-start justify-center overflow-auto">
                       <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-2 overflow-auto">
                         {trainerDatas.map((card) => (
                           <div
-                            key={card.id}
-                            className="bg rounded-[32px] gap-[5px] min-h-[400px] p-4 bg-tertiary w-full sm:w-[300.4px] m-[1rem] p-auto"
+                            key={card._id}
+                            className="bg rounded-[32px] min-h-[400px] p-4 bg-tertiary w-full sm:w-[300.4px] m-[1rem] p-auto"
                           >
                             <img
                               src={card.categoryPhoto.url}
                               alt={card.type}
-                              className="h-[249px] object-cover rounded-[50px] p-4 opacity-1"
+                              className="h-[249px] object-cover rounded-[50px] p-4"
                             />
                             <div className="h-[2rem] max-w-[5rem] m-[5%] text-[0.8rem] rounded-[10px] bg-paraColor font-sans flex justify-center items-center">
                               Category
                             </div>
-                            <div className="p-4">
-                              <h2 className="text-xl text-white font-sans font-bold">
-                                {card.category}
-                              </h2>
-                            </div>
+                            <button
+                              onClick={() => handleCategoryToggle(card._id)}
+                              className="text-sm font-semibold h-[2rem] w-[8rem] py-1 px-4 rounded-lg bg-primary text-white shadow-md hover:bg-gray-500 transition-colors duration-300"
+                            >
+                              {showCategory[card._id] ? 'Hide' : 'Show'}
+                            </button>
+                            {showCategory[card._id] && (
+                              <div className="mt-2">
+                                <p className="text-sm text-white">
+                                  {card.category.join(', ')}
+                                </p>
+                              </div>
+                            )}
                             <div className="font-sans text-1xl text-paraColor w-[90%] m-[5%] line-clamp-3">
                               {card.desc}
                             </div>
@@ -111,6 +128,53 @@ const PersonalUserProgramme = () => {
                                   />
                                 </Link>
                               </button>
+                            </div>
+                            {/* Conditional Rendering for Plan Type */}
+                            <div className="mt-4 flex gap-4">
+                              {card.planType === 'Diet' && (
+                                <Link
+                                  to={`/trainer/programme/diet/plan/${user.user._id}/${card._id}`}
+                                >
+                                  <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                                    Diet Plan
+                                  </button>
+                                </Link>
+                              )}
+                              {card.planType === 'Day' && (
+                                <Link
+                                  to={`/trainer/programme/day/plan/${card.trainerId}/${card._id}`}
+                                >
+                                  <button className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                                    Day Plan
+                                  </button>
+                                </Link>
+                              )}
+                              {card.planType === 'Both' && (
+                                <>
+                                  <Link
+                                    to={`/trainer/programme/diet/plan/${user.user._id}/${card._id}`}
+                                  >
+                                    <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                                      Diet Plan
+                                    </button>
+                                  </Link>
+                                  <Link
+                                    to={`/trainer/programme/day/plan/${user.user._id}/${card._id}`}
+                                  >
+                                    <button className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                                      Day Plan
+                                    </button>
+                                  </Link>
+                                </>
+                              )}
+                            </div>
+
+                            <div className="h-[3rem] w-[6rem] mt-[4%] flex justify-center items-center text-sans font-extrabold bg-secondary text-white hover:bg-blue-400 cursor-pointer text-center rounded-lg">
+                              <Link
+                                to={`/trainer/profile/${card._id}/${card.trainerId}`}
+                              >
+                                Trainer
+                              </Link>
                             </div>
                           </div>
                         ))}

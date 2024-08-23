@@ -3,6 +3,7 @@ import User from '../model/userModel.js';
 import uploadToCloudinary from '../middleware/uploadToCloudinary.js';
 import singleUpload from '../middleware/multer.js';
 import generateTokenAndSetCookie from '../lib/generateToken.js';
+import Trainer from '../model/trainerModel.js';
 
 export const createUserDetail = async (req, res) => {
   const userId = req.params.id;
@@ -55,6 +56,16 @@ export const createUserDetail = async (req, res) => {
 
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
+      }
+      if (role === 'trainer') {
+        const trainerData = {
+          user: user._id,
+        };
+
+        await Trainer.findOneAndUpdate({ user: user._id }, trainerData, {
+          upsert: true,
+          new: true,
+        });
       }
       const token = generateTokenAndSetCookie(user._id, res);
       // Return updated user and token

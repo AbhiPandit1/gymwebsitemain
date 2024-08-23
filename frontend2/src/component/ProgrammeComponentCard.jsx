@@ -110,11 +110,12 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                 </button>
               </div>
 
-              <div className="flex justify-between mt-4">
+              <div className="flex justify-between mt-4 z-99">
                 <div className="text-xl text-white font-sans font-bold flex items-center">
                   ${card.price}
                 </div>
-                <Link to={`/programme/${card._id}`}>
+
+                <Link to={`/programme/${card._id}`} className="relative z-10">
                   <button className="w-[3.6rem] h-[3.2rem] bg-secondary flex items-center justify-center rounded-xl">
                     <IoIosArrowRoundForward
                       color="white"

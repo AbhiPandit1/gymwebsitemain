@@ -34,6 +34,11 @@ const programmeSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  planType: {
+    type: String,
+    enum: ['Diet', 'Day', 'Both'],
+    required: true,
+  },
 });
 
 programmeSchema.pre('save', async function (next) {

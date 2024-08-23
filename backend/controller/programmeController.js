@@ -4,10 +4,11 @@ import uploadToCloudinary from '../middleware/uploadToCloudinary.js';
 import deleteFile from '../middleware/removeMulterFile.js';
 import mongoose from 'mongoose';
 import DayPlan from '../model/programmeDayPlanModel.js';
+import DietPlan from '../model/programmeDietPlanModel.js';
 
 //Create Programme  || Categories
 export const createProgramme = async (req, res) => {
-  const { category, title, price, desc, trainerEmail } = req.body;
+  const { category, title, price, desc, trainerEmail, planType } = req.body;
   const userId = req.params.id;
   console.log(title);
 
@@ -27,12 +28,16 @@ export const createProgramme = async (req, res) => {
     });
   }
 
-  if (!price || !desc) {
+  if (!price || !desc || !planType) {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
   if (isNaN(price) || price <= 10) {
     return res.status(400).json({ error: 'Price should be greater than 10.' });
+  }
+
+  if (!['Diet', 'Day', 'Both'].includes(planType)) {
+    return res.status(400).json({ error: 'Invalid plan type.' });
   }
 
   try {
@@ -75,6 +80,7 @@ export const createProgramme = async (req, res) => {
       title,
       price: Number(price),
       trainer: trainerId,
+      planType, // Include planType
     });
 
     const savedProgramme = await newProgramme.save();
@@ -246,16 +252,21 @@ export const deleteProgramme = async (req, res) => {
 
     // Delete associated DayPlans
     await DayPlan.deleteMany({ programme: programmeId });
+    await DietPlan.deleteMany({ programme: programmeId });
+
+    // Remove the programmeId from the takenProgrammes array of all users
+    await User.updateMany(
+      { takenProgrammes: programmeId },
+      { $pull: { takenProgrammes: programmeId } }
+    );
 
     // Delete the programme
     await Programme.findByIdAndDelete(programmeId);
 
     // Respond with success message
-    return res
-      .status(200)
-      .json({
-        message: 'Programme and associated DayPlans deleted successfully',
-      });
+    return res.status(200).json({
+      message: 'Programme and associated DayPlans deleted successfully',
+    });
   } catch (error) {
     console.error('Error deleting programme:', error);
     return res.status(500).json({ message: 'Internal Server Error' });

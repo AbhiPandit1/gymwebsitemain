@@ -1,21 +1,26 @@
 import mongoose from 'mongoose';
 
 const mealSchema = new mongoose.Schema({
-  breakfast: String,
-  lunch: String,
-  dinner: String,
+  time: {
+    type: String,
+    required: true,
+  },
+  meal: {
+    type: String,
+    required: true,
+  },
+});
+
+const dayPlanSchema = new mongoose.Schema({
+  day: {
+    type: String,
+    required: true,
+  },
+  meals: [mealSchema],
 });
 
 const dietPlanSchema = new mongoose.Schema({
-  days: [
-    {
-      day: {
-        type: String,
-        required: true,
-      },
-      meals: mealSchema,
-    },
-  ],
+  days: [dayPlanSchema],
   programme: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Programme',
@@ -23,4 +28,7 @@ const dietPlanSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('DietPlan', dietPlanSchema);
+// Define the DietPlan model using the correct schema
+const DietPlan = mongoose.model('DietPlan', dietPlanSchema);
+
+export default DietPlan;

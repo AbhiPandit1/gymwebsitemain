@@ -19,16 +19,16 @@ export const createProgramme =
       const formData = new FormData();
       formData.append('category', JSON.stringify(programmeData.category));
       formData.append('price', programmeData.price);
+      formData.append('desc', programmeData.desc);
+      formData.append('title', programmeData.title);
+      formData.append('planType', programmeData.planType); // Add planType to formData
+
       if (programmeData.categoryPhoto) {
         formData.append('categoryPhoto', programmeData.categoryPhoto);
       }
-      if (programmeData.title) {
-        formData.append('title', programmeData.title);
-      }
       if (programmeData.trainerMail) {
-        formData.append('trainerMail', programmeData.trainerMail);
+        formData.append('trainerEmail', programmeData.trainerMail); // Make sure this matches the server-side field name
       }
-      formData.append('desc', programmeData.desc);
 
       const response = await axios.post(
         `${backendapi}/api/admin/programme/${userId}`,
@@ -42,7 +42,8 @@ export const createProgramme =
       );
       console.log(response);
 
-      if (response?.status === 200) {
+      if (response?.status === 201) {
+        // Status 201 for successful creation
         toast.success('Programme Created');
         dispatch(createProgrammeSuccess(response.data.programme)); // Dispatch success action with payload
       }

@@ -22,6 +22,7 @@ import adminRoute from './route/adminRoute.js';
 import settingRouter from './route/settingRoute.js';
 import programmeDietPlanRouter from './route/programmeDietPlanRoute.js';
 import programmeDayPlanRouter from './route/programmeDayPlanRoute.js';
+import reviewPlanRouter from './route/reviewRoute.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -63,6 +64,7 @@ app.use('/api/admin/route', adminRoute);
 app.use('/api/setting', settingRouter);
 app.use('/api/trainer', programmeDietPlanRouter);
 app.use('/api/trainer', programmeDayPlanRouter);
+app.use('/api', reviewPlanRouter);
 
 // Serve static files (if any)
 // Uncomment and adjust the path if you have static files to serve

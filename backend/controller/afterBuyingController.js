@@ -1,39 +1,61 @@
 import Payment from '../model/payementModel.js';
 import Programme from '../model/programmeModel.js';
+import Trainer from '../model/trainerModel.js';
 import User from '../model/userModel.js';
 
 export const getAllBuyedProgramme = async (req, res) => {
   const { userId } = req.params;
+  console.log(userId);
 
   try {
-    const user = await User.findById(userId);
+    // Find the user by userId
+    const user = await User.findById(userId).select('-password'); // Exclude password from the user document
 
+    // If the user is not found, return an error
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    // Assuming user.takenProgrammes is an array of programme IDs
+    // Extract the array of programme IDs from the user's takenProgrammes field
     const programmeIds = user.takenProgrammes;
 
-    // Fetch all programmes details from Programme model based on IDs
-    const programmeDetailsPromises = programmeIds.map(async (programmeId) => {
-      const programme = await Programme.findById(programmeId);
-      if (!programme) {
-        throw new Error(`Programme with ID ${programmeId} not found`);
-      }
-      return programme; // Return only the programme object
-    });
+    // Fetch the details of all programmes that are available in the database
+    const programmeDetails = await Promise.all(
+      programmeIds.map(async (programmeId) => {
+        // Fetch the programme and populate the trainer field
+        const programme = await Programme.findById(programmeId).populate(
+          'trainer'
+        );
 
-    // Resolve all promises to get the details of all programmes
-    const programmeDetails = await Promise.all(programmeDetailsPromises);
+        if (programme) {
+          // Remove the password field from the trainer object
+          const trainer = programme.trainer
+            ? { ...programme.trainer.toObject(), password: undefined }
+            : null;
+
+          return {
+            ...programme.toObject(),
+            trainer, // Include the modified trainer object
+            trainerId: trainer ? trainer._id : null, // Include the trainerId if available
+          };
+        }
+        return null; // Return null if the programme was not found
+      })
+    );
     console.log(programmeDetails);
 
-    // Map the programme details to include an index (assuming a serial index starting from 1)
+    // Filter out any null values (programmes that were not found)
+    const availableProgrammes = programmeDetails.filter(
+      (programme) => programme !== null
+    );
 
-    // Return the indexed programme details as JSON response
-    return res.status(200).json({ programmeDetails });
+    // Return the details of the available programmes as the response
+    return res.status(200).json({ availableProgrammes });
   } catch (error) {
-    console.error(error.message); // Log the error for debugging purposes
+    // Log the error message for debugging
+    console.error(error.message);
+
+    // Return a server error response
     return res.status(500).json({ message: 'Server Error' });
   }
 };

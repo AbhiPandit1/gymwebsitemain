@@ -20,6 +20,7 @@ const DayPlan = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
   const [currentVideoName, setCurrentVideoName] = useState('');
+  
 
   const { user } = useSelector((state) => state.user);
   const { loading, error, success, postDayPlan } = usePostDayPlan();

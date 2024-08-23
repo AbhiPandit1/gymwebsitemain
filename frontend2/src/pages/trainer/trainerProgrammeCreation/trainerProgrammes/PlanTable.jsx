@@ -43,7 +43,6 @@ const VideoModal = ({ isOpen, videoUrl, onClose }) => {
 };
 
 // PlanTable Component
-
 const PlanTable = ({
   planData = [],
   headingColor = 'black',
@@ -145,8 +144,8 @@ const PlanTable = ({
                   style={{
                     backgroundColor:
                       exerciseIndex % 2 === 0
-                        ? tableRowColor || 'transparent'
-                        : tableColumnColor || 'transparent',
+                        ? defaultStyles.row.backgroundColor
+                        : defaultStyles.alternateRow.backgroundColor,
                   }}
                 >
                   {exerciseIndex === 0 && (

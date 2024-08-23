@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
   const [loadButton, setLoadButton] = useState(false);
   const [expandedCard, setExpandedCard] = useState(null); // Track the expanded card
+  const [showCategory, setShowCategory] = useState({});
 
   const handleLoadMore = () => {
     setLoadButton(!loadButton);
@@ -35,6 +36,9 @@ const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
   const handleExpandToggle = (id) => {
     setExpandedCard(expandedCard === id ? null : id); // Toggle description visibility
   };
+  const handleCategoryToggle = (id) => {
+    setShowCategory((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   return (
     <div className="w-full">
@@ -50,10 +54,22 @@ const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
               <div className="h-[2rem] max-w-[5rem] mb-2 text-[0.8rem] rounded-[10px] bg-paraColor font-sans flex justify-center items-center text-black">
                 Category
               </div>
-              <h2 className="text-xl text-white font-sans font-bold">
-                {card.category}
-              </h2>
-
+              <button
+                onClick={() => handleCategoryToggle(card._id)}
+                className="text-sm font-semibold h-[2rem] w-[8rem] py-1 px-4 rounded-lg bg-tertiary text-white shadow-md hover:bg-gray-500 transition-colors duration-300"
+              >
+                {showCategory[card._id] ? 'category' : 'Show'}
+              </button>
+              {showCategory[card._id] && (
+                <div className="mt-2">
+                  <h2 className="text-lg text-white font-sans font-bold mb-1">
+                    {card.category.title}
+                  </h2>
+                  <p className="text-sm text-white">
+                    {card.category.join(', ')}
+                  </p>
+                </div>
+              )}
               {/* Description section with toggle visibility */}
               <div
                 className={`absolute inset-0 flex flex-col justify-end p-4 bg-primary rounded-[32px] text-white font-sans transition-transform duration-300 ${
@@ -84,7 +100,7 @@ const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
                 <div className="text-xl text-white font-sans font-bold flex items-center">
                   ${card.price}
                 </div>
-                <Link to={`/programme/${card._id}`}>
+                <Link to={`/programmes/${card._id}`}>
                   <button className="w-[3.6rem] h-[3.2rem] bg-secondary flex items-center justify-center rounded-xl">
                     <IoIosArrowRoundForward
                       color="white"

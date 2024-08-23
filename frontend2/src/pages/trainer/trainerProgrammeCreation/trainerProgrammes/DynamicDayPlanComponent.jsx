@@ -9,6 +9,7 @@ import { FaArrowRight } from 'react-icons/fa';
 import usePostDayPlan from '../../../../../hook/usePostDayPlan';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { BiSolidRightArrow } from 'react-icons/bi';
 
 const DynamicDayPlanComponent = () => {
   const { programmeId, id } = useParams();
@@ -204,6 +205,14 @@ const DynamicDayPlanComponent = () => {
                     className="ml-2 w-16"
                   />
                 </div>
+                {hoverDashboard && (
+                  <div
+                    className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+                    onClick={handleClick}
+                  >
+                    <BiSolidRightArrow size={80} color="white" />
+                  </div>
+                )}
                 <div className="flex mb-4">
                   <label className="flex items-center space-x-2">
                     <span className="text-lg">Text Size:</span>

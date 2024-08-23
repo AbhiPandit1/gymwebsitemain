@@ -15,9 +15,17 @@ const reviewSchema = new Schema({
     required: true,
     minlength: 1,
   },
-  userName: {
+  user: {
+    // Reference to the user who wrote the review
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
+  },
+  trainer: {
+    // Reference to the trainer being reviewed
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Trainer',
+    required: true,
   },
   createdAt: {
     type: Date,

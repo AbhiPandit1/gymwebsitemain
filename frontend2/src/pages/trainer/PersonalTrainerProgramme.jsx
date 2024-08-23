@@ -17,7 +17,7 @@ const PersonalTrainerProgramme = () => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [hoverDashboard, setHoverDashboard] = useState(false);
-  const [showCategory, setShowCategory] = useState({}); // Track category visibility
+  const [showCategory, setShowCategory] = useState({});
   const dashBoardLink = useDashboardLinks();
 
   useEffect(() => {
@@ -34,6 +34,7 @@ const PersonalTrainerProgramme = () => {
           }
         );
         setTrainerDatas(response.data.programmes);
+        console.log(response.data.programmes);
       } catch (error) {
         toast.error(error.response.data.message);
       }
@@ -141,12 +142,50 @@ const PersonalTrainerProgramme = () => {
                           >
                             <MdDelete color="black" className="w-14 h-10" />
                           </button>
+
                           <Link to={`/trainer/programme/edit/${card._id}`}>
                             <button className="w-[3.6rem] h-[3.2rem] bg-green-500 flex items-center justify-center ml-4 mr-2 rounded-xl float-right">
                               <MdEdit color="black" className="w-14 h-10" />
                             </button>
                           </Link>
                         </div>
+                        {/* Conditional Rendering for Plan Type */}
+                        {card.planType === 'Diet' && (
+                          <Link
+                            to={`/trainer/programme/diet/plan/${user.user._id}/${card._id}`}
+                          >
+                            <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                              Diet Plan
+                            </button>
+                          </Link>
+                        )}
+                        {card.planType === 'Day' && (
+                          <Link
+                            to={`/trainer/programme/day/plan/${user.user._id}/${card._id}`}
+                          >
+                            <button className="mt-4 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                              Day Plan
+                            </button>
+                          </Link>
+                        )}
+                        {card.planType === 'Both' && (
+                          <div className="mt-4 flex gap-4">
+                            <Link
+                              to={`/trainer/programme/diet/plan/${user.user._id}/${card._id}`}
+                            >
+                              <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                                Diet Plan
+                              </button>
+                            </Link>
+                            <Link
+                              to={`/trainer/programme/day/plan/${user.user._id}/${card._id}`}
+                            >
+                              <button className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                                Day Plan
+                              </button>
+                            </Link>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -180,18 +219,20 @@ const PersonalTrainerProgramme = () => {
             <p className="mb-4">
               Are you sure you want to delete this programme?
             </p>
-            <button
-              onClick={handleDelete}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg mr-4"
-            >
-              Yes, Delete
-            </button>
-            <button
-              onClick={() => setShowDeletePopup(false)}
-              className="bg-gray-300 text-white px-4 py-2 rounded-lg"
-            >
-              Cancel
-            </button>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleDelete}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-300"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setShowDeletePopup(false)}
+                className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors duration-300"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

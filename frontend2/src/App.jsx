@@ -21,6 +21,7 @@ import DynamicDayPlanComponent from './pages/trainer/trainerProgrammeCreation/tr
 import DynamicDietPlanComponent from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DynamicDietPlanComponent';
 import useToastHook from '../hook/useToastHook';
 import DayPlan from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DayPlan';
+import TrainerProfile from './pages/trainer/TrainerProfile';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -84,6 +85,7 @@ function App() {
     '/admin/invoices',
     '/admin/user',
     '/admin/ads/mail',
+    '/trainer/profile/',
   ];
 
   const showHeaderFooter = !noHeaderFooterPaths.some((path) =>
@@ -173,15 +175,19 @@ function App() {
             }
           />
           <Route
+            path="/trainer/profile/:id/:trainerId"
+            element={token ? <TrainerProfile /> : <Navigate to="/login" />}
+          />
+          <Route
             path="/trainer/create/programme/type/:id"
             element={token ? <ProgrammeKind /> : <Navigate to="/login" />}
           />
           <Route
-            path="/trainer/create/programme/diet/:id/:programmeId"
+            path="/trainer/create/programme/diet/plan/:id/:programmeId"
             element={token ? <DietPlan /> : <Navigate to="/login" />}
           />
           <Route
-            path="/trainer/programme/diet/plan/:id"
+            path="/trainer/programme/diet/plan/:id/:programmeId"
             element={
               token ? <DynamicDietPlanComponent /> : <Navigate to="/login" />
             }

@@ -201,6 +201,9 @@ const Login = () => {
             />
           </div>
         </div>
+        <div className=" flex justify-center text-green-600 sm:w-[50%] text-sans text-[1.2rem] font-extrabold ">
+          <Link to="/user/forgot/email">Forgot Password?</Link>
+        </div>
       </form>
     </div>
   );

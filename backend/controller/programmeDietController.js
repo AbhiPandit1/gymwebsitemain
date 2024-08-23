@@ -1,11 +1,11 @@
-import dietPlan from '../model/programmeDietPlanModel.js';
+import DietPlan from '../model/programmeDietPlanModel.js';
 import Programme from '../model/programmeModel.js';
 
 export const createProgrammeDietPlan = async (req, res) => {
-  const days = req.body; // Extract days from the request body
+  const { days } = req.body; // Extract days from the request body
   const id = req.params.id; // Programme ID from the request parameters
 
-  console.log('Received days:', days); // Debugging output
+  console.log(days);
   console.log('Type of days:', Array.isArray(days) ? 'Array' : 'Not an Array'); // Debugging output
 
   try {
@@ -23,13 +23,20 @@ export const createProgrammeDietPlan = async (req, res) => {
     }
 
     // Create and save the diet plan
-    const newDietPlan = new dietPlan({
-      days: days,
+    const newDietPlan = new DietPlan({
+      days: days.map((day) => ({
+        day: day.day,
+        meals: day.meals.map((meal) => ({
+          time: meal.time,
+          meal: meal.meal,
+        })),
+      })),
       programme: programme._id, // Associate with the programme
     });
 
     // Save the DietPlan to the database
     await newDietPlan.save();
+    console.log(newDietPlan);
 
     // Send a success response with the created diet plan
     res
@@ -43,7 +50,7 @@ export const createProgrammeDietPlan = async (req, res) => {
 
 export const updateProgrammeDietPlan = async (req, res) => {
   const { id, planId } = req.params; // Programme ID and Diet Plan ID from the request parameters
-  const newDays = req.body; // Extract the new days from the request body
+  const { days: newDays } = req.body; // Extract the new days from the request body
 
   try {
     // Find the programme by ID
@@ -60,7 +67,7 @@ export const updateProgrammeDietPlan = async (req, res) => {
     }
 
     // Find the existing diet plan
-    const existingDietPlan = await dietPlan.findOne({
+    const existingDietPlan = await DietPlan.findOne({
       _id: planId,
       programme: programme._id,
     });
@@ -80,10 +87,19 @@ export const updateProgrammeDietPlan = async (req, res) => {
 
       if (existingDayIndex > -1) {
         // If the day exists, update the meals for that day
-        mergedDays[existingDayIndex].meals = newDay.meals;
+        mergedDays[existingDayIndex].meals = newDay.meals.map((meal) => ({
+          time: meal.time,
+          meal: meal.meal,
+        }));
       } else {
         // If the day doesn't exist, add it as a new day
-        mergedDays.push(newDay);
+        mergedDays.push({
+          day: newDay.day,
+          meals: newDay.meals.map((meal) => ({
+            time: meal.time,
+            meal: meal.meal,
+          })),
+        });
       }
     });
 
@@ -106,7 +122,7 @@ export const deleteProgrammeDietPlan = async (req, res) => {
   const { id, planId } = req.params; // Programme ID and Diet Plan ID from the request parameters
 
   try {
-    const deletedDietPlan = await dietPlan.findOneAndDelete({
+    const deletedDietPlan = await DietPlan.findOneAndDelete({
       _id: planId,
       programme: id,
     });
@@ -126,7 +142,7 @@ export const getProgrammeDietPlan = async (req, res) => {
   const id = req.params.id; // Programme ID from the request parameters
 
   try {
-    const dietPlans = await dietPlan.find({ programme: id });
+    const dietPlans = await DietPlan.find({ programme: id });
 
     if (!dietPlans.length) {
       return res
@@ -145,7 +161,7 @@ export const getSingleProgrammeDietPlan = async (req, res) => {
   const { id, planId } = req.params;
 
   try {
-    const singleDietPlan = await dietPlan.findOne({
+    const singleDietPlan = await DietPlan.findOne({
       _id: planId,
       programme: id,
     });

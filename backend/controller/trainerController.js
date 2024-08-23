@@ -117,29 +117,21 @@ export const createTrainerDetail = async (req, res) => {
       return res.status(404).json({ message: 'User Not Found' });
     }
 
-    if (user.role !== 'trainer' && user.role !== 'admin') {
+    if (user.role !== 'trainer') {
       return res.status(403).json({ message: 'You are not authorized' });
     }
-
-    const { socialMediaLink, description } = req.body;
 
     // Check if there is an existing trainer for this user
     let trainer = await Trainer.findOne({ user: user._id });
 
-    if (trainer) {
-      // If trainer exists, update the existing trainer
-      trainer.socialMediaLink = socialMediaLink;
-      trainer.description = description;
-    } else {
+    if (!trainer) {
       // If trainer does not exist, create a new trainer
       trainer = new Trainer({
         user: user._id,
-        socialMediaLink: socialMediaLink,
-        description: description,
       });
     }
 
-    // Save the trainer (either updated or new)
+    // Save the trainer (new or existing)
     const savedTrainer = await trainer.save();
 
     res
