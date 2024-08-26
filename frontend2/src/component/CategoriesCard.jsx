@@ -33,11 +33,16 @@ const CategoriesCard = () => {
   }
 
   // Filter out items without a categoryPhoto and ensure only one item per category
-  const flattenedProgrammes = (programme?.categories || []) // Add a checkpoint to handle undefined or null `programme` and `categories`
+  const flattenedProgrammes = (programme?.categories || []) // Checkpoint to handle undefined or null `programme` and `categories`
     .filter((data) => data?.categoryPhoto?.url) // Ensure `data` and `categoryPhoto` exist before accessing `url`
     .reduce((acc, current) => {
-      (current?.category || []).forEach((cat) => {
-        // Add checkpoint for `current` and `current.category`
+      const categories = Array.isArray(current?.category) // Check if `current.category` is an array
+        ? current.category
+        : current?.category
+        ? [current.category] // Convert single or non-array values to an array
+        : []; // Default to an empty array if no category exists
+
+      categories.forEach((cat) => {
         if (!acc.some((item) => item.category.includes(cat))) {
           acc.push({
             ...current,
@@ -45,6 +50,7 @@ const CategoriesCard = () => {
           });
         }
       });
+
       return acc;
     }, []);
 
