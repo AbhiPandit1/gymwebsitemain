@@ -32,7 +32,7 @@ const ReviewCard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/get/review'); // API endpoint to get reviews
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/get/review`); // API endpoint to get reviews
         const reviews = await response.json();
         setData(reviews);
         console.log(reviews);
