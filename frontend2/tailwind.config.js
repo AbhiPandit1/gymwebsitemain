@@ -18,9 +18,10 @@ export default {
         trainerColor: '#111214',
         logoColor: '#393C43',
       },
-
       fontFamily: {
         sans: ['Work Sans', 'sans-serif'],
+        orbitron: ['Orbitron', 'sans-serif'],
+        outfit: ['Outfit', 'sans-serif'],
       },
       lineHeight: {
         custom: '2.4rem', // 38.4px
@@ -28,16 +29,16 @@ export default {
       letterSpacing: {
         custom: '-0.8%', // -0.8%
       },
-    },
-    keyframes: {
-      shake: {
-        '0%': { transform: 'translateX(-10px)' },
-        '50%': { transform: 'translateX(10px)' },
-        '100%': { transform: 'translateX(-10px)' },
+      keyframes: {
+        shake: {
+          '0%': { transform: 'translateX(-10px)' },
+          '50%': { transform: 'translateX(10px)' },
+          '100%': { transform: 'translateX(-10px)' },
+        },
       },
-    },
-    animation: {
-      shake: 'shake 0.5s ease-in-out', // Adjust duration and easing as needed
+      animation: {
+        shake: 'shake 0.5s ease-in-out', // Adjust duration and easing as needed
+      },
     },
   },
   plugins: [

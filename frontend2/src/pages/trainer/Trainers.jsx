@@ -5,7 +5,7 @@ const Trainers = () => {
     /* /trainers */
   }
   return (
-    <div>
+    <div className="">
       <TrainerComponent />
     </div>
   );

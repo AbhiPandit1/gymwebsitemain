@@ -5,7 +5,7 @@ import User from '../model/userModel.js';
 
 export const getAllBuyedProgramme = async (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
+  
 
   try {
     // Find the user by userId
@@ -42,7 +42,7 @@ export const getAllBuyedProgramme = async (req, res) => {
         return null; // Return null if the programme was not found
       })
     );
-    console.log(programmeDetails);
+    
 
     // Filter out any null values (programmes that were not found)
     const availableProgrammes = programmeDetails.filter(

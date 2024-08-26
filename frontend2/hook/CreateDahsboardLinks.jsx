@@ -17,7 +17,7 @@ const useDashboardLinks = () => {
     },
     {
       id: '2',
-      name: 'My Programs',
+      name: 'Programs',
       link: programLink,
       role: '',
     },

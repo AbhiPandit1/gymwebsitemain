@@ -37,7 +37,7 @@ const DashboardHeader = () => {
       <div className="flex justify-between items-center sm:m-2 sm:p-4 p-4">
         <Link to={`/user/dashboard/${user._id}`}>
           <div className="text-xl sm:text-3xl font-sans font-bold">
-            Dashboard
+            <span className="text-orange-400">D</span>ashboard
           </div>
         </Link>
         <div className="flex items-center justify-between gap-2">

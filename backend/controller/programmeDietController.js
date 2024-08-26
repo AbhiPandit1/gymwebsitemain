@@ -36,7 +36,7 @@ export const createProgrammeDietPlan = async (req, res) => {
 
     // Save the DietPlan to the database
     await newDietPlan.save();
-    console.log(newDietPlan);
+    
 
     // Send a success response with the created diet plan
     res

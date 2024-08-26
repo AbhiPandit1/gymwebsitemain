@@ -22,6 +22,7 @@ import DynamicDietPlanComponent from './pages/trainer/trainerProgrammeCreation/t
 import useToastHook from '../hook/useToastHook';
 import DayPlan from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DayPlan';
 import TrainerProfile from './pages/trainer/TrainerProfile';
+import DashboardPanel from './pages/DashboardPanel/DashboardPanel';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -64,6 +65,7 @@ function App() {
 
   const noHeaderFooterPaths = [
     '/signin',
+
     '/login',
     '/admin/page/',
     '/user/detail/',
@@ -86,6 +88,7 @@ function App() {
     '/admin/user',
     '/admin/ads/mail',
     '/trainer/profile/',
+    '/dashboard/profile',
   ];
 
   const showHeaderFooter = !noHeaderFooterPaths.some((path) =>
@@ -238,6 +241,10 @@ function App() {
             element={
               token ? <PersonalTrainerProgramme /> : <Navigate to="/login" />
             }
+          />
+          <Route
+            path="/dashboard/profile/:userId"
+            element={token ? <DashboardPanel /> : <Navigate to="/login" />}
           />
           <Route
             path="/user/programmes"

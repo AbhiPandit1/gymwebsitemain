@@ -7,7 +7,7 @@ const Logo = ({ backgroundImage }) => {
         <img
           src={backgroundImage}
           alt="panda"
-          className="w-[100%] h-[100%]  sm:w-[400px] sm:h-[80px]"
+          className="w-[90%] h-[100%]  sm:w-[400px] sm:h-[80px]"
         />
       </Link>
     </div>

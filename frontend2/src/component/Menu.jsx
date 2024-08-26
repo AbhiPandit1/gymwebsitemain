@@ -67,7 +67,7 @@ const Menu = () => {
   }, [user]);
 
   return (
-    <div className="bg-black text-white min-h-[40vh] min-w-[20vw] absolute p-8 top-[140%] right-0 rounded-[32px] border border-gray-800 overflow-hidden">
+    <div className="bg-black text-white min-h-[40vh] min-w-[20vw] absolute p-8 top-[140%] right-0 rounded-[32px] border border-gray-800 overflow-hidden z-50">
       <div>
         <div className="flex justify-center items-center gap-3 border-b border-paraColor pb-2">
           <div className="font-sans font-semibold">

@@ -9,16 +9,6 @@ const legal = [
     name: 'Terms & Conditions',
     link: '#',
   },
-  {
-    id: '3',
-    name: 'Cookie Policy',
-    link: '#',
-  },
-  {
-    id: '4',
-    name: 'Lawyer s Corner',
-    link: '#',
-  },
 ];
 
 export default legal;
