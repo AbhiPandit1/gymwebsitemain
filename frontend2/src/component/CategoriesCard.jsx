@@ -33,10 +33,11 @@ const CategoriesCard = () => {
   }
 
   // Filter out items without a categoryPhoto and ensure only one item per category
-  const flattenedProgrammes = programme.categories
-    .filter((data) => data.categoryPhoto?.url)
+  const flattenedProgrammes = (programme?.categories || []) // Add a checkpoint to handle undefined or null `programme` and `categories`
+    .filter((data) => data?.categoryPhoto?.url) // Ensure `data` and `categoryPhoto` exist before accessing `url`
     .reduce((acc, current) => {
-      current.category.forEach((cat) => {
+      (current?.category || []).forEach((cat) => {
+        // Add checkpoint for `current` and `current.category`
         if (!acc.some((item) => item.category.includes(cat))) {
           acc.push({
             ...current,
@@ -109,9 +110,9 @@ const CategoriesCard = () => {
         onMouseLeave={handleMouseLeave}
         style={{ cursor: isScrolling ? 'grabbing' : 'grab' }}
       >
-        {visibleProgrammes.map((data) => (
+        {visibleProgrammes?.map((data) => (
           <div
-            key={data._id}
+            key={data?._id}
             className="relative rounded-xl overflow-hidden m-auto min-h-[40vh] max-h-[60vh] min-w-[60vw] sm:min-w-[30%] border-b-4 border-orange-600 transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-orange-500"
           >
             <div className="relative max-h-full overflow-hidden rounded-lg">
