@@ -54,39 +54,35 @@ const AdminSendMail = () => {
   };
 
   return (
-    <div className="text-white min-h-[100vh] p-4 flex flex-col md:flex-row">
-      {/* Sidebar for Dashboard */}
-      {showDashboard && (
-        <div
-          className={`${
-            !hoverDashboard ? 'sm:w-1/3' : 'hidden'
-          } bg-tertiary transition-width duration-300 ease-in-out rounded-[32px] p-4  `}
-          onClick={handleClick}
-        >
-          <DashboardComponent
-            dashBoardLink={dashboardLink}
-            hoverDashboard={hoverDashboard}
-          />
-        </div>
-      )}
-
-      {/* Main Content */}
+    <div className="grid grid-cols-9 h-screen max-w-[100vw] gap-[2rem] text-white font-sans bg-gray-900">
       <div
-        className={`flex-1 transition-all ml-4 overflow-auto ${
-          hoverDashboard ? 'ml-0' : 'ml-1/3'
-        } scrollbar-hide`}
+        className={`transition-transform duration-300 ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        }`}
+        onClick={handleClick}
       >
+        <DashboardComponent
+          dashBoardLink={dashboardLink}
+          hoverDashboard={hoverDashboard}
+        />
+      </div>
+      <div
+        className={`transition-transform duration-300 ${
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-y-scroll`}
+      >
+        <DashboardHeader />
         {hoverDashboard && (
           <div
-            className="absolute left-0 top-[50%] transform -translate-y-1/2 cursor-pointer"
+            className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
             onClick={handleClick}
           >
-            <BiSolidRightArrow size={80} color="white" />
+            <BiSolidRightArrow size={40} color="white" />
           </div>
         )}
-
         {/* Dashboard Header */}
-        <DashboardHeader />
 
         <h2 className="text-3xl font-semibold mb-6 text-white text-center">
           Send Advertisement Email

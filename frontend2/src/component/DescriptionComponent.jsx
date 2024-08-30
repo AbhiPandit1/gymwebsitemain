@@ -1,13 +1,6 @@
 const DescriptionComponent = () => {
   return (
-    <div
-      className="min-h-[80vh] bg-gray-900 flex flex-col gap-5 font-outfit relative rounded-[10px] p-5"
-      style={{
-        backgroundImage: `url('https://s3-alpha-sig.figma.com/img/fb55/b466/b05afb0a4774775c1b269cd0567431cd?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k2kKnQWDVaXS2KNjmIuXcspoOwqvjRU0TVK232dlgoBtFMW0Ofrw4lcJKMzLCZNYmG3WL~O6lbOkgJzhPfhEWq3fhj4giSAjOsC4w4ycNxInm7NrJEznDq9-xsy1sN2BcBqvUSFEYaVkRIzdHEh1qJOGsInAuSXcpwBSXHGnESfEUrrdaR0uP4zQmqmGqwgZ7z9Uijpbudfyyivqo7e8jvKRhYhm2UGFQg-qXcJax2LJxETUPE6gAHjt3GhiNK39D~Lw1AEUS~bCIbWdOSVYAA6wNhBTlKh3JwoXPVGtlvjs9PS0QLXvLIBgL9ASEfiv3fJ9l3icHusqaZFCHNzAFg__')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
+    <div className="min-h-[80vh] bg-gray-900 flex flex-col gap-5 font-outfit relative rounded-[10px] p-5">
       <h1 className="text-white text-[2rem] sm:text-[3rem] text-center hover:underline-offset-1 hover:underline hover:decoration-orange-500 transition-all ">
         Fit for your Lifestyle
       </h1>

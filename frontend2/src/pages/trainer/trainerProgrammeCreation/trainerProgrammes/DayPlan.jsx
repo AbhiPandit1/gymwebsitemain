@@ -20,7 +20,6 @@ const DayPlan = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
   const [currentVideoName, setCurrentVideoName] = useState('');
-  
 
   const { user } = useSelector((state) => state.user);
   const { loading, error, success, postDayPlan } = usePostDayPlan();
@@ -120,6 +119,7 @@ const DayPlan = () => {
   const handleBack = () => {
     navigate(`/trainer/create/programme/${user.user._id}`);
   };
+  const backendapi = import.meta.env.VITE_BACKEND_URL;
 
   const handleDaysChange = (e) => {
     const newDays = parseInt(e.target.value, 10);
@@ -146,7 +146,7 @@ const DayPlan = () => {
   const handleSubmit = async () => {
     try {
       await postDayPlan(programmeId, trainingPlan);
-      navigate(`/trainer/programme/day/plan/${user.user._id}/${programmeId}`);
+      navigate(`${backendapi}/trainer/programme/day/plan/${user.user._id}/${programmeId}`);
     } catch (err) {
       // Handle error (e.g., show an error message)
       toast.error('Failed to submit day plan.');
@@ -154,45 +154,42 @@ const DayPlan = () => {
   };
 
   return (
-    <div className="grid grid-cols-7 h-screen max-w-[100vw] text-white font-sans relative">
+    <div className="grid grid-cols-9 h-screen max-w-[100vw]  text-white font-sans bg-gray-900">
       <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden' : 'col-span-7'
-        } sm:${hoverDashboard ? 'hidden' : 'col-span-2'}`}
+        className={`transition-transform duration-300 bg-gray-900   ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        }`}
         onClick={handleClick}
       >
         <DashboardComponent
-          dashBoardLink={dashBoardLink}
+          dashBoardLink={dashBoardLink} // Fixed variable name
           hoverDashboard={hoverDashboard}
         />
       </div>
-
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard ? 'col-span-7' : 'col-span-7'
-        } sm:${hoverDashboard ? 'col-span-7' : 'col-span-5'} overflow-y-auto`}
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-scroll`}
       >
         <DashboardHeader />
-
+        {hoverDashboard && (
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={handleClick}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
+          </div>
+        )}
         {trainingPlan.length > 0 && (
           <div
             className="absolute top-4 left-4 cursor-pointer z-10"
             onClick={handleBack}
-          >
-            <BiArrowBack size={40} color="white" />
-          </div>
+          ></div>
         )}
 
         <h2 className="text-3xl font-bold mb-8 text-center">Day Plan</h2>
-
-        {hoverDashboard && (
-          <div
-            className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300 z-10"
-            onClick={handleClick}
-          >
-            <BiSolidRightArrow size={80} color="white" />
-          </div>
-        )}
 
         <div className="p-4 mb-6">
           <label className="block text-lg mb-2 font-semibold">

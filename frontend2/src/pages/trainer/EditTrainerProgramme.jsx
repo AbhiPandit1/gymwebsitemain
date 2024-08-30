@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { FaPlus, FaTimes } from 'react-icons/fa';
+import { BiSolidRightArrow } from 'react-icons/bi';
 import { toast } from 'react-toastify';
 
 import DashboardComponent from '../../component/DashboardComponent';
 import DashboardHeader from '../../component/DashboardHeader';
-import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
+// Make sure this is the correct hook
 import { updateProgramme } from '../../action/programmeActions';
+import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 
 const EditTrainerProgramme = () => {
   const { id } = useParams();
@@ -23,10 +25,11 @@ const EditTrainerProgramme = () => {
   const [price, setPrice] = useState('');
   const [categoryPhoto, setCategoryPhoto] = useState(null);
   const [categoryPhotoName, setCategoryPhotoName] = useState('');
-  const [trainerMail, setTrainerMail] = useState(user.user.email);
+  const [trainerMail, setTrainerMail] = useState(user?.user?.email || '');
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [loading, setLoading] = useState(false);
+  const [hoverDashboard, setHoverDashboard] = useState(false); // Added hover state management
 
   const categoryOptions = [
     'Nutrition',
@@ -43,12 +46,12 @@ const EditTrainerProgramme = () => {
     if (programme && programme.programme) {
       const prog = programme.programme.find((p) => p._id === id);
       if (prog) {
-        setCategory(prog.category);
-        setPrice(prog.price);
+        setCategory(prog.category || []);
+        setPrice(prog.price || '');
         setCategoryPhotoName(prog.categoryPhoto?.url || '');
-        setTrainerMail(prog.trainerMail);
+        setTrainerMail(prog.trainerMail || '');
         setTitle(prog.title || '');
-        setDesc(prog.desc);
+        setDesc(prog.desc || '');
       }
     }
   }, [programme, id]);
@@ -93,7 +96,7 @@ const EditTrainerProgramme = () => {
     setPrice('');
     setCategoryPhoto(null);
     setCategoryPhotoName('');
-    setTrainerMail(user.user.email);
+    setTrainerMail(user?.user?.email || '');
     setTitle('');
     setDesc('');
   };
@@ -126,170 +129,175 @@ const EditTrainerProgramme = () => {
 
   const dashBoardLink = useDashboardLinks();
 
+  const handleClick = () => setHoverDashboard(!hoverDashboard); // Function to handle hover state toggle
+
   return (
-    <div className="grid grid-cols-7 h-screen max-w-[100vw]">
-      {/* Sidebar */}
-      <div className="hidden sm:col-span-2 sm:grid bg-black text-white">
-        <DashboardComponent dashBoardLink={dashBoardLink} />
+    <div className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans bg-gray-900">
+      <div
+        className={`transition-transform duration-300 bg-gray-900 ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        }`}
+        onClick={handleClick}
+      >
+        <DashboardComponent
+          dashBoardLink={dashBoardLink}
+          hoverDashboard={hoverDashboard}
+        />
       </div>
-
-      {/* Main Content */}
-      <div className="col-span-7 sm:col-span-5 bg-primary text-white">
-        <div className="h-full">
-          <DashboardHeader />
-
-          {/* Title */}
-          <h1 className="text-3xl font-extrabold text-center py-4">
-            Edit Programme
-          </h1>
-
-          {/* Form */}
-          <div className="h-[80vh] overflow-auto p-6 w-full">
-            <form
-              className="flex flex-col gap-8"
-              onSubmit={handleUpdateProgramme}
-            >
-              {/* Image Upload */}
-              <div className="flex justify-center items-center w-full">
-                <label className="w-[80%] bg-tertiary text-primary p-10 rounded-[40px] border-b-white border-[4px] border-dotted flex justify-center items-center cursor-pointer relative">
-                  <div className="flex flex-col items-center">
-                    {categoryPhotoName ? (
-                      <div className="flex items-center gap-2">
-                        <h1 className="text-white font-sans">
-                          {categoryPhotoName}
-                        </h1>
-                        <button
-                          type="button"
-                          className="text-white"
-                          onClick={handleClearFile}
-                        >
-                          <FaTimes />
-                        </button>
-                      </div>
-                    ) : (
-                      <>
-                        <FaPlus size={40} color="white" />
-                        <h1 className="text-white font-sans">Upload</h1>
-                      </>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    className="hidden"
-                    name="categoryPhoto"
-                    onChange={handleFileChange}
-                  />
-                </label>
-              </div>
-
-              {/* Selected Categories */}
-              <div className="flex flex-wrap gap-2">
-                {category.map((cat, index) => (
-                  <div
-                    key={index}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center"
-                  >
-                    <span>{cat}</span>
-                    <button
-                      type="button"
-                      className="ml-2"
-                      onClick={() => handleRemoveCategory(cat)}
-                    >
-                      <FaTimes />
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              {/* Category Checkboxes */}
-              <div className="flex flex-wrap gap-4">
-                {categoryOptions.map((option, idx) => (
-                  <div key={idx} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`category-${idx}`}
-                      value={option}
-                      checked={category.includes(option)}
-                      onChange={handleCategoryChange}
-                      className="mr-2"
-                    />
-                    <label
-                      htmlFor={`category-${idx}`}
-                      className="text-white cursor-pointer"
-                    >
-                      {option}
-                    </label>
-                  </div>
-                ))}
-              </div>
-
-              {/* Price, Title, and Trainer Mail */}
-              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
-                <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
-                  <label className="text-white mb-2">Price</label>
-                  <input
-                    type="number"
-                    className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
-                    min="1"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                </div>
-                <div className="flex flex-col w-full sm:w-[45%] mb-4 sm:mb-0">
-                  <label className="text-white mb-2">Programme Title</label>
-                  <input
-                    type="text"
-                    className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row justify-around items-center w-full">
-                <div className="flex flex-col w-full sm:w-[45%]">
-                  <label className="text-white mb-2">Trainer Mail</label>
-                  <input
-                    type="email"
-                    className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
-                    placeholder="Enter trainer email"
-                    value={trainerMail}
-                    onChange={(e) => setTrainerMail(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="flex flex-col">
-                <label className="text-white mb-2">Description</label>
-                <textarea
-                  className="h-36 bg-tertiary text-white p-2 rounded-[16px]"
-                  value={desc}
-                  onChange={(e) => setDesc(e.target.value)}
-                />
-              </div>
-
-              {/* Buttons */}
-              <div className="flex justify-center items-center gap-4 mt-4">
-                <button
-                  type="submit"
-                  className={`w-full sm:w-[30%] h-12 bg-primary text-white rounded-[16px] ${
-                    loading ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                  disabled={loading}
-                >
-                  {loading ? 'Updating...' : 'Update Programme'}
-                </button>
-                <button
-                  type="button"
-                  className="w-full sm:w-[30%] h-12 bg-red-600 text-white rounded-[16px]"
-                  onClick={resetForm}
-                >
-                  Reset
-                </button>
-              </div>
-            </form>
+      <div
+        className={`transition-transform duration-300 ${
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-scroll`}
+      >
+        <DashboardHeader />
+        {hoverDashboard && (
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={handleClick}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
           </div>
+        )}
+
+        {/* Title */}
+        <h1 className="text-3xl font-extrabold text-center py-4">
+          Edit Programme
+        </h1>
+
+        {/* Form */}
+        <div className="h-[80vh] overflow-auto p-6 w-full">
+          <form
+            className="flex flex-col gap-8"
+            onSubmit={handleUpdateProgramme}
+          >
+            {/* Image Upload */}
+            <div className="flex justify-center items-center w-full">
+              <label className="w-[80%] bg-tertiary text-primary p-10 rounded-[40px] border-b-white border-[4px] border-dotted flex justify-center items-center cursor-pointer relative">
+                <div className="flex flex-col items-center">
+                  {categoryPhotoName ? (
+                    <div className="flex items-center gap-2">
+                      <h1 className="text-white font-sans">
+                        {categoryPhotoName}
+                      </h1>
+                      <button
+                        type="button"
+                        className="text-white"
+                        onClick={handleClearFile}
+                      >
+                        <FaTimes />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <FaPlus size={40} color="white" />
+                      <h1 className="text-white font-sans">Upload</h1>
+                    </>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  className="hidden"
+                  name="categoryPhoto"
+                  onChange={handleFileChange}
+                />
+              </label>
+            </div>
+
+            {/* Selected Categories */}
+            <div className="flex flex-wrap gap-2">
+              {category.map((cat, index) => (
+                <div
+                  key={index}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center"
+                >
+                  <span>{cat}</span>
+                  <button
+                    type="button"
+                    className="ml-2"
+                    onClick={() => handleRemoveCategory(cat)}
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Category Checkboxes */}
+            <div className="flex flex-wrap gap-4">
+              {categoryOptions.map((option, idx) => (
+                <div key={idx} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`category-${idx}`}
+                    value={option}
+                    checked={category.includes(option)}
+                    onChange={handleCategoryChange}
+                    className="mr-2"
+                  />
+                  <label
+                    htmlFor={`category-${idx}`}
+                    className="text-white cursor-pointer"
+                  >
+                    {option}
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            {/* Price, Title, and Trainer Email */}
+            <div className="flex flex-col gap-4">
+              <input
+                type="text"
+                className="w-full p-2 border-b-2 bg-gray-700 border-gray-600 text-white placeholder-white focus:outline-none"
+                placeholder="Trainer's Email"
+                value={trainerMail}
+                onChange={(e) => setTrainerMail(e.target.value)}
+              />
+              <input
+                type="text"
+                className="w-full p-2 border-b-2 bg-gray-700 border-gray-600 text-white placeholder-white focus:outline-none"
+                placeholder="Enter Programme Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <input
+                type="text"
+                className="w-full p-2 border-b-2 bg-gray-700 border-gray-600 text-white placeholder-white focus:outline-none"
+                placeholder="Enter Price"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+              <textarea
+                rows="4"
+                className="w-full p-2 border-b-2 bg-gray-700 border-gray-600 text-white placeholder-white focus:outline-none"
+                placeholder="Enter Programme Description"
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-center gap-4 mt-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className={`p-2 text-white rounded-lg ${
+                  loading ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-700'
+                }`}
+              >
+                {loading ? 'Updating...' : 'Update Programme'}
+              </button>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="p-2 text-white bg-red-500 rounded-lg hover:bg-red-700"
+              >
+                Reset
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

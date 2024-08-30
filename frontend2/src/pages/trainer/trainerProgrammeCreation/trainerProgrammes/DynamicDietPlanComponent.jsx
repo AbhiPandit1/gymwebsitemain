@@ -5,39 +5,36 @@ import DashboardComponent from '../../../../component/DashboardComponent.jsx';
 import DashboardHeader from '../../../../component/DashboardHeader.jsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { Link, useParams } from 'react-router-dom'; // Import Link for navigation
+import { useParams } from 'react-router-dom';
 
 const DynamicDietPlanComponent = () => {
   const dashBoardLink = useDashboardLinks();
   const [hoverDashboard, setHoverDashboard] = useState(false);
-  const [headingColor, setHeadingColor] = useState('#ffffff');
-  const [textColor, setTextColor] = useState('#ffffff');
-  const [textSize, setTextSize] = useState('16px');
-  const [rowColor, setRowColor] = useState('#ffffff');
-  const [columnColor, setColumnColor] = useState('#ffffff');
+  const [headingColor, setHeadingColor] = useState('#FFA500'); // Orange in hex
+  const [textColor, setTextColor] = useState('#FFFFFF'); // White in hex
+  const [textSize, setTextSize] = useState('1.5rem'); // Size remains as '1.5rem'
+  const [rowColor, setRowColor] = useState('#1F1F1F'); // Gray-900 in hex
+  const [columnColor, setColumnColor] = useState('#4B4B4B'); // Gray-600 in hex
   const [tableHeadingColor, setTableHeadingColor] = useState('#333333');
   const [dietPlanData, setDietPlanData] = useState([]);
   const { programmeId } = useParams();
 
-  // Load settings from local storage
+  // Load and save settings to local storage
   useEffect(() => {
-    const savedHeadingColor = localStorage.getItem('headingColor') || '#ffffff';
-    const savedTextColor = localStorage.getItem('textColor') || '#ffffff';
-    const savedTextSize = localStorage.getItem('textSize') || '16px';
-    const savedRowColor = localStorage.getItem('rowColor') || '#ffffff';
-    const savedColumnColor = localStorage.getItem('columnColor') || '#ffffff';
-    const savedTableHeadingColor =
-      localStorage.getItem('tableHeadingColor') || '#333333';
+    const loadSettings = () => {
+      setHeadingColor(localStorage.getItem('headingColor') || '#FFA500');
+      setTextColor(localStorage.getItem('textColor') || '##FFFFFF');
+      setTextSize(localStorage.getItem('textSize') || '1.5rem');
+      setRowColor(localStorage.getItem('rowColor') || '#1F1F1F');
+      setColumnColor(localStorage.getItem('columnColor') || '#4B4B4B');
+      setTableHeadingColor(
+        localStorage.getItem('tableHeadingColor') || '#333333'
+      );
+    };
 
-    setHeadingColor(savedHeadingColor);
-    setTextColor(savedTextColor);
-    setTextSize(savedTextSize);
-    setRowColor(savedRowColor);
-    setColumnColor(savedColumnColor);
-    setTableHeadingColor(savedTableHeadingColor);
+    loadSettings();
   }, []);
 
-  // Save settings to local storage
   useEffect(() => {
     localStorage.setItem('headingColor', headingColor);
     localStorage.setItem('textColor', textColor);
@@ -53,16 +50,15 @@ const DynamicDietPlanComponent = () => {
     columnColor,
     tableHeadingColor,
   ]);
-
+  const backendapi = import.meta.env.VITE_BACKEND_URL;
   // Fetch diet plan data from API
   useEffect(() => {
     const fetchDietPlanData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/trainer/diet/plan/${programmeId}`
+          `${backendapi}/api/trainer/diet/plan/${programmeId}`
         );
         const data = await response.json();
-        console.log(data);
         setDietPlanData(data.dietPlans || []);
       } catch (error) {
         console.error('Error fetching diet plan data:', error);
@@ -83,7 +79,7 @@ const DynamicDietPlanComponent = () => {
 
     dietPlanData.forEach((plan, index) => {
       doc.setFontSize(16);
-      doc.text(`Plan ${index + 1}`, 14, 32 + index * 40); // Only display Plan heading once per plan
+      doc.text(`Plan ${index + 1}`, 14, 32 + index * 40);
       plan.days.forEach((day, dayIndex) => {
         doc.setFontSize(14);
         doc.text(
@@ -116,12 +112,11 @@ const DynamicDietPlanComponent = () => {
   };
 
   return (
-    <div className="grid grid-cols-7 h-screen max-w-[100vw] text-white font-sans">
-      {/* Dashboard Component */}
+    <div className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans bg-gray-900">
       <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden' : 'col-span-7'
-        } sm:${hoverDashboard ? 'hidden' : 'col-span-2'}`}
+        className={`transition-transform duration-300 bg-gray-900 ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        }`}
         onClick={handleClick}
       >
         <DashboardComponent
@@ -129,83 +124,86 @@ const DynamicDietPlanComponent = () => {
           hoverDashboard={hoverDashboard}
         />
       </div>
-
-      {/* Main Content */}
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard ? 'col-span-7' : 'col-span-5'
-        } overflow-auto`}
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-scroll`}
       >
         <DashboardHeader />
-        <div className="p-6 space-y-6">
-          {/* Settings Panel */}
-          <div className="space-y-4 bg-gray-800 p-4 rounded-md shadow-md">
-            <h3 className="text-lg font-semibold">Settings</h3>
-            <div>
-              <label className="block mb-1">Heading Color:</label>
-              <input
-                type="color"
-                value={headingColor}
-                onChange={(e) => setHeadingColor(e.target.value)}
-                className="w-24 h-8 border rounded"
-              />
-            </div>
-            <div>
-              <label className="block mb-1">Text Color:</label>
-              <input
-                type="color"
-                value={textColor}
-                onChange={(e) => setTextColor(e.target.value)}
-                className="w-24 h-8 border rounded"
-              />
-            </div>
-            {hoverDashboard && (
-              <div
-                className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300 z-10"
-                onClick={handleClick}
-              >
-                <BiSolidRightArrow size={80} color="white" />
-              </div>
-            )}
+        {hoverDashboard && (
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={handleClick}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
+          </div>
+        )}
 
-            <div>
-              <label className="block mb-1 flex items-center space-x-2">
-                <span>Text Size:</span>
+        <div className="overflow-scroll w-[240vw] sm:w-[90vw] m-auto scrollbar-hide">
+          {/* Settings Panel */}
+          <div className=" bg-gray-800 p-4 rounded-md shadow-md ">
+            <h3 className="text-lg font-semibold">Settings</h3>
+            <div className="flex justify-around items-center ">
+              <div>
+                <label className="block mb-1">Heading Color:</label>
                 <input
-                  type="number"
-                  value={parseInt(textSize)}
-                  onChange={(e) => setTextSize(`${e.target.value}px`)}
-                  className="w-24 p-2 border border-gray-400 rounded bg-gray-100 text-gray-800"
-                  placeholder="Enter size"
+                  type="color"
+                  value={headingColor}
+                  onChange={(e) => setHeadingColor(e.target.value)}
+                  className="w-24 h-8 border rounded"
                 />
-              </label>
-            </div>
-            <div>
-              <label className="block mb-1">Row Color:</label>
-              <input
-                type="color"
-                value={rowColor}
-                onChange={(e) => setRowColor(e.target.value)}
-                className="w-24 h-8 border rounded"
-              />
-            </div>
-            <div>
-              <label className="block mb-1">Column Text Color:</label>
-              <input
-                type="color"
-                value={columnColor}
-                onChange={(e) => setColumnColor(e.target.value)}
-                className="w-24 h-8 border rounded"
-              />
-            </div>
-            <div>
-              <label className="block mb-1">Table Heading Color:</label>
-              <input
-                type="color"
-                value={tableHeadingColor}
-                onChange={(e) => setTableHeadingColor(e.target.value)}
-                className="w-24 h-8 border rounded"
-              />
+              </div>
+              <div>
+                <label className="block mb-1">Text Color:</label>
+                <input
+                  type="color"
+                  value={textColor}
+                  onChange={(e) => setTextColor(e.target.value)}
+                  className="w-24 h-8 border rounded"
+                />
+              </div>
+
+              <div>
+                <label className="flex flex-col mb-1  items-center space-x-2">
+                  <span>Text Size:</span>
+                  <input
+                    type="number"
+                    value={parseInt(textSize)}
+                    onChange={(e) => setTextSize(`${e.target.value}px`)}
+                    className="w-24 p-2 border border-gray-400 rounded bg-gray-100 text-gray-800"
+                    placeholder="Enter size"
+                  />
+                </label>
+              </div>
+              <div>
+                <label className="block mb-1">Row Color:</label>
+                <input
+                  type="color"
+                  value={rowColor}
+                  onChange={(e) => setRowColor(e.target.value)}
+                  className="w-24 h-8 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Column Text Color:</label>
+                <input
+                  type="color"
+                  value={columnColor}
+                  onChange={(e) => setColumnColor(e.target.value)}
+                  className="w-24 h-8 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Table Heading Color:</label>
+                <input
+                  type="color"
+                  value={tableHeadingColor}
+                  onChange={(e) => setTableHeadingColor(e.target.value)}
+                  className="w-24 h-8 border rounded"
+                />
+              </div>
             </div>
             <div className="flex space-x-2">
               <button
@@ -231,32 +229,38 @@ const DynamicDietPlanComponent = () => {
             Weekly Diet Plan
           </h2>
           {dietPlanData.length > 0 ? (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {dietPlanData.map((plan, index) => (
                 <div
                   key={index}
                   className="bg-gray-800 p-4 rounded-md shadow-md"
                 >
+                  <h3
+                    className="text-2xl font-semibold mb-4"
+                    style={{ color: headingColor }}
+                  >
+                    Plan {index + 1}
+                  </h3>
                   {plan.days.map((day, dayIndex) => (
-                    <div key={dayIndex} className="mb-6">
+                    <div key={dayIndex} className="mb-4">
                       <h4
                         className="text-xl font-semibold mb-2"
-                        style={{ color: headingColor, fontSize: textSize }}
+                        style={{ color: headingColor }}
                       >
                         {day.day || `Day ${dayIndex + 1}`}
                       </h4>
-                      <table className="w-full border border-gray-700">
+                      <table className="w-full border-collapse">
                         <thead>
-                          <tr>
+                          <tr style={{ backgroundColor: tableHeadingColor }}>
                             <th
-                              className="border border-gray-600 p-2"
-                              style={{ backgroundColor: tableHeadingColor }}
+                              className="border px-4 py-2"
+                              style={{ color: headingColor }}
                             >
                               Time
                             </th>
                             <th
-                              className="border border-gray-600 p-2"
-                              style={{ backgroundColor: tableHeadingColor }}
+                              className="border px-4 py-2"
+                              style={{ color: headingColor }}
                             >
                               Meal
                             </th>
@@ -265,17 +269,14 @@ const DynamicDietPlanComponent = () => {
                         <tbody>
                           {day.meals.length > 0 ? (
                             day.meals.map((meal, mealIndex) => (
-                              <tr key={mealIndex}>
-                                <td
-                                  className="border border-gray-600 p-2"
-                                  style={{ color: textColor }}
-                                >
+                              <tr
+                                key={mealIndex}
+                                style={{ backgroundColor: rowColor }}
+                              >
+                                <td className="border px-4 py-2">
                                   {meal.time}
                                 </td>
-                                <td
-                                  className="border border-gray-600 p-2"
-                                  style={{ color: textColor }}
-                                >
+                                <td className="border px-4 py-2">
                                   {meal.meal}
                                 </td>
                               </tr>
@@ -283,11 +284,11 @@ const DynamicDietPlanComponent = () => {
                           ) : (
                             <tr>
                               <td
-                                className="border border-gray-600 p-2"
                                 colSpan="2"
-                                style={{ color: textColor }}
+                                className="border px-4 py-2 text-center"
+                                style={{ color: columnColor }}
                               >
-                                No Data
+                                No Meals
                               </td>
                             </tr>
                           )}
@@ -299,7 +300,9 @@ const DynamicDietPlanComponent = () => {
               ))}
             </div>
           ) : (
-            <p className="text-center">No diet plan data available.</p>
+            <p className="text-center text-gray-400">
+              No diet plans available.
+            </p>
           )}
         </div>
       </div>

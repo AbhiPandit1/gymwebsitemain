@@ -7,6 +7,7 @@ const usePostDayPlan = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [dayPlans, setDayPlans] = useState([]);
+  const backendapi = import.meta.env.VITE_BACKEND_URL;
 
   const postDayPlan = async (programmeId, dayPlan) => {
     setLoading(true);
@@ -30,7 +31,7 @@ const usePostDayPlan = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/trainer/programme/${programmeId}/day/plan`,
+        `${backendapi}/api/trainer/programme/${programmeId}/day/plan`,
         {
           method: 'POST',
           headers: {
@@ -61,7 +62,7 @@ const usePostDayPlan = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/trainer/programme/${programmeId}/day/plans`
+        `${backendapi}/api/trainer/programme/${programmeId}/day/plans`
       );
 
       setDayPlans(response.data);
@@ -83,7 +84,7 @@ const usePostDayPlan = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/trainer/programme/${programmeId}/day/plan/${planId}`,
+        `${backendapi}/api/trainer/programme/${programmeId}/day/plan/${planId}`,
         {
           method: 'PUT',
           headers: {

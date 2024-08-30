@@ -19,44 +19,46 @@ const Setting = () => {
   };
 
   return (
-    <div className="grid grid-cols-7 min-h-screen">
-      {/* Sidebar */}
+    <div className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans bg-gray-900">
+      {/* Sidebar with Dashboard Links */}
       <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden' : 'col-span-7 sm:col-span-2'
-        } bg-black text-white overflow-y-auto`}
+        className={`transition-transform duration-300 bg-gray-900 ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        }`}
         onClick={handleClick}
       >
-        <DashboardComponent dashBoardLink={dashBoardLink} />
+        <DashboardComponent
+          dashBoardLink={dashBoardLink}
+          hoverDashboard={hoverDashboard}
+        />
       </div>
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard ? 'col-span-7' : 'col-span-7 sm:col-span-5'
-        } bg-primary text-white`}
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-hidden`}
       >
-        <div className="relative">
-          {hoverDashboard && (
-            <div
-              className="absolute left-0 top-[20%] cursor-pointer animate-shake"
-              onClick={handleClick}
-            >
-              <BiSolidRightArrow size={80} color="white" />
-            </div>
-          )}
-          <div className="h-full">
-            <div>
-              <DashboardHeader />
-            </div>
+        <DashboardHeader />
 
-            <h1 className="text-3xl font-extrabold text-center">Settings</h1>
-            <EmailChange />
-            <PasswordChange />
-            <SocialMediaLinkChange />
-            <ComplaintForm />
-            <ReviewForm />
+        {hoverDashboard && (
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={handleClick}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
           </div>
+        )}
+
+        {/* Settings Content */}
+        <div className="p-4">
+          <h1 className="text-3xl font-extrabold text-center mb-4">Settings</h1>
+          <EmailChange />
+          <PasswordChange />
+          <SocialMediaLinkChange />
+          <ComplaintForm />
         </div>
       </div>
     </div>

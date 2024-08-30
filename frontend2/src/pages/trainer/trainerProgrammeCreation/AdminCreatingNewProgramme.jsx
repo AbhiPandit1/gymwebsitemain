@@ -120,12 +120,12 @@ const AdminCreatingNewProgramme = () => {
   const dashBoardLink = useDashboardLinks();
 
   return (
-    <div className="grid grid-cols-7 h-screen max-w-[100vw]">
-      <div className="hidden sm:col-span-2 sm:grid bg-black text-white">
+    <div className="grid grid-cols-9 gap-[2rem] h-screen max-w-[100vw bg-gray-900 ">
+      <div className="hidden sm:col-span-1 sm:grid bg-gray-900 text-white">
         <DashboardComponent dashBoardLink={dashBoardLink} />
       </div>
 
-      <div className="col-span-7 sm:col-span-5 bg-primary text-white">
+      <div className="col-span-9 sm:col-span-8  bg-gray-900 text-white">
         <div className="h-full">
           <DashboardHeader />
 
@@ -317,7 +317,7 @@ const AdminCreatingNewProgramme = () => {
               {/* Submit Button */}
               <button
                 type="submit"
-                className={`w-full h-12 bg-secondary text-white rounded-[16px] ${
+                className={`w-full h-12 bg-orange-900 text-white rounded-[16px] ${
                   loadings ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
                 disabled={loadings}

@@ -33,7 +33,12 @@ const DashboardHeader = () => {
   };
 
   return (
-    <div className="col-span-5 min-w-[100vw] sm:min-w-full max-w-[100vw]">
+    <div
+      className="min-w-[100vw] sm:min-w-full max-w-[100vw] bg-gray-900 shadow-lg shadow-orange-500 "
+      style={{
+        backgroundColor: '#090813',
+      }}
+    >
       <div className="flex justify-between items-center sm:m-2 sm:p-4 p-4">
         <Link to={`/user/dashboard/${user._id}`}>
           <div className="text-xl sm:text-3xl font-sans font-bold">

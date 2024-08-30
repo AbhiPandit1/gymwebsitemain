@@ -7,7 +7,8 @@ const Logo = ({ backgroundImage }) => {
         <img
           src={backgroundImage}
           alt="panda"
-          className="w-[90%] h-[100%]  sm:w-[400px] sm:h-[80px]"
+          className=" sm:w-[190px] sm:h-[40px]"
+          style={{ filter: 'brightness(1.5)' }}
         />
       </Link>
     </div>

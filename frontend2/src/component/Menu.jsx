@@ -23,25 +23,25 @@ const Menu = () => {
       id: '1',
       name: 'Home',
       link: '/',
-      image: <IoHomeOutline color="white" size={30} />,
+      image: <IoHomeOutline color="orange" size={30} />,
     },
     {
       id: '2',
       name: 'Categories',
       link: '/categories',
-      image: <BiCategoryAlt color="white" size={30} />,
+      image: <BiCategoryAlt color="orange" size={30} />,
     },
     {
       id: '3',
       name: 'Explore',
       link: '/programmes',
-      image: <MdSportsGymnastics color="white" size={30} />,
+      image: <MdSportsGymnastics color="orange" size={30} />,
     },
     {
       id: '4',
       name: 'Creators',
       link: '/trainers',
-      image: <GiClassicalKnowledge color="white" size={30} />,
+      image: <GiClassicalKnowledge color="orange" size={30} />,
     },
   ];
 
@@ -50,7 +50,7 @@ const Menu = () => {
       id: '5',
       name: 'Dashboard',
       link: `/user/dashboard/${user.user._id}`,
-      image: <GiClassicalKnowledge color="white" size={30} />,
+      image: <GiClassicalKnowledge color="orange" size={30} />,
     });
   }
 
@@ -67,7 +67,7 @@ const Menu = () => {
   }, [user]);
 
   return (
-    <div className="bg-black text-white min-h-[40vh] min-w-[20vw] absolute p-8 top-[140%] right-0 rounded-[32px] border border-gray-800 overflow-hidden z-50">
+    <div className="bg-black text-white min-h-[40vh] min-w-[20vw] absolute p-8 top-[140%] right-0 rounded-[32px] border border-starColor overflow-hidden z-50">
       <div>
         <div className="flex justify-center items-center gap-3 border-b border-paraColor pb-2">
           <div className="font-sans font-semibold">
@@ -80,13 +80,13 @@ const Menu = () => {
             )}
           </div>
           {isSignIn ? (
-            <LiaSignOutAltSolid color="white" size={30} />
+            <LiaSignOutAltSolid color="orange" size={30} />
           ) : (
-            <PiSignInThin color="white" size={30} />
+            <PiSignInThin color="orange" size={30} />
           )}
         </div>
       </div>
-      <div className="gap-10 flex flex-col justify-center mt-5">
+      <div className="gap-10 flex flex-col justify-center mt-5 ">
         {menuDatas.map((data) => (
           <>
             <Link to={data.link}>

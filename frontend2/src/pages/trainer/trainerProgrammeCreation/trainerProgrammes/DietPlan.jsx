@@ -78,11 +78,11 @@ const DietPlan = () => {
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
   };
-
+  const backendapi = import.meta.env.VITE_BACKEND_URL;
   const handleSubmit = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/trainer/diet/plan/${programmeId}`,
+        `${backendapi}/api/trainer/diet/plan/${programmeId}`,
         {
           method: 'POST',
           headers: {
@@ -103,40 +103,44 @@ const DietPlan = () => {
       }
     } catch (error) {
       console.error('Error:', error.message);
-      toast.error(error);
+      toast.error('An error occurred while creating the diet plan.');
     }
   };
 
   return (
-    <div className="grid grid-cols-7 h-screen max-w-[100vw] text-white font-sans">
+    <div className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans bg-gray-900">
       <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden' : 'col-span-7'
-        } sm:${hoverDashboard ? 'hidden' : 'col-span-2'}`}
+        className={`transition-transform duration-300 bg-gray-900 ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        }`}
         onClick={handleClick}
       >
         <DashboardComponent
-          dashBoardLink={dashBoardLink}
+          dashBoardLink={dashBoardLink} // Fixed variable name
           hoverDashboard={hoverDashboard}
         />
       </div>
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard ? 'col-span-7' : 'col-span-7'
-        } sm:${hoverDashboard ? 'col-span-7' : 'col-span-5'} overflow-y-scroll`}
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-scroll`}
       >
         <DashboardHeader />
+        {hoverDashboard && (
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={handleClick}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
+          </div>
+        )}
+
         <h2 className="text-3xl font-bold mb-8 text-center">
           Weekly Diet Plan
         </h2>
-        {hoverDashboard && (
-          <div
-            className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-            onClick={handleClick}
-          >
-            <BiSolidRightArrow size={80} color="white" />
-          </div>
-        )}
+
         <div className="p-4">
           {dietPlan.map((dayPlan) => (
             <div key={dayPlan.id} className="mb-8 relative">
@@ -183,7 +187,7 @@ const DietPlan = () => {
               ))}
               <button
                 onClick={() => handleAddMeal(dayPlan.id)}
-                className="p-2 bg-green-600 rounded mb-4"
+                className="p-2 bg-orange-900 rounded mb-4"
               >
                 Add Another Meal
               </button>
@@ -191,7 +195,7 @@ const DietPlan = () => {
           ))}
           <button
             onClick={handleAddDay}
-            className="p-4 bg-green-600 rounded mb-4"
+            className="p-4 bg-orange-900 rounded mb-4"
           >
             Add Another Day
           </button>

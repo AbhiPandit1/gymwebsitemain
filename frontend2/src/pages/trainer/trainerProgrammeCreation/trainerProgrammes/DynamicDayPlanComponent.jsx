@@ -43,7 +43,6 @@ const DynamicDayPlanComponent = () => {
   const [planData, setPlanData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
 
   const { user } = useSelector((state) => state.user);
 
@@ -71,7 +70,14 @@ const DynamicDayPlanComponent = () => {
 
     const dayPlanId = updatedPlanData[dayIndex].id; // Ensure that `id` exists
     try {
-      await updateDayPlan(programmeId, dayPlanId, updatedPlanData[dayIndex], setLoading, setError, setSuccess);
+      await updateDayPlan(
+        programmeId,
+        dayPlanId,
+        updatedPlanData[dayIndex],
+        setLoading,
+        setError,
+        setSuccess
+      );
       setPlanData(updatedPlanData);
     } catch (error) {
       console.error('Error updating day plan:', error);
@@ -155,36 +161,44 @@ const DynamicDayPlanComponent = () => {
   };
 
   return (
-    <div className="grid grid-cols-7 h-screen max-w-[100vw] bg-primary text-white font-sans">
+    <div className="grid grid-cols-9 h-screen max-w-[100vw]  text-white font-sans bg-gray-900">
       <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden' : 'col-span-7'
-        } sm:${hoverDashboard ? 'hidden' : 'col-span-2'}`}
+        className={`transition-transform duration-300 bg-gray-900   ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        }`}
         onClick={handleClick}
       >
         <DashboardComponent
-          dashBoardLink={dashBoardLink}
+          dashBoardLink={dashBoardLink} // Fixed variable name
           hoverDashboard={hoverDashboard}
         />
       </div>
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard ? 'col-span-7' : 'col-span-7'
-        } sm:${
-          hoverDashboard ? 'col-span-7' : 'col-span-5'
-        } bg-primary overflow-y-scroll`}
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-scroll`}
       >
         <DashboardHeader />
+        {hoverDashboard && (
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={handleClick}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
+          </div>
+        )}
         <div className="p-4">
           <h1 className="text-2xl mb-4" style={{ color: headingColor }}>
             Dynamic Day Plan
           </h1>
           {loading && <p>Loading...</p>}
           {error && <p className="text-red-500">{error}</p>}
-          {!loading && !error && planData.length === 0 && (
+          {!loading && !error && planData?.length === 0 && (
             <p>No day plans available for the selected programme.</p>
           )}
-          {!loading && !error && planData.length > 0 && (
+          {!loading && !error && planData?.length > 0 && (
             <>
               <div className="mb-4 flex flex-col space-y-4 gap-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                 <div className="flex mb-4">

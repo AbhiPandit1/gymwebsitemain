@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import logoHeader from '../assets/header.png';
+import logoHeader from '../assets/NewLogo.png';
 import { RxDashboard } from 'react-icons/rx';
 import Logo from './Logo';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,8 @@ import Menu from './Menu';
 import { MdSportsGymnastics } from 'react-icons/md';
 import { BiCategoryAlt } from 'react-icons/bi';
 import { IoHomeOutline } from 'react-icons/io5';
-import { GiClassicalKnowledge } from 'react-icons/gi';
+import { GiClassicalKnowledge, GiHamburgerMenu } from 'react-icons/gi';
+import { ImCross } from 'react-icons/im';
 
 const Header = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -66,17 +67,10 @@ const Header = () => {
   };
 
   return (
-    <div
-      className="flex justify-between items-center p-4 bg-transparent  w-full h-30 border-b border-orange-400 rounded-l-[1.2rem] rounded-r-[1.2rem] shadow-lg"
-      style={{
-        backgroundImage: `url('https://s3-alpha-sig.figma.com/img/fb55/b466/b05afb0a4774775c1b269cd0567431cd?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k2kKnQWDVaXS2KNjmIuXcspoOwqvjRU0TVK232dlgoBtFMW0Ofrw4lcJKMzLCZNYmG3WL~O6lbOkgJzhPfhEWq3fhj4giSAjOsC4w4ycNxInm7NrJEznDq9-xsy1sN2BcBqvUSFEYaVkRIzdHEh1qJOGsInAuSXcpwBSXHGnESfEUrrdaR0uP4zQmqmGqwgZ7z9Uijpbudfyyivqo7e8jvKRhYhm2UGFQg-qXcJax2LJxETUPE6gAHjt3GhiNK39D~Lw1AEUS~bCIbWdOSVYAA6wNhBTlKh3JwoXPVGtlvjs9PS0QLXvLIBgL9ASEfiv3fJ9l3icHusqaZFCHNzAFg__')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
+    <div className="flex justify-between items-center p-4    w-full h-30  rounded-l-[1.2rem] rounded-r-[1.2rem] shadow-lg bg-transparent">
       {/* NewMenu for small screens */}
       {/* Navigation Menu for larger screens */}
-      <div className="m-auto">
+      <div className="">
         <Link to="/">
           <Logo backgroundImage={logoHeader} />
         </Link>
@@ -87,23 +81,27 @@ const Header = () => {
             <Link
               key={item.id}
               to={item.link}
-              className="flex flex-col items-center text-[1.5rem] text-white no-underline transition-colors duration-300 hover:underline-offset-4 hover:underline hover:text-orange-300"
+              className="flex flex-col items-center text-[1.5rem] text-white no-underline transition-colors duration-300 hover:underline-offset-4 hover:underline hover:text-orange-600"
             >
               <span className="text-md font-extrabold">{item.name}</span>
             </Link>
           ))}
         </div>
-        <button className="h-[3rem] w-[8rem] rounded-lg text-white bg-orange-400 hover:bg-orange-600">
+        <button className="h-[3rem] w-[8rem] rounded-lg text-white bg-orange-600 hover:bg-orange-800">
           Contact
         </button>
       </div>
       {/* Menu Toggle Button */}(
-      <div className="flex items-center  sm:hidden">
+      <div className="flex justify-end items-center w-full sm:hidden ">
         <div
-          className="relative w-[40px] h-[40px] cursor-pointer"
+          className=" flex  justify-end items-center ml-4  sm:hidden relative cursor-pointer"
           onClick={toggleMenu}
         >
-          <RxDashboard color="white" className="h-[24px] w-[24px]" />
+          {!isMenuVisible ? (
+            <GiHamburgerMenu color="white" className="h-[24px] w-[24px]" />
+          ) : (
+            <ImCross color="white" className="h-[24px] w-[24px]" />
+          )}
           {isMenuVisible && <Menu />}
         </div>
       </div>

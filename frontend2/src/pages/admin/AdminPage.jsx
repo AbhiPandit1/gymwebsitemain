@@ -4,9 +4,12 @@ import { LuUsers } from 'react-icons/lu';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+
+
+import { BiSolidRightArrow } from 'react-icons/bi';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 import DashboardComponent from '../../component/DashboardComponent';
-import { BiSolidRightArrow } from 'react-icons/bi';
+import DashboardHeader from '../../component/DashboardHeader';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
@@ -17,7 +20,6 @@ const AdminPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [roleFilter, setRoleFilter] = useState('all');
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [isShaking, setIsShaking] = useState(false);
   const { id } = useParams();
   const [hoverDashboard, setHoverDashboard] = useState(false);
 
@@ -27,9 +29,8 @@ const AdminPage = () => {
 
   const { user } = useSelector((state) => state.user);
   const dropdownRef = useRef(null);
-
   const navigate = useNavigate();
-  const dashboard = useDashboardLinks();
+  const dashboardLink = useDashboardLinks(); // Adjusted to use dashboardLink
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -142,28 +143,33 @@ const AdminPage = () => {
 
   return (
     <>
-      <div className="bg-black text-white min-h-screen font-sans p-4 flex flex-col md:flex-row max-h-[100vh] overflow-hidden scrollbar-hide-body ">
+      <div className="grid grid-cols-9 h-screen max-w-[100vw] gap-[2rem] text-white font-sans bg-gray-900">
         <div
-          className={`${
-            !hoverDashboard ? 'sm:w-1/3' : 'hidden'
-          }  bg-tertiary rounded-lg p-4 transition-width duration-300 rounded-[32px] ease-in-out`}
+          className={`transition-transform duration-300 ${
+            hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+          }`}
           onClick={handleClick}
         >
           <DashboardComponent
-            dashBoardLink={dashboard}
+            dashBoardLink={dashboardLink}
             hoverDashboard={hoverDashboard}
           />
         </div>
-        <div className="flex-1 p-4 overflow-scroll scrollbar-hide  relative">
-          {hoverDashboard ? (
+        <div
+          className={`transition-transform duration-300 ${
+            hoverDashboard
+              ? 'col-span-9 sm:col-span-9'
+              : 'col-span-7 sm:col-span-8'
+          } overflow-y-scroll`}
+        >
+          <DashboardHeader />
+          {hoverDashboard && (
             <div
-              className="absolute left-0 top-[50%]  animate-shake "
+              className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
               onClick={handleClick}
             >
-              <BiSolidRightArrow size={80} color="white" />
+              <BiSolidRightArrow size={40} color="white" />
             </div>
-          ) : (
-            ''
           )}
 
           <div className="flex flex-col md:flex-row justify-between items-center mb-4">
@@ -181,12 +187,12 @@ const AdminPage = () => {
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  id="selectAll"
+                  id="selectAllCheckbox"
                   checked={selectAll}
                   onChange={handleSelectAll}
                   className="form-checkbox h-5 w-5 text-white"
                 />
-                <label htmlFor="selectAll" className="text-sm">
+                <label htmlFor="selectAllCheckbox" className="text-sm">
                   Select All
                 </label>
               </div>
@@ -247,69 +253,37 @@ const AdminPage = () => {
                   <th className="px-4 py-3 text-left text-sm font-medium uppercase">
                     <input
                       type="checkbox"
-                      id="selectAll"
+                      id="selectAllCheckboxHeader"
                       checked={selectAll}
                       onChange={handleSelectAll}
                       className="form-checkbox h-5 w-5 text-white"
                     />
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-medium uppercase">
-                    Role
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium uppercase">
                     Name
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium uppercase">
-                    Image
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-medium uppercase">
                     Email
                   </th>
-                  <th className="px-4 py-3 text-sm font-medium uppercase text-center">
-                    Programmes
-                  </th>
                   <th className="px-4 py-3 text-left text-sm font-medium uppercase">
-                    Created At
+                    Role
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white">
-                {filteredUsers.map((currentUser) => (
-                  <tr key={currentUser._id} className="hover:bg-gray-800">
-                    <td className="px-4 py-4 whitespace-nowrap">
+              <tbody className="divide-y divide-gray-800">
+                {filteredUsers.map((user) => (
+                  <tr key={user._id}>
+                    <td className="px-4 py-3">
                       <input
                         type="checkbox"
+                        checked={selectedUserIds.has(user._id)}
+                        onChange={() => handleSelectUser(user._id)}
                         className="form-checkbox h-5 w-5 text-white"
-                        checked={selectedUserIds.has(currentUser._id)}
-                        onChange={() => handleSelectUser(currentUser._id)}
                       />
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      {currentUser.role}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      {currentUser.name}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      {currentUser.profilePhoto?.url ? (
-                        <img
-                          src={currentUser.profilePhoto.url}
-                          alt={`${currentUser.name}'s profile`}
-                          className="w-10 h-10 object-cover rounded-full"
-                        />
-                      ) : (
-                        'No Image'
-                      )}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      {currentUser.email}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-center">
-                      {currentUser.hasTakenProgramme ? 'Yes' : 'No'}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      {new Date(currentUser.createdAt).toLocaleDateString()}
-                    </td>
+                    <td className="px-4 py-3">{user.name}</td>
+                    <td className="px-4 py-3">{user.email}</td>
+                    <td className="px-4 py-3">{user.role}</td>
                   </tr>
                 ))}
               </tbody>
@@ -317,40 +291,25 @@ const AdminPage = () => {
           </div>
 
           {showDeleteModal && (
-            <div className="fixed z-10 inset-0 overflow-y-auto scrollbar-hide ">
-              <div className="flex items-center justify-center min-h-screen px-4 py-6">
-                <div className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:w-full sm:max-w-lg">
-                  <div className="bg-white px-4 pt-5 pb-4 sm:p-6">
-                    <div className="sm:flex sm:items-start">
-                      <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">
-                          Confirm Deletion
-                        </h3>
-                        <div className="mt-2">
-                          <p className="text-sm text-gray-500">
-                            Are you sure you want to delete the{' '}
-                            {selectedUserIds.size} selected users?
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button
-                      onClick={deleteUser}
-                      type="button"
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                    >
-                      Delete
-                    </button>
-                    <button
-                      onClick={handleCancelDelete}
-                      type="button"
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white text-black rounded-lg shadow-lg p-6">
+                <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
+                <p className="mb-4">
+                  Are you sure you want to delete the selected users?
+                </p>
+                <div className="flex justify-end gap-4">
+                  <button
+                    onClick={deleteUser}
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={handleCancelDelete}
+                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none"
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             </div>

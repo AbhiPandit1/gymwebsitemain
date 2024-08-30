@@ -110,12 +110,12 @@ const ProgrammeDetail = () => {
   };
 
   return (
-    <div className="bg-primary min-h-screen flex flex-col">
+    <div className="bg-gray-900 min-h-screen flex flex-col">
       <Header />
       <div className="flex-grow flex items-center justify-center p-4">
         <div className="w-full max-w-4xl bg-orange-500 rounded-2xl shadow-lg relative overflow-hidden mt-[30vh] sm:mt-[20%]">
           <Elements stripe={stripePromise}>
-            <div className="bg-primary p-6 rounded-2xl text-white">
+            <div className="bg-gray-900 p-6 rounded-2xl text-white">
               {loading && <div className="text-center">Loading...</div>}
               {error && <div className="text-center text-red-500">{error}</div>}
               {!loading && !error && singleProgramme && (
@@ -144,7 +144,7 @@ const ProgrammeDetail = () => {
                   <div className="flex justify-between mb-4">
                     <button
                       onClick={handleBack}
-                      className="px-4 py-2 bg-secondary text-white rounded-md hover:bg-secondary-dark transition"
+                      className="px-4 py-2 bg-orange-700 text-white rounded-md hover:bg-orange-600 transition"
                     >
                       Back
                     </button>
@@ -175,11 +175,9 @@ const ProgrammeDetail = () => {
                             (category, index) => (
                               <div
                                 key={index}
-                                className="flex items-center space-x-4"
+                                className="bg-gray-800 text-white px-4 py-2 rounded-md"
                               >
-                                <div className="bg-white text-black px-4 py-2 rounded-md">
-                                  {category}
-                                </div>
+                                {category}
                               </div>
                             )
                           )}

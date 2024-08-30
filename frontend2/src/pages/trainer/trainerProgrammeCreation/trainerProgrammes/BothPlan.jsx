@@ -21,6 +21,7 @@ const BothPlan = () => {
 
   const [planDays, setPlanDays] = useState(null);
   const [trainingPlan, setTrainingPlan] = useState([]);
+  const backendapi = import.meta.env.VITE_BACKEND_URL;
 
   const handleInputChange = (day, mealType, value) => {
     setDietPlan((prevPlan) =>
@@ -86,11 +87,11 @@ const BothPlan = () => {
   };
 
   return (
-    <div className="grid grid-cols-7 h-screen max-w-[100vw] text-white font-sans">
+    <div className="grid grid-cols-9 h-screen max-w-[100vw] gap-[2rem] text-white font-sans bg-gray-900">
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden' : 'col-span-7'
-        } sm:${hoverDashboard ? 'hidden' : 'col-span-2'}`}
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        }`}
         onClick={handleClick}
       >
         <DashboardComponent
@@ -100,10 +101,20 @@ const BothPlan = () => {
       </div>
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard ? 'col-span-7' : 'col-span-7'
-        } sm:${hoverDashboard ? 'col-span-7' : 'col-span-5'} overflow-y-scroll`}
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-auto`}
       >
         <DashboardHeader />
+        {hoverDashboard && (
+          <div
+            className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={handleClick}
+          >
+            <BiSolidRightArrow size={40} color="white" />
+          </div>
+        )}
         {!showDayPlan ? (
           <div className="p-4">
             <h2 className="text-3xl font-bold mb-8 text-center">

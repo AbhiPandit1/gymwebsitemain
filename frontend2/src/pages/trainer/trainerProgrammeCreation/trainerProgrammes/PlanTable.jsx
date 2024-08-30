@@ -46,9 +46,9 @@ const VideoModal = ({ isOpen, videoUrl, onClose }) => {
 const PlanTable = ({
   planData = [],
   headingColor = 'black',
-  textColor = 'black',
+  textColor = 'white',
   textSize = '1rem',
-  tableHeadingColor = 'black',
+  tableHeadingColor = 'orange',
   tableRowColor = 'white',
   tableColumnColor = 'gray',
 }) => {

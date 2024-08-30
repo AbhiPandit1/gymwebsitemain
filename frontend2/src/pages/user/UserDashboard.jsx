@@ -17,71 +17,74 @@ const UserDashboard = () => {
 
   const { user } = useSelector((state) => state.user);
   const role = user.user.role;
-  const dashBoardLink = useDashboardLinks();
+  const dashboardLink = useDashboardLinks(); // Fixed variable name
 
   return (
-    <div className="grid grid-cols-7 min-h-screen max-h-screen overflow-hidden text-white">
+    <div
+      className="grid grid-cols-9 h-screen max-w-[100vw]  text-white font-sans "
+      style={{
+        backgroundColor: '#343639',
+      }}
+    >
       <div
-        className={`${hoverDashboard ? 'hidden' : 'col-span-7'} sm:${
-          hoverDashboard ? 'hidden' : 'col-span-2'
+        className={`transition-transform duration-300 bg-gray-900   ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
         }`}
         onClick={handleClick}
       >
         <DashboardComponent
-          dashBoardLink={dashBoardLink}
+          dashBoardLink={dashboardLink} // Fixed variable name
           hoverDashboard={hoverDashboard}
         />
       </div>
       <div
-        className={`${hoverDashboard ? 'col-span-7' : 'col-span-5'} sm:${
-          hoverDashboard ? 'col-span-7' : 'col-span-5'
-        }`}
+        className={`transition-transform duration-300 ${
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-hidden`}
       >
         <DashboardHeader />
+        {hoverDashboard && (
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={handleClick}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
+          </div>
+        )}
         <div className="p-2">
-          <div className="bg-primary h-full w-full flex flex-col mb-1">
+          <div className="bg-gray-800 h-full w-full flex flex-col mb-1">
             <div className="relative">
               <img
-                src={homeGirl}
+                src="https://s3-alpha-sig.figma.com/img/de97/3247/22d2cdd901cc39df68864905ac8641de?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=CQmRo9i9-TzQwkosfJfL4W1I70fGa1T1svoWUOah4HrGT-fpWs7ZvjSJKRBHnAnKFLSCRHL1vUjG9n-239XWLg8VW6jwNfvCobjNoD8B79aNbmuMntyDVQznybRDWn-HovFtZR350v798Xcp1SQrqq3nbfxe6e4cgj3Oujh-bKMeocLUuSZxjAbRJ0IGIP728tJUtGyC8c7RRYeeH~GUb6XILuYmPp-YKJhc58ap9UpHOy~IYBASAHpE8t1M2EHu2ya3DurjkmApif9VxZD7nXEaqMuabnHFm3iT6-EC04l0GdW6J0qMYDmaS9UZdRq2F9IarNvga22nZ1ZPpBo-SA__"
                 alt="homeGirl"
-                className="h-screen w-full object-cover"
+                className="h-screen w-full object-cover rounded-[10px] "
               />
               <div className="absolute flex flex-col justify-center top-1/3 w-full">
-                <div className="text-white flex flex-col justify-center items-center">
+                <div className="text-gray-100 flex flex-col justify-center items-center">
                   <div className="text-3xl font-extrabold tracking-tighter sm:text-2xl md:text-4xl">
                     ACHIEVE MORE
                   </div>
-                  <div className="text-4xl font-bold tracking-tighter md:text-4xl sm:text-2xl mt-2">
+                  <div className="text-3xl font-bold tracking-tighter md:text-4xl sm:text-2xl mt-2">
                     THAN JUST FITNESS
                   </div>
-                  {hoverDashboard && (
-                    <div
-                      className="absolute left-0 top-0 animate-shake cursor-pointer"
-                      onClick={handleClick}
-                    >
-                      <BiSolidRightArrow size={80} color="white" />
-                    </div>
-                  )}
                 </div>
-                <div className="text-white flex items-start justify-center w-full mt-8">
+                <div className="text-gray-100 flex items-start justify-center w-full mt-8">
                   <Link
                     to={
                       role === 'user'
                         ? '/user/programmes'
                         : `/trainer/programmes/${user.user._id}`
                     }
-                    className="text-white-500 hover:text-gray-300 focus:outline-none"
+                    className="text-gray-300 hover:text-gray-100 focus:outline-none"
                   >
-                    <button className="w-[17rem] sm:w-[18rem] h-[4rem] bg-secondary flex justify-between items-center ml-4 mr-2 pr-4 rounded-xl">
+                    <button className="w-[17rem] sm:w-[18rem] h-[4rem] bg-orange-500 flex justify-between items-center ml-4 mr-2 pr-4 rounded-xl">
                       <span className="ml-4 text-xl">
                         {role === 'trainer'
                           ? 'Make your own programs'
                           : 'Your Programs'}
                       </span>
-                      <IoIosArrowRoundForward
-                        color="white"
-                        className="w-14 h-10"
-                      />
                     </button>
                   </Link>
                 </div>

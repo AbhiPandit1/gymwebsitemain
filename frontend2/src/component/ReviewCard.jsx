@@ -32,7 +32,9 @@ const ReviewCard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/get/review`); // API endpoint to get reviews
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/get/review`
+        ); // API endpoint to get reviews
         const reviews = await response.json();
         setData(reviews);
         console.log(reviews);
@@ -108,13 +110,7 @@ const ReviewCard = () => {
   };
 
   return (
-    <div
-      className="rounded-[40px] h-full m-auto w-[100%] sm:rounded-[10px] p-4"
-      style={{
-        backgroundImage: `url('https://s3-alpha-sig.figma.com/img/fb55/b466/b05afb0a4774775c1b269cd0567431cd?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k2kKnQWDVaXS2KNjmIuXcspoOwqvjRU0TVK232dlgoBtFMW0Ofrw4lcJKMzLCZNYmG3WL~O6lbOkgJzhPfhEWq3fhj4giSAjOsC4w4ycNxInm7NrJEznDq9-xsy1sN2BcBqvUSFEYaVkRIzdHEh1qJOGsInAuSXcpwBSXHGnESfEUrrdaR0uP4zQmqmGqwgZ7z9Uijpbudfyyivqo7e8jvKRhYhm2UGFQg-qXcJax2LJxETUPE6gAHjt3GhiNK39D~Lw1AEUS~bCIbWdOSVYAA6wNhBTlKh3JwoXPVGtlvjs9PS0QLXvLIBgL9ASEfiv3fJ9l3icHusqaZFCHNzAFg__')`,
-        overflow: 'hidden', // Hide scrollbars
-      }}
-    >
+    <div className="rounded-[40px] h-full m-auto w-[100%] sm:rounded-[10px] p-4">
       <div className="flex justify-between items-center m-3">
         <h2 className="flex justify-between text-center font-extrabold items-center text-2xl sm:text-4xl font-sans text-white">
           What People Say

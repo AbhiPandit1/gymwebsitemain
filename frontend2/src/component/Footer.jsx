@@ -1,5 +1,5 @@
 import Logo from './Logo';
-import footerImage from '../assets/footerLogo.png';
+import footerImage from '../assets/NewLogo.png';
 import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 
 import SiteMap from './SiteMap';
@@ -20,17 +20,9 @@ const Footer = () => {
   }, []);
 
   return (
-    <div
-      className="flex flex-col gap-10 h-full p-2 sm:p-10 w-full mt-10 bg-footerColor"
-      style={{
-        backgroundImage: `url('https://s3-alpha-sig.figma.com/img/97ba/3b38/faad148e7a346daf06cece25220adc23?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LVqp4jrO3AvCcDm77XoyxBAsRwQEojLs7L5r5ZEAVfjoVUGsmsCE8wBMpAW~nxK7XERlb096ohyNl3~OBdpG-o6NS5hHhn~hHAd56ereMT6zmXS5wn7EAP5S7YNjebTR7mKepjlm67jKemA43vVerhkgLrv5R6QqICqroCFBnix7xJTSJiw0nt2R6aW8mVCBaMfKqh1FlqqKgPMYRKiPH9nYh7HLdssfTlTVp1IvtPk34UnHNbT94TV80u1NlLfBSW4Y9OzO6zSHkqavgUeRU2-JhuJVOOGO6lhUDbKMDSJlei6rpNT9jKv-UDsc0Ba4195CXLKxqBGZ7kIzvYSiWA__')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
+    <div className="flex flex-col gap-10 h-[85vh] p-2 sm:p-10 w-full ">
       {/* First Division */}
-      <div className="flex flex-col sm:flex sm:flex-row justify-between sm:m-0">
+      <div className="flex flex-col sm:flex sm:flex-row justify-between ">
         <div className="mt-20 mb-10 sm:m-20">
           <Logo backgroundImage={footerImage} />
         </div>
@@ -73,7 +65,7 @@ const Footer = () => {
         </div>
 
         {/* Data Content */}
-        <div className="flex justify-between ml-5 sm:w-[40vw] font-extrabold">
+        <div className="flex justify-between  sm:w-[40vw] font-extrabold">
           <div>
             <SiteMap data={legaldata} header="Legal" />
           </div>

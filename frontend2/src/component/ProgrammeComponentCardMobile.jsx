@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { IoIosArrowRoundForward } from 'react-icons/io';
 import { FaPlus, FaMinus } from 'react-icons/fa';
-import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai'; // Import arrow icons
+import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 
 const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
   const [loadButton, setLoadButton] = useState(false);
-  const [expandedCard, setExpandedCard] = useState(null); // Track the expanded card
+  const [expandedCard, setExpandedCard] = useState(null);
   const [showCategory, setShowCategory] = useState({});
 
   const handleLoadMore = () => {
@@ -27,38 +27,47 @@ const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
   };
 
   const filteredProgrammes = applyFilter(programmeData);
-
-  // Display up to 3 items when loadButton is false, otherwise display all items
   const displayedData = loadButton
     ? filteredProgrammes
     : filteredProgrammes.slice(0, 3);
 
   const handleExpandToggle = (id) => {
-    setExpandedCard(expandedCard === id ? null : id); // Toggle description visibility
+    setExpandedCard(expandedCard === id ? null : id);
   };
+
   const handleCategoryToggle = (id) => {
     setShowCategory((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 gap-4">
+    <div className="mt-10">
+      <div className="grid grid-cols-1 gap-4 overflow-hidden h-screen">
         {displayedData.map((card) => (
           <div
             key={card._id}
-            className="relative bg-primary rounded-[32px] min-h-[500px] p-2 w-[300px] my-[1rem] overflow-hidden bg-cover bg-center"
+            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[500px] p-4 w-[300px] my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:shadow-orange-600 hover:shadow-2xl"
             style={{ backgroundImage: `url(${card.categoryPhoto?.url})` }}
           >
-            <div className="absolute inset-0 bg-black opacity-50 rounded-[32px]"></div>
+            <div
+              className={`absolute inset-0 rounded-xl transition-opacity duration-300 ${
+                expandedCard === card._id
+                  ? 'bg-black opacity-60'
+                  : 'bg-black opacity-30'
+              }`}
+            ></div>
+
             <div className="relative flex flex-col justify-end h-full p-4">
-              <div className="h-[2rem] max-w-[5rem] mb-2 text-[0.8rem] rounded-[10px] bg-paraColor font-sans flex justify-center items-center text-black">
-                Category
-              </div>
+              {/* Title */}
+              <h3 className="text-2xl text-white font-bold mb-2">
+                {card.title}
+              </h3>
+
+              {/* Category button */}
               <button
                 onClick={() => handleCategoryToggle(card._id)}
                 className="text-sm font-semibold h-[2rem] w-[8rem] py-1 px-4 rounded-lg bg-tertiary text-white shadow-md hover:bg-gray-500 transition-colors duration-300"
               >
-                {showCategory[card._id] ? 'category' : 'Show'}
+                {showCategory[card._id] ? 'Hide' : 'Show'}
               </button>
               {showCategory[card._id] && (
                 <div className="mt-2">
@@ -70,38 +79,42 @@ const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
                   </p>
                 </div>
               )}
-              {/* Description section with toggle visibility */}
+
+              {/* Description animation specific to expanded card */}
               <div
-                className={`absolute inset-0 flex flex-col justify-end p-4 bg-primary rounded-[32px] text-white font-sans transition-transform duration-300 ${
+                className={`absolute inset-0 flex flex-col justify-end p-4 bg-primary rounded-3xl text-white font-sans transition-transform duration-300 ${
                   expandedCard === card._id
                     ? 'translate-y-0 opacity-90'
                     : 'translate-y-full opacity-0'
                 }`}
-                style={{ bottom: '3.5rem' }} // Ensure description stays above arrow
+                style={{ bottom: '3.5rem' }}
               >
-                <div className="text-1xl mt-2">{card.desc}</div>
+                <div className="text-lg mt-2">{card.desc}</div>
               </div>
 
               {/* Arrow icon to toggle description visibility */}
               <div className="absolute bottom-0 w-full flex justify-center p-4">
                 <button
-                  className="bg-secondary rounded-full p-2"
+                  className={`bg-gray-950 rounded-full p-2 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 ${
+                    expandedCard === card._id ? 'bg-opacity-80' : ''
+                  }`}
                   onClick={() => handleExpandToggle(card._id)}
                 >
-                  {expandedCard === card._id ? (
-                    <AiOutlineArrowUp color="white" className="w-8 h-8" />
-                  ) : (
-                    <AiOutlineArrowDown color="white" className="w-8 h-8" />
-                  )}
+                  <AiOutlineArrowUp
+                    color="white"
+                    className={`w-8 h-8 transform transition-transform duration-300 ${
+                      expandedCard === card._id ? 'rotate-180' : ''
+                    }`}
+                  />
                 </button>
               </div>
 
-              <div className="flex justify-between mt-4">
+              <div className="flex justify-between mt-4 z-99">
                 <div className="text-xl text-white font-sans font-bold flex items-center">
                   ${card.price}
                 </div>
-                <Link to={`/programmes/${card._id}`}>
-                  <button className="w-[3.6rem] h-[3.2rem] bg-secondary flex items-center justify-center rounded-xl">
+                <Link to={`/programme/${card._id}`} className="relative z-10">
+                  <button className="w-[3.6rem] h-[3.2rem] bg-gray-900 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 flex items-center justify-center rounded-xl">
                     <IoIosArrowRoundForward
                       color="white"
                       className="w-14 h-10"
@@ -116,7 +129,7 @@ const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
 
       <div className="flex justify-center mt-4">
         <button
-          className="w-40 h-12 text-lg bg-secondary text-white px-5 flex items-center justify-between rounded-lg shadow-md"
+          className="w-40 h-12 text-lg bg-gray-900 hover:bg-gray-600 border-2 border-orange-600 text-white px-5 flex items-center justify-between rounded-lg shadow-md"
           onClick={handleLoadMore}
         >
           {loadButton ? (

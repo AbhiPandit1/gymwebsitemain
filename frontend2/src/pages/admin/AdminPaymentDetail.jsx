@@ -112,11 +112,11 @@ const AdminPaymentDetail = () => {
   };
 
   return (
-    <div className="text-white min-h-[100vh] max-h-[100vh] overflow-hidden scrollbar-hide p-4 flex flex-col md:flex-row ">
+    <div className="grid grid-cols-9 h-screen max-w-[100vw] gap-[2rem] text-white font-sans bg-gray-900">
       <div
-        className={`${
-          !hoverDashboard ? 'sm:w-1/3' : 'hidden'
-        } bg-tertiary transition-width duration-300 ease-in-out rounded-[32px] p-4  `}
+        className={`transition-transform duration-300 ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        }`}
         onClick={handleClick}
       >
         <DashboardComponent
@@ -125,19 +125,22 @@ const AdminPaymentDetail = () => {
         />
       </div>
       <div
-        className={`flex-1 transition-all ml-4 overflow-auto scrollbar-hide`}
+        className={`transition-transform duration-300 ${
+          hoverDashboard
+            ? 'col-span-9 sm:col-span-9'
+            : 'col-span-7 sm:col-span-8'
+        } overflow-y-scroll`}
       >
+        <DashboardHeader />
         {hoverDashboard && (
           <div
-            className="absolute left-0 top-[50%] transform -translate-y-1/2 cursor-pointer"
+            className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
             onClick={handleClick}
           >
-            <BiSolidRightArrow size={80} color="white" />
+            <BiSolidRightArrow size={40} color="orange"  />
           </div>
         )}
-        <div>
-          <DashboardHeader />
-        </div>
+
         <h1 className="text-2xl font-bold mb-4">Admin Payment Details</h1>
         <div className="flex flex-col mb-4 gap-4">
           {/* Filters */}

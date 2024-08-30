@@ -89,6 +89,7 @@ function App() {
     '/admin/ads/mail',
     '/trainer/profile/',
     '/dashboard/profile',
+    '/',
   ];
 
   const showHeaderFooter = !noHeaderFooterPaths.some((path) =>

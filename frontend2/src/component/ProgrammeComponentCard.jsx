@@ -45,12 +45,12 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
         {visibleProgrammes.map((card) => (
           <div
             key={card._id}
-            className="relative bg-primary rounded-3xl min-h-[500px] p-4 w-[300px] my-4 overflow-hidden bg-cover bg-center group"
+            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[500px] p-4 w-[300px] my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:shadow-orange-600 hover:shadow-2xl"
             style={{ backgroundImage: `url(${card.categoryPhoto?.url})` }}
           >
             {/* Dark overlay specific to hovered card */}
             <div
-              className={`absolute inset-0 rounded-3xl transition-opacity duration-300 ${
+              className={`absolute inset-0 rounded-xl transition-opacity duration-300 ${
                 expandedCard === card._id
                   ? 'bg-black opacity-60'
                   : 'bg-black opacity-30'
@@ -68,7 +68,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                 onClick={() => handleCategoryToggle(card._id)}
                 className="text-sm font-semibold h-[2rem] w-[8rem] py-1 px-4 rounded-lg bg-tertiary text-white shadow-md hover:bg-gray-500 transition-colors duration-300"
               >
-                {showCategory[card._id] ? 'category' : 'Show'}
+                {showCategory[card._id] ? 'Hide' : 'Show'}
               </button>
               {showCategory[card._id] && (
                 <div className="mt-2">
@@ -94,9 +94,9 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
               </div>
 
               {/* Arrow icon to toggle description visibility */}
-              <div className="absolute bottom-0 w-full flex justify-center p-4">
+              <div className="absolute bottom-0 w-full flex justify-center p-4 ">
                 <button
-                  className={`bg-secondary rounded-full p-2 ${
+                  className={`bg-gray-950 rounded-full p-2  border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600  ${
                     expandedCard === card._id ? 'bg-opacity-80' : ''
                   }`}
                   onClick={() => handleExpandToggle(card._id)}
@@ -116,7 +116,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                 </div>
 
                 <Link to={`/programme/${card._id}`} className="relative z-10">
-                  <button className="w-[3.6rem] h-[3.2rem] bg-secondary flex items-center justify-center rounded-xl">
+                  <button className="w-[3.6rem] h-[3.2rem] bg-gray-900 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 flex items-center justify-center rounded-xl">
                     <IoIosArrowRoundForward
                       color="white"
                       className="w-14 h-10"
@@ -131,7 +131,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
 
       <div className="flex justify-center mt-4">
         <button
-          className="w-40 h-12 text-lg bg-secondary text-white px-5 flex items-center justify-between rounded-lg shadow-md"
+          className="w-40 h-12 text-lg bg-gray-900 hover:bg-gray-600 border-2 border-orange-600 text-white px-5 flex items-center justify-between rounded-lg shadow-md"
           onClick={handleLoadMore}
         >
           {loadButton ? (

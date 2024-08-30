@@ -99,9 +99,7 @@ const CategoriesCard = () => {
   return (
     <div
       className="text-white flex flex-col items-center  max-w-[100%] mx-auto rounded-xl p-10"
-      style={{
-        backgroundImage: `url('https://s3-alpha-sig.figma.com/img/027c/de45/01d0ed0f1b58b289bb78b31db086ed39?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=WMa38kwPqN~pVl807Lj~3-PkaLK~ztfTDeFQ6ioZSss2y53SX9FcHFxHxSdgN-0Kw1K~-3lH3Od4jBVilyA~R6UNoHfHotp6I2CFPI15lTOXec8PAMJ~MBLbHs28lvoPOCGGR31w04YhbxtI1EbXOosi9zpZxQX-exHdsTRZnC~PconlfVph~W02nb~kBxbuDixE9W99XqJI0QLinBjWUCka~jPsIYGgrhWGr2aAqq0xgeF8JCtPX6ZnxQc6B8JfaVEIzdRM4dcEeX5NpT~NghTedt9jR8pC-oohahwYRjJMmx7wFxWtkD9p7UCP-LrHph8hzt7rIsVb-U5VKV0eQQ__')`,
-      }}
+     
     >
       <h1 className="text-xl sm:text-3xl text-center font-sans font-extrabold">
         Our Core Services

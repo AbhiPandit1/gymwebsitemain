@@ -85,7 +85,7 @@ const CreatorHomeComponent = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-900  text-white">
+    <div className="p-8  text-white">
       <h1 className="text-4xl font-extrabold text-center mb-8">
         Meet Our Creators
       </h1>
@@ -99,12 +99,7 @@ const CreatorHomeComponent = () => {
         {trainerDatas.map((data) => (
           <div
             key={data._id}
-            className="inline-block rounded-xl w-[30vw] bg-gray-800 p-6 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4 hover:bg-orange-600  hover:shadow-orange-600"
-            style={{
-              backgroundImage: `url('https://s3-alpha-sig.figma.com/img/fb55/b466/b05afb0a4774775c1b269cd0567431cd?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k2kKnQWDVaXS2KNjmIuXcspoOwqvjRU0TVK232dlgoBtFMW0Ofrw4lcJKMzLCZNYmG3WL~O6lbOkgJzhPfhEWq3fhj4giSAjOsC4w4ycNxInm7NrJEznDq9-xsy1sN2BcBqvUSFEYaVkRIzdHEh1qJOGsInAuSXcpwBSXHGnESfEUrrdaR0uP4zQmqmGqwgZ7z9Uijpbudfyyivqo7e8jvKRhYhm2UGFQg-qXcJax2LJxETUPE6gAHjt3GhiNK39D~Lw1AEUS~bCIbWdOSVYAA6wNhBTlKh3JwoXPVGtlvjs9PS0QLXvLIBgL9ASEfiv3fJ9l3icHusqaZFCHNzAFg__')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
+            className="inline-block rounded-xl w-[30vw] bg-gray-800 p-6 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4  hover:shadow-orange-600"
           >
             <div className="overflow-hidden rounded-lg">
               <img
@@ -114,10 +109,11 @@ const CreatorHomeComponent = () => {
               />
             </div>
             <div className="mt-4">
-              <h3 className="text-2xl font-bold hover:text-orange-300">{data.user.name}</h3>
+              <h3 className="text-2xl font-bold hover:text-orange-300">
+                {data.user.name}
+              </h3>
               <p className="text-gray-400 mt-1">Creator</p>
             </div>
-         
           </div>
         ))}
       </div>
@@ -131,7 +127,7 @@ const CreatorHomeComponent = () => {
         {trainerDatas.map((data) => (
           <div
             key={data._id}
-            className="inline-block rounded-xl w-[300px]  p-6 m-2 hover:shadow-lg transition-shadow duration-300 border-b-4 border-orange-600 hover:border-4 hover:bg-orange-600"
+            className="inline-block rounded-xl w-[300px]  p-6 m-2 hover:shadow-lg  transition-shadow duration-300 border-b-4 border-orange-600 hover:border-4 "
             style={{
               backgroundImage: `url('https://s3-alpha-sig.figma.com/img/fb55/b466/b05afb0a4774775c1b269cd0567431cd?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k2kKnQWDVaXS2KNjmIuXcspoOwqvjRU0TVK232dlgoBtFMW0Ofrw4lcJKMzLCZNYmG3WL~O6lbOkgJzhPfhEWq3fhj4giSAjOsC4w4ycNxInm7NrJEznDq9-xsy1sN2BcBqvUSFEYaVkRIzdHEh1qJOGsInAuSXcpwBSXHGnESfEUrrdaR0uP4zQmqmGqwgZ7z9Uijpbudfyyivqo7e8jvKRhYhm2UGFQg-qXcJax2LJxETUPE6gAHjt3GhiNK39D~Lw1AEUS~bCIbWdOSVYAA6wNhBTlKh3JwoXPVGtlvjs9PS0QLXvLIBgL9ASEfiv3fJ9l3icHusqaZFCHNzAFg__')`,
               backgroundSize: 'cover',
@@ -149,7 +145,6 @@ const CreatorHomeComponent = () => {
               <h3 className="text-2xl font-bold">{data.user.name}</h3>
               <p className="text-gray-400 mt-1">Creator</p>
             </div>
-           
           </div>
         ))}
       </div>
@@ -158,7 +153,7 @@ const CreatorHomeComponent = () => {
       <div className="flex justify-center mt-8">
         <a
           href="/trainer"
-          className="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-full flex items-center"
+          className="px-4 py-2 bg-orange-600 hover:shadow-lg hover:shadow-orange-600   text-white rounded-full flex items-center"
         >
           View All Trainers
           <FaArrowRight className="ml-2" />

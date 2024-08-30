@@ -4,6 +4,8 @@ import HeroSection from './HeroSection';
 import ProgrammeComponentCard from './ProgrammeComponentCard';
 import ProgrammeComponentCardMobile from './ProgrammeComponentCardMobile';
 import { getProgramme } from '../action/programmeActions';
+import EquipCard from './EquipCard';
+import Footer from './Footer';
 
 const ProgrammeComponent = () => {
   const [programmeData, setProgrammeData] = useState([]);
@@ -76,22 +78,16 @@ const ProgrammeComponent = () => {
         para="Explore our wide range of programs designed to help you achieve your fitness goals. Whether you're looking to build muscle, lose weight, or improve your overall health, we have something for everyone."
         searchCategory="Browse All Programs"
       />
-      <div className="w-full bg-footerColor flex flex-col items-center text-white pl-5 sm:p-5 min-h-screen max-w-[90%] mx-auto rounded-xl p-10">
+      <div
+        className="w-full flex flex-col items-center text-white pl-5 sm:p-5 min-h-screen max-w-full mx-auto rounded-xl p-10 relative"
+        style={{
+          background:
+            'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+        }}
+      >
         <h1 className="text-2xl font-bold mb-6">Our Programs</h1>
-        <div className="flex flex-col sm:flex-row items-center gap-2 justify-start mb-6">
-          <div className="sm:pl-[10%] p-2 flex flex-col">
-            <label htmlFor="search" className="mb-2 font-semibold">
-              Search
-            </label>
-            <input
-              type="text"
-              id="search"
-              placeholder="Search for programs..."
-              className="w-full sm:w-[30rem] h-12 px-4 rounded-l-[1rem] rounded-r-[1rem] bg-tertiary border border-secondary focus:outline-none focus:ring-2 focus:ring-secondary"
-              onChange={(e) => setSearchBox(e.target.value)}
-            />
-          </div>
-          <div className="mt-3 p-4 flex flex-col">
+        <div className="flex flex-col   sm:flex-row items-center gap-2 justify-start mb-6">
+          <div className="mt-3 px-8 py-2   flex flex-col">
             <label htmlFor="filter" className="mb-2 font-semibold">
               Sort By
             </label>
@@ -99,7 +95,7 @@ const ProgrammeComponent = () => {
               id="filter"
               value={filter}
               onChange={handleFilterChange}
-              className="p-2 border bg-tertiary rounded-lg border-gray-300"
+              className="p-2 border bg-tertiary rounded-sm border-gray-300"
             >
               <option value="">Select Filter</option>
               <option value="priceLowToHigh">Price Low to High</option>
@@ -107,20 +103,32 @@ const ProgrammeComponent = () => {
               <option value="bestsellers">Bestsellers</option>
             </select>
           </div>
-          <div className="mt-3 p-4 flex flex-col">
+          <div className="p-2 flex flex-col">
+            <label htmlFor="search" className="mb-2 font-semibold">
+              Search
+            </label>
+            <input
+              type="text"
+              id="search"
+              placeholder="Search for programs..."
+              className="w-full sm:w-[35rem] h-12 px-4 rounded-sm bg-tertiary border border-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              onChange={(e) => setSearchBox(e.target.value)}
+            />
+          </div>
+          <div className="mt-8 p-2 flex flex-col justify-center items-center">
             <button
               id="category"
               onClick={toggleCategoryDropdown}
-              className="p-2 border bg-tertiary rounded-lg border-gray-300"
+              className="px-8 py-2  border bg-tertiary rounded-lg border-gray-300"
             >
-              {categoryFilter ? categoryFilter : 'Select Category'}
+              {categoryFilter ? categoryFilter : 'Category'}
             </button>
             {isCategoryDropdownOpen && (
               <div className="absolute mt-2 bg-tertiary border border-gray-300 rounded-lg">
                 <select
                   value={categoryFilter}
                   onChange={handleCategoryChange}
-                  className="p-2 border-none bg-tertiary rounded-lg"
+                  className="p-2 border-none bg-tertiary rounded-sm"
                 >
                   <option value="">All Categories</option>
                   <option value="Nutrition">Nutrition</option>
@@ -135,6 +143,7 @@ const ProgrammeComponent = () => {
               </div>
             )}
           </div>
+          <div className="absolute inset-x-0 bottom-0 h-[14rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
         </div>
 
         {isSmallScreen ? (
@@ -145,7 +154,7 @@ const ProgrammeComponent = () => {
             />
           </div>
         ) : (
-          <div className="mt-4">
+          <div className="mt-4 r">
             <ProgrammeComponentCard
               programmeData={filteredProgrammes}
               filter={filter}
@@ -153,6 +162,11 @@ const ProgrammeComponent = () => {
           </div>
         )}
       </div>
+      <div className="relative bg-gray-950">
+        <EquipCard />
+        <div className="absolute inset-x-0 bottom-0 h-[14rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
+      </div>
+      <Footer />
     </div>
   );
 };
