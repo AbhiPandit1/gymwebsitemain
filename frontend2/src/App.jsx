@@ -65,7 +65,6 @@ function App() {
 
   const noHeaderFooterPaths = [
     '/signin',
-
     '/login',
     '/admin/page/',
     '/user/detail/',
@@ -116,17 +115,14 @@ function App() {
           <Route path="/resetpassword/:token" element={<ForgortPassword />} />
           <Route path="/user/forgot/email" element={<EmailField />} />
           <Route path="/programme/:programmeId" element={<ProgrammeDetail />} />
-
           <Route
             path="/login"
             element={!token ? <Login /> : <Navigate to="/" />}
           />
-
           <Route
             path="/signin"
             element={!token ? <Signin /> : <Navigate to="/" />}
           />
-
           <Route
             path="/admin/user/"
             element={
@@ -171,7 +167,6 @@ function App() {
             path="/settings"
             element={token ? <Setting /> : <Navigate to="/login" />}
           />
-
           <Route
             path="/trainer/create/programme/:id"
             element={
@@ -210,12 +205,10 @@ function App() {
               token ? <DynamicDayPlanComponent /> : <Navigate to="/login" />
             }
           />
-
           <Route
             path="/user/detail/:id"
             element={token ? <UserDetails /> : <Navigate to="/login" />}
           />
-
           <Route
             path="/payment/success"
             element={
@@ -232,7 +225,6 @@ function App() {
             path="/programmes/:id"
             element={token ? <ProductPage /> : <Navigate to="/login" />}
           />
-
           <Route
             path="/user/dashboard/:id"
             element={token ? <UserDashboard /> : <Navigate to="/login" />}
@@ -261,16 +253,19 @@ function App() {
           />
           <Route path="/home" element={<Home />} />
           <Route path="/user/programme/:id" element={<UserProgramme />} />
-          <Route path="/user/payment/checkout/id" element={<StripePayment />} />
-          <Route path="/user/payment/detail/:id" element={<PaymentInvoice />} />
-
+          <Route path="/user/payment/detail" element={<StripePayment />} />
+          <Route
+            path="/admin/create/programme"
+            element={<AdminCreatingNewProgramme />}
+          />
+          <Route path="/admin/payment/invoice" element={<PaymentInvoice />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       {showHeaderFooter && <Footer />}
       <ToastContainer
         position="top-center"
-        autoClose={2000}
+        autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -278,16 +273,8 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        className="toast-container fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
+        theme="light"
       />
-      <button onClick={() => showToast('Success!', 'success')}>
-        Show Success Toast
-      </button>
-      <button onClick={() => showToast('Error!', 'error')}>
-        Show Error Toast
-      </button>
-
-      {loading && <LoadingSpinner />}
     </div>
   );
 }
