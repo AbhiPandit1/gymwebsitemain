@@ -145,22 +145,12 @@ const ProgrammeComponent = () => {
           </div>
           <div className="absolute inset-x-0 bottom-0 h-[14rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
         </div>
-
-        {isSmallScreen ? (
-          <div className="mt-4">
-            <ProgrammeComponentCardMobile
-              programmeData={filteredProgrammes}
-              filter={filter}
-            />
-          </div>
-        ) : (
-          <div className="mt-4 r">
-            <ProgrammeComponentCard
-              programmeData={filteredProgrammes}
-              filter={filter}
-            />
-          </div>
-        )}
+        <div className="mt-4 r">
+          <ProgrammeComponentCard
+            programmeData={filteredProgrammes}
+            filter={filter}
+          />
+        </div>
       </div>
       <div className="relative bg-gray-950">
         <EquipCard />

@@ -127,12 +127,7 @@ const CreatorHomeComponent = () => {
         {trainerDatas.map((data) => (
           <div
             key={data._id}
-            className="inline-block rounded-xl w-[300px]  p-6 m-2 hover:shadow-lg  transition-shadow duration-300 border-b-4 border-orange-600 hover:border-4 "
-            style={{
-              backgroundImage: `url('https://s3-alpha-sig.figma.com/img/fb55/b466/b05afb0a4774775c1b269cd0567431cd?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k2kKnQWDVaXS2KNjmIuXcspoOwqvjRU0TVK232dlgoBtFMW0Ofrw4lcJKMzLCZNYmG3WL~O6lbOkgJzhPfhEWq3fhj4giSAjOsC4w4ycNxInm7NrJEznDq9-xsy1sN2BcBqvUSFEYaVkRIzdHEh1qJOGsInAuSXcpwBSXHGnESfEUrrdaR0uP4zQmqmGqwgZ7z9Uijpbudfyyivqo7e8jvKRhYhm2UGFQg-qXcJax2LJxETUPE6gAHjt3GhiNK39D~Lw1AEUS~bCIbWdOSVYAA6wNhBTlKh3JwoXPVGtlvjs9PS0QLXvLIBgL9ASEfiv3fJ9l3icHusqaZFCHNzAFg__')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
+            className="inline-block rounded-xl w-[300px]  p-6 m-2 hover:shadow-lg bg-transparent border-2 border-orange-600 transition-shadow duration-300 border-b-4 hover:border-4 "
           >
             <div className="overflow-hidden rounded-lg">
               <img

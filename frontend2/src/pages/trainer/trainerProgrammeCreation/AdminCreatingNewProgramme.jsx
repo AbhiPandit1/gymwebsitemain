@@ -66,7 +66,9 @@ const AdminCreatingNewProgramme = () => {
             `/trainer/programme/day/plan/${user.user._id}/${programmeId}`
           );
         } else {
-          navigate(`/trainer/create/programme/diet/plan/${user.user._id}/${programmeId}`);
+          navigate(
+            `/trainer/create/programme/diet/plan/${user.user._id}/${programmeId}`
+          );
         }
       }
     } catch (error) {

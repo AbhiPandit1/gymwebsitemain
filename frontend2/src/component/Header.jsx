@@ -1,19 +1,22 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import logoHeader from '../assets/NewLogo.png';
-import { RxDashboard } from 'react-icons/rx';
-import Logo from './Logo';
-import { Link } from 'react-router-dom';
-import Menu from './Menu';
-
-import { MdSportsGymnastics } from 'react-icons/md';
-import { BiCategoryAlt } from 'react-icons/bi';
 import { IoHomeOutline } from 'react-icons/io5';
+import { MdSportsGymnastics } from 'react-icons/md';
 import { GiClassicalKnowledge, GiHamburgerMenu } from 'react-icons/gi';
 import { ImCross } from 'react-icons/im';
+import Logo from './Logo';
+import { Link, useNavigate } from 'react-router-dom';
+import Menu from './Menu';
+import { signOut } from '../reducers/userReducer';
+import { toast } from 'react-toastify';
 
 const Header = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const { user } = useSelector((state) => state.user);
+  const isSignedIn = user && user.token; // Check if user has a token
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const menuData = [
     {
@@ -24,28 +27,18 @@ const Header = () => {
     },
     {
       id: '2',
-      name: 'Categories',
-      link: '/categories',
-      image: <BiCategoryAlt color="white" size={30} />,
-    },
-    {
-      id: '3',
       name: 'Explore',
       link: '/programmes',
       image: <MdSportsGymnastics color="white" size={30} />,
     },
     {
-      id: '4',
+      id: '3',
       name: 'Creators',
       link: '/trainers',
       image: <GiClassicalKnowledge color="white" size={30} />,
     },
   ];
 
-  const { user } = useSelector((state) => state.user);
-  const isSignedIn = user && user.token; // Check if user has a token
-
-  // Conditionally add Dashboard menu item
   const menuItems = [...menuData];
   if (isSignedIn) {
     menuItems.push({
@@ -54,28 +47,29 @@ const Header = () => {
       link: `/user/dashboard/${user.user._id}`,
       image: <GiClassicalKnowledge color="white" size={30} />,
     });
-  } else {
-    menuItems.push({
-      id: '5',
-      name: 'Sign In',
-      link: '/signin', // Adjust the link to the actual sign-in page
-      image: <GiClassicalKnowledge color="white" size={30} />,
-    });
   }
+
   const toggleMenu = () => {
-    setIsMenuVisible(!isMenuVisible);
+    setIsMenuVisible((prev) => !prev);
+  };
+
+  const handleSignOut = () => {
+    dispatch(signOut());
+    navigate('/login');
+    toast.success('Signed out successfully');
   };
 
   return (
-    <div className="flex justify-between items-center p-4    w-full h-30  rounded-l-[1.2rem] rounded-r-[1.2rem] shadow-lg bg-transparent">
-      {/* NewMenu for small screens */}
-      {/* Navigation Menu for larger screens */}
-      <div className="">
+    <div className="flex justify-between items-center p-4 w-full h-30 rounded-l-[1.2rem] rounded-r-[1.2rem] shadow-lg bg-transparent">
+      {/* Logo */}
+      <div>
         <Link to="/">
           <Logo backgroundImage={logoHeader} />
         </Link>
       </div>
-      <div className="hidden sm:flex justify-center items-center p-2 gap-1 w-full">
+
+      {/* Navigation Menu for larger screens */}
+      <div className="hidden sm:flex justify-center items-center gap-2 w-full">
         <div className="flex justify-around items-center font-extrabold opacity-95 gap-2 w-[90%] h-[3rem] mx-auto rounded-lg shadow-lg">
           {menuItems.map((item) => (
             <Link
@@ -87,25 +81,40 @@ const Header = () => {
             </Link>
           ))}
         </div>
-        <button className="h-[3rem] w-[8rem] rounded-lg text-white bg-orange-600 hover:bg-orange-800">
-          Contact
-        </button>
+        {!isSignedIn ? (
+          <>
+            <Link to="/signin">
+              <button className="h-[3rem] w-[8rem] rounded-lg text-white bg-orange-600 hover:bg-orange-800">
+                Sign In
+              </button>
+            </Link>
+            <Link to="/login">
+              <button className="h-[3rem] w-[8rem] rounded-lg border-2 border-orange-600 text-white bg-tansparent hover:bg-orange-800">
+                Log In
+              </button>
+            </Link>
+          </>
+        ) : (
+          <button
+            className="h-[3rem] w-[8rem] rounded-lg text-white bg-orange-600 hover:bg-orange-800"
+            onClick={handleSignOut}
+          >
+            Sign Out
+          </button>
+        )}
       </div>
-      {/* Menu Toggle Button */}(
-      <div className="flex justify-end items-center w-full sm:hidden ">
-        <div
-          className=" flex  justify-end items-center ml-4  sm:hidden relative cursor-pointer"
-          onClick={toggleMenu}
-        >
+
+      {/* Menu Toggle Button for small screens */}
+      <div className="flex sm:hidden items-center">
+        <div className="relative cursor-pointer" onClick={toggleMenu}>
           {!isMenuVisible ? (
-            <GiHamburgerMenu color="white" className="h-[24px] w-[24px]" />
+            <GiHamburgerMenu color="white" size={24} />
           ) : (
-            <ImCross color="white" className="h-[24px] w-[24px]" />
+            <ImCross color="white" size={24} />
           )}
           {isMenuVisible && <Menu />}
         </div>
       </div>
-      )
     </div>
   );
 };

@@ -62,6 +62,7 @@ const TrainerProfile = () => {
         <DashboardComponent
           dashBoardLink={dashBoardLink}
           hoverDashboard={hoverDashboard}
+          setHoverDashboard={setHoverDashboard}
         />
       </div>
       <div
@@ -71,11 +72,8 @@ const TrainerProfile = () => {
       >
         <DashboardHeader />
         {hoverDashboard && (
-          <div
-            className="absolute left-0 top-16 z-10 animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-            onClick={handleClick}
-          >
-            <BiSolidRightArrow size={80} color="white" />
+          <div className="absolute left-0 top-16 z-10 animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
+            <BiSolidRightArrow size={80} color="white" onClick={handleClick} />
           </div>
         )}
 

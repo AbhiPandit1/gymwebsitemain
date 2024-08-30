@@ -41,11 +41,12 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
 
   return (
     <div className="mt-10">
-      <div className="grid grid-cols-3 gap-4 overflow-hidden">
+      {/* Grid layout with responsive columns */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 overflow-hidden">
         {visibleProgrammes.map((card) => (
           <div
             key={card._id}
-            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[500px] p-4 w-[300px] my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:shadow-orange-600 hover:shadow-2xl"
+            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[450px] p-4 l w-[300px] mx-auto my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:shadow-orange-600 hover:shadow-2xl"
             style={{ backgroundImage: `url(${card.categoryPhoto?.url})` }}
           >
             {/* Dark overlay specific to hovered card */}
@@ -59,23 +60,23 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
 
             <div className="relative flex flex-col justify-end h-full p-4">
               {/* Title */}
-              <h3 className="text-2xl text-white font-bold mb-2">
+              <h3 className="text-xl sm:text-2xl text-white font-bold mb-2">
                 {card.title}
               </h3>
 
               {/* Category button */}
               <button
                 onClick={() => handleCategoryToggle(card._id)}
-                className="text-sm font-semibold h-[2rem] w-[8rem] py-1 px-4 rounded-lg bg-tertiary text-white shadow-md hover:bg-gray-500 transition-colors duration-300"
+                className="text-xs sm:text-sm font-semibold h-8 w-32 py-1 px-4 rounded-lg bg-tertiary text-white shadow-md hover:bg-gray-500 transition-colors duration-300"
               >
                 {showCategory[card._id] ? 'Hide' : 'Show'}
               </button>
               {showCategory[card._id] && (
                 <div className="mt-2">
-                  <h2 className="text-lg text-white font-sans font-bold mb-1">
+                  <h2 className="text-sm sm:text-lg text-white font-sans font-bold mb-1">
                     {card.category.title}
                   </h2>
-                  <p className="text-sm text-white">
+                  <p className="text-xs sm:text-sm text-white">
                     {card.category.join(', ')}
                   </p>
                 </div>
@@ -90,13 +91,13 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                 }`}
                 style={{ bottom: '3.5rem' }} // Ensure description stays above arrow
               >
-                <div className="text-lg mt-2">{card.desc}</div>
+                <div className="text-sm sm:text-lg mt-2">{card.desc}</div>
               </div>
 
               {/* Arrow icon to toggle description visibility */}
-              <div className="absolute bottom-0 w-full flex justify-center p-4 ">
+              <div className="absolute bottom-4 w-full flex justify-center">
                 <button
-                  className={`bg-gray-950 rounded-full p-2  border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600  ${
+                  className={`bg-gray-950 rounded-full p-3 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 ${
                     expandedCard === card._id ? 'bg-opacity-80' : ''
                   }`}
                   onClick={() => handleExpandToggle(card._id)}
@@ -110,16 +111,16 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                 </button>
               </div>
 
-              <div className="flex justify-between mt-4 z-99">
-                <div className="text-xl text-white font-sans font-bold flex items-center">
+              <div className="flex flex-col sm:flex-row justify-between mt-4 z-99">
+                <div className="text-lg sm:text-xl text-white font-sans font-bold flex items-center">
                   ${card.price}
                 </div>
 
                 <Link to={`/programme/${card._id}`} className="relative z-10">
-                  <button className="w-[3.6rem] h-[3.2rem] bg-gray-900 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 flex items-center justify-center rounded-xl">
+                  <button className="w-12 sm:w-[3.6rem] h-10 sm:h-[3.2rem] bg-gray-900 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 flex items-center justify-center rounded-xl">
                     <IoIosArrowRoundForward
                       color="white"
-                      className="w-14 h-10"
+                      className="w-10 sm:w-14 h-8 sm:h-10"
                     />
                   </button>
                 </Link>
@@ -131,7 +132,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
 
       <div className="flex justify-center mt-4">
         <button
-          className="w-40 h-12 text-lg bg-gray-900 hover:bg-gray-600 border-2 border-orange-600 text-white px-5 flex items-center justify-between rounded-lg shadow-md"
+          className="w-36 sm:w-40 h-12 text-sm sm:text-lg bg-gray-900 hover:bg-gray-600 border-2 border-orange-600 text-white px-4 sm:px-5 flex items-center justify-between rounded-lg shadow-md"
           onClick={handleLoadMore}
         >
           {loadButton ? (

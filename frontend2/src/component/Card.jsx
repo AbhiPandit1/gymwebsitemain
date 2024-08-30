@@ -82,13 +82,7 @@ const Card = ({ title, backgroundColor }) => {
         ref={containerRef}
         className="overflow-x-auto w-full max-w-[95%] mx-auto mt-4 cursor-grab scrollbar-hide"
       >
-        <div
-          className="flex transition-transform duration-300 ease-in-out"
-          style={{
-            transform: `translateX(-${visibleIndex * (100 / itemsPerPage)}%)`,
-            gridTemplateColumns: `repeat(${data.length}, calc(100% / ${itemsPerPage}))`,
-          }}
-        >
+        <div className="flex transition-transform duration-300 ease-in-out">
           {data.map((card) => (
             <div
               key={card.id}
@@ -98,13 +92,13 @@ const Card = ({ title, backgroundColor }) => {
               <img
                 src={card.image}
                 alt={card.type}
-                className="h-[300px] w-full object-cover rounded-[32px]"
+                className="h-[300px] w-[400px] object-cover rounded-[32px]"
               />
               <div className="p-4 flex justify-between flex-col sm:flex-row">
                 <h2 className="text-xl text-white font-sans font-bold flex justify-center items-center">
                   {card.type}
                 </h2>
-                <h1 className="text-white font-orbitron flex justify-center items-center">
+                <h1 className="text-white font-orbitron flex justifys-center items-center">
                   know more
                   <span>
                     <IoIosArrowRoundForward

@@ -6,7 +6,8 @@ import Menu from './Menu';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
+import Logo from './Logo';
+import logoDahsboard from '../assets/NewLogo.png';
 const DashboardHeader = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [notification, setNotification] = useState(false);
@@ -40,8 +41,11 @@ const DashboardHeader = () => {
       }}
     >
       <div className="flex justify-between items-center sm:m-2 sm:p-4 p-4">
+        <div className="flex justify-center ">
+          <Logo backgroundImage={logoDahsboard} />
+        </div>
         <Link to={`/user/dashboard/${user._id}`}>
-          <div className="text-xl sm:text-3xl font-sans font-bold">
+          <div className="text-xl sm:text-3xl font-sans sm:flex hidden font-bold">
             <span className="text-orange-400">D</span>ashboard
           </div>
         </Link>

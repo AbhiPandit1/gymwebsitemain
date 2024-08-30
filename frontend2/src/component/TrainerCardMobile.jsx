@@ -15,6 +15,7 @@ const TrainerCardMobile = () => {
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [displayCount, setDisplayCount] = useState(3);
+  const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
     const fetchTrainerData = async () => {
@@ -37,14 +38,18 @@ const TrainerCardMobile = () => {
   }, [displayCount]);
 
   const loadMore = () => {
-    if (displayCount < trainerDatas.length) {
-      const newDisplayCount = Math.min(displayCount + 3, trainerDatas.length);
-      setDisplayedTrainers(trainerDatas.slice(0, newDisplayCount));
-      setDisplayCount(newDisplayCount);
-      if (newDisplayCount >= trainerDatas.length) {
-        setHasMore(false);
-      }
-    }
+    setDisplayedTrainers(trainerDatas); // Show all trainers
+    setDisplayCount(trainerDatas.length); // Update displayCount to the total number
+    setShowLoadMore(false); // Hide "Load More" button
+    setHasMore(false); // No more trainers to load
+  };
+
+  const loadLess = () => {
+    const initialDisplayCount = 3;
+    setDisplayedTrainers(trainerDatas.slice(0, initialDisplayCount));
+    setDisplayCount(initialDisplayCount);
+    setShowLoadMore(true); // Show "Load More" button
+    setHasMore(true); // Enable "Load More" if more trainers exist
   };
 
   if (loading) {
@@ -59,25 +64,27 @@ const TrainerCardMobile = () => {
     <div className="grid grid-cols-1 gap-4 mt-4">
       {displayedTrainers.map((data) => (
         <div
-          key={data._id}
-          className="rounded-xl m-auto h-[40vh] w-[70vw] sm:h-[40vh] sm:w-[20vw] overflow-hidden bg-primary relative"
+          key={data._id} // Use the unique _id for the key
+          className="relative max-h-[400px] min-h-[400px] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
         >
-          <div className="absolute inset-0 bg-primary">
-            <img
-              src={data.user.profilePhoto.url}
-              alt={data.user.name}
-              className="object-cover w-full h-full transition-opacity duration-500 ease-in-out opacity-100"
-            />
-          </div>
-          {data.socialMediaLink && (
-            <div className="absolute top-5 left-5 flex gap-4 bg-secondary rounded-xl p-2">
+          <img
+            src={data.user.profilePhoto.url} // Use profilePhoto.url for the image source
+            alt={data.user.name} // Alt text should be descriptive
+            className="w-full h-[80%] object-cover transition-opacity duration-500 ease-in-out opacity-100"
+          />
+          <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-gradient-to-t from-black via-transparent to-transparent">
+            <div className="flex items-center space-x-2">
               {data.socialMediaLink.instagram && (
                 <a
                   href={data.socialMediaLink.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <AiFillInstagram size={40} color="white" />
+                  <AiFillInstagram
+                    size={30}
+                    color="white"
+                    className="hover:bg-orange-600"
+                  />
                 </a>
               )}
               {data.socialMediaLink.linkedin && (
@@ -86,7 +93,11 @@ const TrainerCardMobile = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <AiFillLinkedin size={40} color="white" />
+                  <AiFillLinkedin
+                    size={30}
+                    color="white"
+                    className="hover:bg-orange-600"
+                  />
                 </a>
               )}
               {data.socialMediaLink.facebook && (
@@ -95,33 +106,42 @@ const TrainerCardMobile = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <AiFillFacebook size={40} color="white" />
+                  <AiFillFacebook
+                    size={30}
+                    color="white"
+                    className="hover:bg-orange-600"
+                  />
                 </a>
               )}
             </div>
-          )}
-          <div className="mt-[1rem] font-extrabold text-2xl font-sans text-white absolute bottom-5 left-5">
-            {data.user.name}
-            <div className="font-extrabold text-1xl font-sans text-paraColor mt-2">
-              Creator
-            </div>
+            <a
+              href={`/trainers/${data._id}`}
+              className="text-white bg-orange-600 py-1 px-4 rounded-lg hover:bg-orange-800 transition duration-300"
+            >
+              Know More
+            </a>
+          </div>
+          <div className="absolute bottom-24 left-4 right-4 text-white">
+            <div className="font-extrabold text-xl">{data.user.name}</div>
+            <div className="font-extrabold text-md text-gray-400">Creator</div>
           </div>
         </div>
       ))}
-      <div className="flex justify-center mt-4">
-        {hasMore ? (
+      <div className="flex justify-center bg-red-400 mt-4 space-x-4">
+        {showLoadMore && (
           <button
             onClick={loadMore}
-            className="px-4 py-2 bg-secondary text-white rounded-lg"
+            className="px-4 py-2 bg-orange-600 text-center flex justify-center items-center text-white rounded-lg"
           >
             Load More
           </button>
-        ) : (
+        )}
+        {!showLoadMore && (
           <button
-            disabled
-            className="px-4 py-2 bg-primary text-white rounded-lg cursor-not-allowed"
+            onClick={loadLess}
+            className="px-4 py-2 bg-secondary text-white rounded-lg"
           >
-            No More Creators
+            Load Less
           </button>
         )}
       </div>

@@ -5,6 +5,7 @@ import ProgrammeComponentCard from '../../component/ProgrammeComponentCard';
 import ProgrammeComponentCardMobile from '../../component/ProgrammeComponentCardMobile';
 import { useSelector } from 'react-redux';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
+import { BiSolidRightArrow } from 'react-icons/bi';
 
 const ShowProgramme = () => {
   {
@@ -14,6 +15,10 @@ const ShowProgramme = () => {
   const { user } = useSelector((state) => state.user);
 
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [hoverDashboard, setHoverDashboard] = useState(false);
+  const handleClick = () => {
+    setHoverDashboard((prevState) => !prevState);
+  };
 
   useEffect(() => {
     // Check screen size on component mount and resize
@@ -28,14 +33,28 @@ const ShowProgramme = () => {
       window.removeEventListener('resize', checkScreenSize); // Cleanup listener
     };
   }, []);
+
   return (
     <div className="grid grid-cols-7 text-white font-sans scrollbar-hide">
       <div className="grid col-span-2 ">
-        <DashboardComponent dashBoardLink={dashBoardLink} />
+        <DashboardComponent
+          dashBoardLink={dashBoardLink}
+          setHoverDashboard={setHoverDashboard}
+          hoverDashboard={hoverDashboard}
+        />
       </div>
       <div className="grid col-span-5">
         <div>
           <DashboardHeader />
+          {hoverDashboard && (
+            <div className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
+              <BiSolidRightArrow
+                size={40}
+                color="orange"
+                onClick={handleClick}
+              />
+            </div>
+          )}
         </div>
         <div>
           <div className="bg-footerColor flex flex-col items-center text-white min-h-screen w-[100%] max-w-screen-lg mx-auto rounded-[32px] p-5  overflow-scroll max-h-[80vh] scrollbar-hide ">

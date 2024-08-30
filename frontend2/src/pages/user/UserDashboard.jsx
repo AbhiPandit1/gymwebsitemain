@@ -28,20 +28,20 @@ const UserDashboard = () => {
     >
       <div
         className={`transition-transform duration-300 bg-gray-900   ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
         }`}
-        onClick={handleClick}
       >
         <DashboardComponent
           dashBoardLink={dashboardLink} // Fixed variable name
           hoverDashboard={hoverDashboard}
+          setHoverDashboard={setHoverDashboard}
         />
       </div>
       <div
         className={`transition-transform duration-300 ${
           hoverDashboard
             ? 'col-span-9 sm:col-span-9'
-            : 'col-span-7 sm:col-span-8'
+            : 'col-span-6 sm:col-span-8'
         } overflow-hidden`}
       >
         <DashboardHeader />
@@ -59,14 +59,14 @@ const UserDashboard = () => {
               <img
                 src="https://s3-alpha-sig.figma.com/img/de97/3247/22d2cdd901cc39df68864905ac8641de?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=CQmRo9i9-TzQwkosfJfL4W1I70fGa1T1svoWUOah4HrGT-fpWs7ZvjSJKRBHnAnKFLSCRHL1vUjG9n-239XWLg8VW6jwNfvCobjNoD8B79aNbmuMntyDVQznybRDWn-HovFtZR350v798Xcp1SQrqq3nbfxe6e4cgj3Oujh-bKMeocLUuSZxjAbRJ0IGIP728tJUtGyC8c7RRYeeH~GUb6XILuYmPp-YKJhc58ap9UpHOy~IYBASAHpE8t1M2EHu2ya3DurjkmApif9VxZD7nXEaqMuabnHFm3iT6-EC04l0GdW6J0qMYDmaS9UZdRq2F9IarNvga22nZ1ZPpBo-SA__"
                 alt="homeGirl"
-                className="h-screen w-full object-cover rounded-[10px] "
+                className="h-[100vh] w-full object-right sm:object-cover rounded-[10px] "
               />
               <div className="absolute flex flex-col justify-center top-1/3 w-full">
                 <div className="text-gray-100 flex flex-col justify-center items-center">
-                  <div className="text-3xl font-extrabold tracking-tighter sm:text-2xl md:text-4xl">
+                  <div className="text-2xl font-extrabold tracking-tighter sm:text-2xl md:text-4xl">
                     ACHIEVE MORE
                   </div>
-                  <div className="text-3xl font-bold tracking-tighter md:text-4xl sm:text-2xl mt-2">
+                  <div className="text-2xl font-bold tracking-tighter md:text-4xl sm:text-2xl mt-2">
                     THAN JUST FITNESS
                   </div>
                 </div>

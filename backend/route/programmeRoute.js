@@ -24,7 +24,7 @@ router.post(
 );
 
 // Get all Programmes route
-router.get('/programme', protectRoute, checkRole(['trainer']), getProgrammes);
+router.get('/programme',getProgrammes);
 
 // Get Programmes by category route
 router.get('/programmes', getByCategoryProgrammes);

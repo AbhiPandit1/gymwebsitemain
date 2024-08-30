@@ -135,29 +135,26 @@ const EditTrainerProgramme = () => {
     <div className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans bg-gray-900">
       <div
         className={`transition-transform duration-300 bg-gray-900 ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
         }`}
-        onClick={handleClick}
       >
         <DashboardComponent
           dashBoardLink={dashBoardLink}
           hoverDashboard={hoverDashboard}
+          setHoverDashboard={setHoverDashboard}
         />
       </div>
       <div
         className={`transition-transform duration-300 ${
           hoverDashboard
             ? 'col-span-9 sm:col-span-9'
-            : 'col-span-7 sm:col-span-8'
+            : 'col-span-6 sm:col-span-8'
         } overflow-scroll`}
       >
         <DashboardHeader />
         {hoverDashboard && (
-          <div
-            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-            onClick={handleClick}
-          >
-            <BiSolidRightArrow size={40} color="orange" />
+          <div className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
+            <BiSolidRightArrow size={40} color="orange" onClick={handleClick} />
           </div>
         )}
 

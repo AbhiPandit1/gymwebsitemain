@@ -82,7 +82,7 @@ const Home = () => {
       {/* Moving Cards Section */}
       <div className="flex flex-col p-5 mb-[5%] bg-gray-950">
         <div className="h-full w-full ml-4  ">
-          <Card title="Top Programs" backgroundColor="primary" />
+          <Card title="Top Programs" backgroundColor="transparent" />
         </div>
         <div className="flex justify-center items-center">
           <button className="justify-center w-[8rem] sm:w-[10rem] h-[3rem] sm:h-[4rem] bg-orange-600 hover:bg-orange-800 flex items-center rounded-sm">

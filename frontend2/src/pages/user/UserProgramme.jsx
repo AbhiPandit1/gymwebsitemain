@@ -14,6 +14,7 @@ const UserProgramme = () => {
 
   const dashBoardLink = useDashboardLinks();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [hoverDashboard, setHoverDashboard] = useState(false);
 
   useEffect(() => {
     // Check screen size on component mount and resize
@@ -29,9 +30,13 @@ const UserProgramme = () => {
     };
   }, []);
   return (
-    <div className="grid sm:grid-cols-7 grid-cols-1 text-white font-sans " >
+    <div className="grid sm:grid-cols-7 grid-cols-1 text-white font-sans ">
       <div className="hidden sm:grid  sm:col-span-2 ">
-        <DashboardComponent dashBoardLink={dashBoardLink} />
+        <DashboardComponent
+          dashBoardLink={dashBoardLink}
+          hoverDashboard={hoverDashboard}
+          setHoverDashboard={setHoverDashboard}
+        />
       </div>
       <div className="grid col-span-5">
         <div>

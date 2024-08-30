@@ -1,46 +1,56 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { FaArrowDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { getProgramme } from '../action/programmeActions';
 
 const CategoriesCard = () => {
   const [loadButton, setLoadButton] = useState(false);
-  const { programme } = useSelector((state) => state.programme);
-  const navigate = useNavigate();
-
-  // State to track horizontal scroll
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 640);
   const [isScrolling, setIsScrolling] = useState(false);
+
   const scrollContainerRef = useRef(null);
   const scrollStartPosition = useRef(0);
   const scrollStartX = useRef(0);
 
-  // Toggle Load More/Load Less button
-  const handleLoadMore = () => {
-    setLoadButton((prev) => !prev);
-  };
+  const dispatch = useDispatch();
+  const { programme, error } = useSelector((state) => state.programme);
+  const navigate = useNavigate();
 
-  // Navigate to /categories
-  const handleArrowDownClick = () => {
-    navigate('/categories');
-  };
+  useEffect(() => {
+    // Fetch programme data on component mount
+    dispatch(getProgramme());
+  }, [dispatch]);
 
-  // Check if `programme` and `programme.categories` are defined and are arrays
+  useEffect(() => {
+    // Update screen size on resize
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 640);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Check if `programme` is defined and has a `categories` array
   if (!programme || !Array.isArray(programme.categories)) {
-    console.error('Programme data is not available or is not an array');
+    console.error(
+      'Programme data is not available or categories is not an array'
+    );
     return (
       <div className="text-center text-white">Error loading programmes</div>
     );
   }
 
   // Filter out items without a categoryPhoto and ensure only one item per category
-  const flattenedProgrammes = (programme?.categories || []) // Checkpoint to handle undefined or null `programme` and `categories`
+  const flattenedProgrammes = programme.categories
     .filter((data) => data?.categoryPhoto?.url) // Ensure `data` and `categoryPhoto` exist before accessing `url`
     .reduce((acc, current) => {
-      const categories = Array.isArray(current?.category) // Check if `current.category` is an array
+      const categories = Array.isArray(current?.category)
         ? current.category
         : current?.category
-        ? [current.category] // Convert single or non-array values to an array
-        : []; // Default to an empty array if no category exists
+        ? [current.category]
+        : [];
 
       categories.forEach((cat) => {
         if (!acc.some((item) => item.category.includes(cat))) {
@@ -55,32 +65,21 @@ const CategoriesCard = () => {
     }, []);
 
   // Display up to 3 items when loadButton is false, otherwise display all items
-  const visibleProgrammes = flattenedProgrammes;
-
-  // Check for small screen size
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 640);
-
-  // Update screen size on resize
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 640);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const visibleProgrammes = loadButton
+    ? flattenedProgrammes
+    : flattenedProgrammes;
 
   // Mouse down event to start scrolling
   const handleMouseDown = (e) => {
     setIsScrolling(true);
     scrollStartPosition.current = scrollContainerRef.current.scrollLeft;
-    scrollStartX.current = e.pageX - scrollContainerRef.current.offsetLeft;
+    scrollStartX.current = e.clientX - scrollContainerRef.current.offsetLeft; // Use clientX for more consistent coordinates
   };
 
   // Mouse move event to scroll horizontally
   const handleMouseMove = (e) => {
     if (!isScrolling) return;
-    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const x = e.clientX - scrollContainerRef.current.offsetLeft;
     const scroll = x - scrollStartX.current;
     scrollContainerRef.current.scrollLeft =
       scrollStartPosition.current - scroll;
@@ -96,11 +95,13 @@ const CategoriesCard = () => {
     setIsScrolling(false);
   };
 
+  // Navigate to /categories
+  const handleArrowDownClick = () => {
+    navigate('/categories');
+  };
+
   return (
-    <div
-      className="text-white flex flex-col items-center  max-w-[100%] mx-auto rounded-xl p-10"
-     
-    >
+    <div className="text-white flex flex-col items-center max-w-[100%] mx-auto rounded-xl p-10">
       <h1 className="text-xl sm:text-3xl text-center font-sans font-extrabold">
         Our Core Services
       </h1>
@@ -114,14 +115,14 @@ const CategoriesCard = () => {
         onMouseLeave={handleMouseLeave}
         style={{ cursor: isScrolling ? 'grabbing' : 'grab' }}
       >
-        {visibleProgrammes?.map((data) => (
+        {visibleProgrammes.map((data) => (
           <div
-            key={data?._id}
+            key={data._id}
             className="relative rounded-xl overflow-hidden m-auto min-h-[40vh] max-h-[60vh] min-w-[60vw] sm:min-w-[30%] border-b-4 border-orange-600 transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-orange-500"
           >
             <div className="relative max-h-full overflow-hidden rounded-lg">
               <img
-                src={data.categoryPhoto?.url || '/default-image.jpg'}
+                src={data.categoryPhoto.url || '/default-image.jpg'}
                 alt={`Category ${data._id}`}
                 className="h-[40vh] object-cover w-full"
               />

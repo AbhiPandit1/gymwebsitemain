@@ -23,7 +23,7 @@ const Modal = ({ reviewText, onClose }) => {
 
 const ReviewCard = () => {
   const [data, setData] = useState([]);
-  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [selectedReview, setSelectedReview] = useState(null);
@@ -46,59 +46,36 @@ const ReviewCard = () => {
     fetchData();
   }, []); // Empty dependency array ensures this runs only once on mount
 
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 640);
+
+  // Update screen size on resize
   useEffect(() => {
-    const handleMouseMove = (event) => {
-      if (!isMouseDown) return; // Only run if the mouse is down
-      event.preventDefault(); // Prevent default behavior
-      const x = event.clientX - startX;
-      if (containerRef.current) {
-        containerRef.current.scrollLeft = scrollLeft - x * 2; // Reverse scroll direction
-      }
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 640);
     };
 
-    const handleMouseUp = () => {
-      setIsMouseDown(false);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isMouseDown, startX, scrollLeft]);
-
-  useEffect(() => {
-    const handleWheel = (event) => {
-      if (containerRef.current) {
-        containerRef.current.scrollLeft += event.deltaX * 2; // Reverse scroll direction
-        event.preventDefault(); // Prevent default scrolling behavior
-      }
-    };
-
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('wheel', handleWheel);
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener('wheel', handleWheel);
-      }
-    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleMouseDown = (event) => {
-    setIsMouseDown(true);
-    setStartX(event.clientX);
-    if (containerRef.current) {
-      setScrollLeft(containerRef.current.scrollLeft);
-    }
+  // Mouse down event to start scrolling
+  const handleMouseDown = (e) => {
+    setIsScrolling(true);
+    setStartX(e.pageX - containerRef.current.offsetLeft);
+    setScrollLeft(containerRef.current.scrollLeft);
   };
 
-  const handleMouseLeaveOrUp = () => {
-    setIsMouseDown(false);
+  // Mouse move event to scroll horizontally
+  const handleMouseMove = (e) => {
+    if (!isScrolling) return;
+    const x = e.pageX - containerRef.current.offsetLeft;
+    const walk = x - startX; // distance scrolled
+    containerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  // Mouse up or leave event to stop scrolling
+  const handleMouseUpOrLeave = () => {
+    setIsScrolling(false);
   };
 
   const handleCardClick = (reviewText) => {
@@ -123,14 +100,14 @@ const ReviewCard = () => {
       <div className="flex items-center justify-between mt-4">
         <div
           ref={containerRef}
-          className="flex overflow-x-auto w-full p-4"
+          className="flex overflow-x-auto w-full p-4 scrollbar-hide"
           style={{
-            cursor: isMouseDown ? 'grabbing' : 'grab',
-            overflow: 'hidden',
+            cursor: isScrolling ? 'grabbing' : 'grab',
           }} // Hide scrollbars
           onMouseDown={handleMouseDown}
-          onMouseLeave={handleMouseLeaveOrUp}
-          onMouseUp={handleMouseLeaveOrUp}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUpOrLeave}
+          onMouseLeave={handleMouseUpOrLeave}
         >
           {data.map((item, index) => (
             <div
@@ -143,7 +120,7 @@ const ReviewCard = () => {
               </div>
 
               <div className="absolute top-5 left-5 w-[90%] p-4 rounded-lg "></div>
-              <div className="mt-4 font-extrabold text-2xl flex justify-between  font-sans text-white">
+              <div className="mt-4 font-extrabold text-2xl flex justify-between font-sans text-white">
                 {item.user?.profilePhoto?.url ? (
                   <img
                     src={item.user.profilePhoto.url}

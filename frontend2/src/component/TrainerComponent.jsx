@@ -1,6 +1,7 @@
 import Trainers from './Trainers';
 import EquipCard from './EquipCard';
 import HeroSection from './HeroSection';
+import Footer from './Footer';
 
 const TrainerComponent = () => {
   return (
@@ -21,6 +22,7 @@ const TrainerComponent = () => {
       <div className="h-auto top-[20%]">
         <EquipCard />
       </div>
+      <Footer />
     </>
   );
 };
