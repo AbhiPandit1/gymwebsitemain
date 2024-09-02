@@ -68,7 +68,7 @@ const UserDetails = () => {
   };
 
   return (
-    <div className="flex flex-col pt-4 gap-6 min-h-screen bg-primary p-4">
+    <div className="flex flex-col pt-4 gap-6 min-h-screen bg-gray-800 p-4">
       {/* Login Logo */}
       <Link to="/home" className="mb-4">
         <LoginLogo />
@@ -77,12 +77,12 @@ const UserDetails = () => {
       {/* Form */}
       {user ? (
         <form
-          className="flex flex-col items-center justify-center mx-auto max-w-md w-full bg-gray-800 p-6 rounded-[32px] shadow-lg"
+          className="flex flex-col items-center justify-center mx-auto max-w-md w-full bg-gray-900 p-6 rounded-lg shadow-lg border border-orange-600"
           onSubmit={handleUserDetailSubmit}
         >
           {/* Upload Profile Photo */}
           <div className="flex flex-col items-center mb-4">
-            <label className="bg-tertiary border-b border-dotted border-spacing-5 w-full max-w-xs h-20 flex flex-col justify-center items-center cursor-pointer border rounded-2xl p-2 relative">
+            <label className="bg-orange-600 border-b border-dotted border-gray-500 w-full max-w-xs h-20 flex flex-col justify-center items-center cursor-pointer rounded-2xl p-2 relative">
               <input
                 type="file"
                 className="absolute inset-0 opacity-0 cursor-pointer"
@@ -112,7 +112,7 @@ const UserDetails = () => {
                 </>
               )}
             </label>
-            <p className="mt-2 text-white font-sans text-lg font-extrabold">
+            <p className="mt-2 text-white font-sans text-lg font-bold">
               Upload Profile Photo
             </p>
           </div>
@@ -145,7 +145,7 @@ const UserDetails = () => {
                   key={roleType}
                   className={`h-12 w-28 flex items-center justify-center rounded-lg cursor-pointer ${
                     role === roleType
-                      ? 'bg-secondary text-white'
+                      ? 'bg-orange-600 text-white'
                       : 'bg-gray-700 text-gray-300'
                   }`}
                   onClick={() => handleRoleChange(roleType)}
@@ -165,7 +165,7 @@ const UserDetails = () => {
                   key={genderType}
                   className={`h-12 w-24 flex items-center justify-center rounded-lg cursor-pointer ${
                     gender === genderType
-                      ? 'bg-secondary text-white'
+                      ? 'bg-orange-600 text-white'
                       : 'bg-gray-700 text-gray-300'
                   }`}
                   onClick={() => handleGenderChange(genderType)}
@@ -180,14 +180,17 @@ const UserDetails = () => {
           <div className="flex justify-center items-center mt-6 w-full">
             <button
               type="submit"
-              className="w-full h-12 bg-secondary text-white rounded-lg font-sans font-bold"
+              className="w-full h-12 bg-orange-600 text-white rounded-lg font-sans font-bold hover:bg-orange-700"
             >
               {!loading ? 'Next' : <SmallSpinner />}
             </button>
           </div>
           {user.role === 'trainer' && (
             <div className="flex justify-center items-center mt-4">
-              <Link to="/settings" className="text-white underline">
+              <Link
+                to="/settings"
+                className="text-white underline hover:text-orange-400"
+              >
                 Update your social media links
               </Link>
             </div>

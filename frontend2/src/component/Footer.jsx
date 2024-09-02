@@ -20,7 +20,12 @@ const Footer = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-10 h-[85vh] p-2 sm:p-10 w-full ">
+    <div
+      className="flex flex-col gap-10 h-[85vh] p-2 sm:p-10 w-full "
+      style={{
+        backgroundColor: 'linear-gradient(90deg, #18171A 0%, #18171A 100%',
+      }}
+    >
       {/* First Division */}
       <div className="flex flex-col sm:flex sm:flex-row justify-between ">
         <div className="mt-20 mb-10 sm:m-20">

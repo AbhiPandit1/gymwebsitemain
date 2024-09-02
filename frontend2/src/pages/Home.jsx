@@ -127,12 +127,7 @@ const Home = () => {
       >
         <ReviewCard />
       </div>
-      <div
-        className="relative"
-        style={{
-          backgroundColor: '#18171A',
-        }}
-      >
+      <div className="relative">
         <Footer />
       </div>
     </>

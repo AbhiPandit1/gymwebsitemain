@@ -23,6 +23,7 @@ import useToastHook from '../hook/useToastHook';
 import DayPlan from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/DayPlan';
 import TrainerProfile from './pages/trainer/TrainerProfile';
 import DashboardPanel from './pages/DashboardPanel/DashboardPanel';
+import PersonalTrainer from './pages/trainer/PersonalTrainer/PersonalTrainer';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -114,7 +115,10 @@ function App() {
           <Route path="/programmes" element={<Programmes />} />
           <Route path="/resetpassword/:token" element={<ForgortPassword />} />
           <Route path="/user/forgot/email" element={<EmailField />} />
-          <Route path="/programme/:programmeId" element={<ProgrammeDetail />} />
+          <Route
+            path="/programme/:programmeId"
+            element={token ? <ProgrammeDetail /> : <Navigate to="/login" />}
+          />
           <Route
             path="/login"
             element={!token ? <Login /> : <Navigate to="/" />}
@@ -208,6 +212,10 @@ function App() {
           <Route
             path="/user/detail/:id"
             element={token ? <UserDetails /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/trainer/:trainerId/:programmeId"
+            element={token ? <PersonalTrainer /> : <Navigate to="/login" />}
           />
           <Route
             path="/payment/success"

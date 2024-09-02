@@ -92,8 +92,8 @@ const SignIn = () => {
       setLoading(true);
       const response = await dispatch(registerUser(signField));
 
-      if (response.status === 201) {
-        navigate('/');
+      if (response.status) {
+        navigate(`/user/detail/${response.data.user._id}`);
       } else {
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -261,9 +261,7 @@ const SignIn = () => {
           </div>
         </div>
       </form>
-      <div className="flex justify-center items-center mt-4">
-       
-      </div>
+      <div className="flex justify-center items-center mt-4"></div>
     </div>
   );
 };

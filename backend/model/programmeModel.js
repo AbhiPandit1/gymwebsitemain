@@ -1,5 +1,22 @@
 import mongoose from 'mongoose';
 
+// Define the AboutProgramme subdocument schema
+const aboutProgrammeSchema = new mongoose.Schema({
+  overview: {
+    type: String,
+    required: true,
+  },
+  objectives: {
+    type: [String],
+    required: true,
+  },
+  benefits: {
+    type: [String],
+    required: true,
+  },
+});
+
+// Define the main Programme schema
 const programmeSchema = new mongoose.Schema({
   category: {
     type: [String],
@@ -39,6 +56,7 @@ const programmeSchema = new mongoose.Schema({
     enum: ['Diet', 'Day', 'Both'],
     required: true,
   },
+  about: aboutProgrammeSchema, // Include the about section as a subdocument
 });
 
 programmeSchema.pre('save', async function (next) {
