@@ -10,6 +10,9 @@ const storage = multer.diskStorage({
   },
 });
 
+
+
+
 const singleUpload = multer({ storage }).single('profilePhoto'); // Middleware for single file upload
 
 export default singleUpload;

@@ -13,7 +13,9 @@ import checkRole from '../middleware/authorization.js';
 const router = express.Router();
 
 router.route('/users').get(protectRoute, checkRole('admin'), getAllUser);
-router.route('/users/delete/:id').post(deleteUsers);
+router
+  .route('/users/delete/:id')
+  .post(protectRoute, checkRole('admin'), deleteUsers);
 
 router
   .route('/programmes')

@@ -1,6 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import cardData from '../data/cardData'; // default import
-import { IoIosArrowRoundForward } from 'react-icons/io';
+import {
+  IoIosArrowRoundForward,
+  IoIosArrowBack,
+  IoIosArrowForward,
+} from 'react-icons/io';
 
 const Card = ({ title, backgroundColor }) => {
   const [data, setData] = useState([]);
@@ -54,6 +58,18 @@ const Card = ({ title, backgroundColor }) => {
     setIsDragging(false);
   };
 
+  // Scroll to the left
+  const scrollLeftFunc = () => {
+    containerRef.current.scrollLeft -=
+      containerRef.current.offsetWidth / itemsPerPage;
+  };
+
+  // Scroll to the right
+  const scrollRightFunc = () => {
+    containerRef.current.scrollLeft +=
+      containerRef.current.offsetWidth / itemsPerPage;
+  };
+
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
@@ -74,31 +90,41 @@ const Card = ({ title, backgroundColor }) => {
   }, [isDragging]);
 
   return (
-    <div>
+    <div className="relative">
       <h1 className="text-white font-extrabold text-[40px] sm:text-[48px] mt-10 sm:mt-20 border-b-2 border-orange-500 text-center">
         {title}
       </h1>
+
+      {/* Left Button */}
+      <button
+        onClick={scrollLeftFunc}
+        className="hidden sm:block absolute left-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-10"
+      >
+        <IoIosArrowBack color="white" className="w-6 h-6 sm:w-10 sm:h-10" />
+      </button>
+
+      {/* Card Container */}
       <div
         ref={containerRef}
-        className="overflow-x-auto w-full max-w-[95%] mx-auto mt-4 cursor-grab scrollbar-hide"
+        className="overflow-x-auto w-full max-w-[95%]  mx-auto mt-4  cursor-grab scrollbar-hide"
       >
         <div className="flex transition-transform duration-300 ease-in-out">
           {data.map((card) => (
             <div
               key={card.id}
-              className={`bg-${backgroundColor} rounded-[16px] p-4 h-[400px] m-2 flex-shrink-0 border-b-4 border-orange-400 hover:border hover:border-orange-600 transition-all`}
+              className={`bg-${backgroundColor} brightness-100 rounded-[2px] m-[4rem] p-4 h-[400px] border-y-2  flex-shrink-0 border-b-4 border-orange-400 hover:border hover:border-orange-600 transition-all`}
               style={{ minWidth: `calc(100% / ${itemsPerPage})` }}
             >
               <img
                 src={card.image}
                 alt={card.type}
-                className="h-[300px] w-[400px] object-cover rounded-[32px]"
+                className="h-[300px] w-[400px] object-cover rounded-[12px]"
               />
               <div className="p-4 flex justify-between flex-col sm:flex-row">
                 <h2 className="text-xl text-white font-sans font-bold flex justify-center items-center">
                   {card.type}
                 </h2>
-                <h1 className="text-white font-orbitron flex justifys-center items-center">
+                <h1 className="text-white font-orbitron flex justify-center items-center">
                   know more
                   <span>
                     <IoIosArrowRoundForward
@@ -112,6 +138,14 @@ const Card = ({ title, backgroundColor }) => {
           ))}
         </div>
       </div>
+
+      {/* Right Button */}
+      <button
+        onClick={scrollRightFunc}
+        className="hidden sm:block absolute right-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-10"
+      >
+        <IoIosArrowForward color="white" className="w-6 h-6 sm:w-10 sm:h-10" />
+      </button>
     </div>
   );
 };

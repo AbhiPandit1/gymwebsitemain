@@ -1,34 +1,43 @@
 import Programme from '../model/programmeModel.js';
 import User from '../model/userModel.js';
-import uploadToCloudinary from '../middleware/uploadToCloudinary.js';
+import { uploadProgrammePhoto } from '../middleware/uploadToCloudinary.js';
 import deleteFile from '../middleware/removeMulterFile.js';
 import mongoose from 'mongoose';
 import DayPlan from '../model/programmeDayPlanModel.js';
 import DietPlan from '../model/programmeDietPlanModel.js';
+import fs from 'fs';
+import { deleteCloudinaryImage } from '../middleware/deleteCloudinaryImage.js';
 
-//Create Programme  || Categories
 export const createProgramme = async (req, res) => {
   const { category, title, price, desc, trainerEmail, planType } = req.body;
   const userId = req.params.id;
-  console.log(title);
 
-  let parsedCategory;
+  // Parse category and description
+  let parsedCategory, parsedDesc;
   try {
-    parsedCategory = JSON.parse(category); // Convert JSON string back to an array
+    parsedCategory = JSON.parse(category); // Convert category from JSON string to array
+    parsedDesc = JSON.parse(desc); // Convert desc from JSON string to array
   } catch (error) {
-    return res.status(400).json({ error: 'Invalid category format.' });
+    return res
+      .status(400)
+      .json({ error: 'Invalid category or description format.' });
   }
 
-  console.log(parsedCategory); // Log parsed category to verify
-
-  // Check for missing required fields
+  // Validate parsed category and description
   if (!Array.isArray(parsedCategory) || parsedCategory.length === 0) {
     return res.status(400).json({
       error: 'Category must be an array with at least one valid value.',
     });
   }
 
-  if (!price || !desc || !planType) {
+  if (!Array.isArray(parsedDesc) || parsedDesc.length === 0) {
+    return res.status(400).json({
+      error: 'Description must be an array with at least one valid value.',
+    });
+  }
+
+  // Validate price and planType
+  if (!price || !planType) {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
@@ -43,6 +52,7 @@ export const createProgramme = async (req, res) => {
   try {
     let trainerId = userId;
 
+    // Handle trainer by email if provided
     if (trainerEmail) {
       const trainerUser = await User.findOne({ email: trainerEmail });
       if (!trainerUser) {
@@ -56,27 +66,46 @@ export const createProgramme = async (req, res) => {
       trainerId = trainerUser._id;
     }
 
+    // Validate trainerId
     if (!mongoose.Types.ObjectId.isValid(trainerId)) {
       return res.status(400).json({ error: 'Invalid trainer ID.' });
     }
 
     let categoryPhoto = null;
+
+    // Handle file upload if file exists
     if (req.file) {
-      if (req.file.mimetype !== 'image/jpeg') {
-        return res.status(400).json({ error: 'Only JPEG files are allowed.' });
+      const allowedFormats = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!allowedFormats.includes(req.file.mimetype)) {
+        return res
+          .status(400)
+          .json({ error: 'Only JPEG, PNG, or GIF files are allowed.' });
       }
 
-      const result = await uploadToCloudinary(req.file);
+      const result = await uploadProgrammePhoto(req.file.path); // Ensure path is passed
+
       categoryPhoto = {
         public_id: result.public_id,
         url: result.secure_url,
       };
+
+      // Optionally delete the file from the local server after upload
+      const filePath = req.file.path;
+      if (filePath) {
+        try {
+          await unlinkFile(filePath); // This function should remove the file
+        } catch (unlinkError) {
+          console.error('Failed to delete file after upload:', unlinkError);
+          // Logging but not failing the process if file deletion fails
+        }
+      }
     }
 
+    // Create new programme
     const newProgramme = new Programme({
       category: parsedCategory, // Use parsedCategory
-      categoryPhoto,
-      desc,
+      categoryPhoto, // Include category photo if available
+      desc: parsedDesc, // Use parsedDesc
       title,
       price: Number(price),
       trainer: trainerId,
@@ -95,7 +124,7 @@ export const createProgramme = async (req, res) => {
   }
 };
 
-//Get all category from all user
+// Get all categories from all users
 export const getAllCategory = async (req, res) => {
   try {
     const categories = await Programme.find(); // Assuming Programme is your model for categories
@@ -107,8 +136,7 @@ export const getAllCategory = async (req, res) => {
   }
 };
 
-//getSingleProgramme //open
-
+// Get Single Programme (Open)
 export const getSingleProgrammeOpen = async (req, res) => {
   const { id } = req.params;
 
@@ -126,8 +154,7 @@ export const getSingleProgrammeOpen = async (req, res) => {
   }
 };
 
-//Get Programme //open
-
+// Get Programmes (Open)
 export const getProgrammes = async (req, res) => {
   try {
     const programmes = await Programme.find().populate('trainer', 'name');
@@ -140,7 +167,7 @@ export const getProgrammes = async (req, res) => {
   }
 };
 
-//Get By Category Programme
+// Get By Category Programmes
 export const getByCategoryProgrammes = async (req, res) => {
   const { category } = req.query;
 
@@ -157,20 +184,17 @@ export const getByCategoryProgrammes = async (req, res) => {
   }
 };
 
-//Update Programme
-
+// Update Programme
 export const updateProgramme = async (req, res) => {
   const programmeId = req.params.id;
 
+  // Check if programme ID is provided
   if (!programmeId) {
     return res.status(400).json({ message: 'Programme ID is required' });
   }
 
   // Extract fields from request body
   const { category, price, trainerMail, desc, title } = req.body;
-
-  // Log the request body for debugging
-  console.log('Request Body:', req.body);
 
   try {
     // Find the programme by ID
@@ -182,146 +206,258 @@ export const updateProgramme = async (req, res) => {
     // Handle file upload if present
     let updatedCategoryPhoto = programme.categoryPhoto;
     if (req.file) {
-      const result = await uploadToCloudinary(req.file);
+      // Ensure the file is an acceptable image type
+      const allowedFormats = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!allowedFormats.includes(req.file.mimetype)) {
+        return res
+          .status(400)
+          .json({ error: 'Only JPEG, PNG, or GIF files are allowed.' });
+      }
+
+      // Upload new image to Cloudinary
+      const result = await uploadProgrammePhoto(req.file.path);
       updatedCategoryPhoto = {
         public_id: result.public_id,
         url: result.secure_url,
       };
-      console.log('Updated Category Photo:', updatedCategoryPhoto);
+
+      // Delete the old image from Cloudinary
+      if (programme.categoryPhoto?.public_id) {
+        await deleteCloudinaryImage(programme.categoryPhoto.public_id);
+      }
+
+      // Optionally delete the file from the local server after upload
+      const filePath = req.file.path;
+      if (filePath) {
+        try {
+          await unlinkFile(filePath);
+        } catch (unlinkError) {
+          console.error('Failed to delete file after upload:', unlinkError);
+        }
+      }
     }
 
-    // Parse category if provided
-    let parsedCategory = programme.category;
+    // Parse and validate the category if provided
+    let parsedCategory = programme.category; // Retain current category if not provided
     if (category) {
       try {
-        parsedCategory = JSON.parse(category); // Convert JSON string back to an array
-        if (!Array.isArray(parsedCategory)) {
-          throw new Error('Parsed category is not an array.');
+        parsedCategory = JSON.parse(category);
+        if (!Array.isArray(parsedCategory) || parsedCategory.length === 0) {
+          throw new Error('Category must be a non-empty array.');
         }
       } catch (error) {
         return res.status(400).json({ error: 'Invalid category format.' });
       }
     }
 
+    // Parse and validate the description if provided
+    let parsedDesc = programme.desc; // Retain current description if not provided
+    if (desc) {
+      try {
+        parsedDesc = JSON.parse(desc);
+        if (
+          !Array.isArray(parsedDesc) ||
+          parsedDesc.some((d) => typeof d !== 'string')
+        ) {
+          throw new Error('Description must be an array of strings.');
+        }
+      } catch (error) {
+        return res.status(400).json({ error: 'Invalid description format.' });
+      }
+    }
+
     // Update programme fields if provided, otherwise retain current values
-    programme.category = parsedCategory; // Use parsedCategory here
+    programme.category = parsedCategory;
     programme.price = price ? Number(price) : programme.price;
     programme.trainerMail = trainerMail || programme.trainerMail;
-    programme.desc = desc || programme.desc;
+    programme.desc = parsedDesc;
     programme.title = title || programme.title;
     programme.categoryPhoto = updatedCategoryPhoto;
 
     // Save the updated programme
     const updatedProgramme = await programme.save();
 
-    // Send success response
     res.status(200).json({
-      message: 'Programme updated successfully',
+      message: 'Programme updated successfully.',
       programme: updatedProgramme,
     });
   } catch (error) {
     console.error('Error updating programme:', error);
-    res
-      .status(500)
-      .json({ error: 'Internal server error', details: error.message });
+    res.status(500).json({ error: 'Internal server error.' });
   }
 };
 
-//delete programme
+// Delete Programme
 export const deleteProgramme = async (req, res) => {
-  const { programmeId } = req.body;
-  console.log('Received request body:', req.body);
-
-  // Validate programmeId
-  if (!programmeId) {
-    return res.status(400).json({ message: 'Programme ID is required' });
-  }
-
   try {
-    // Validate the format of programmeId if needed (e.g., for MongoDB ObjectId)
-    if (!mongoose.Types.ObjectId.isValid(programmeId)) {
-      return res.status(400).json({ message: 'Invalid Programme ID format' });
-    }
+    const { programmeId } = req.body;
 
-    // Find the programme by programmeId
+    // Find the programme by ID
     const programme = await Programme.findById(programmeId);
 
     if (!programme) {
       return res.status(404).json({ message: 'Programme not found' });
     }
 
-    // Delete associated DayPlans
-    await DayPlan.deleteMany({ programme: programmeId });
-    await DietPlan.deleteMany({ programme: programmeId });
+    // Delete the image from Cloudinary if it exists
+    if (programme.categoryPhoto && programme.categoryPhoto.public_id) {
+      try {
+        await deleteCloudinaryImage(programme.categoryPhoto.public_id);
+      } catch (cloudinaryError) {
+        console.error('Error deleting image from Cloudinary:', cloudinaryError);
+        // Proceed with deleting the programme even if the image deletion fails
+      }
+    }
 
-    // Remove the programmeId from the takenProgrammes array of all users
-    await User.updateMany(
-      { takenProgrammes: programmeId },
-      { $pull: { takenProgrammes: programmeId } }
-    );
-
-    // Delete the programme
+    // Delete the programme from the database
     await Programme.findByIdAndDelete(programmeId);
 
-    // Respond with success message
-    return res.status(200).json({
-      message: 'Programme and associated DayPlans deleted successfully',
-    });
+    res.status(200).json({ message: 'Programme deleted successfully' });
   } catch (error) {
     console.error('Error deleting programme:', error);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal server error.' });
   }
 };
 
-//Get Single Programme(After Buying)
-export const getSingleProgramme = async (req, res) => {
-  const userId = req.params.id;
+// Create Diet Plan
+export const createDietPlan = async (req, res) => {
+  const { title, description, dietType, date, userId } = req.body;
 
-  const programmeId = req.query.programmeId;
-
-  // Validate userId
-  if (!userId) {
-    return res.status(400).json({ message: 'User ID is required' });
-  }
-
-  // Validate programmeId
-  if (!programmeId) {
-    return res.status(400).json({ message: 'Programme ID is required' });
+  if (!title || !description || !dietType || !date || !userId) {
+    return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
-    // Find the user by userId
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Find the programme in the user's programmes array
-    const programmeIndex = user.programmes.findIndex((prog) => {
-      const programme = prog._id.toString(); // Convert _id to string if not already
-      return programme === programmeId; // Compare programme _id with programmeId
+    const dietPlan = new DietPlan({
+      title,
+      description,
+      dietType,
+      date,
+      userId,
     });
 
-    if (programmeIndex === -1) {
-      return res
-        .status(404)
-        .json({ message: 'you can access you programme only' });
-    }
+    const savedDietPlan = await dietPlan.save();
 
-    const programme = user.programmes[programmeIndex]._id.toString();
-
-    const programmeDetail = await Programme.findById(programme);
-
-    if (!programmeDetail) {
-      return res.status(404).json({ message: 'Programme not found' });
-    }
-    return res
-      .status(200)
-      .json({ message: 'Successfully retrieved programme', programmeDetail });
+    res.status(201).json({
+      message: 'Diet plan created successfully',
+      dietPlan: savedDietPlan,
+    });
   } catch (error) {
-    console.error('Error fetching programme:', error);
-    return res.status(500).json({ message: 'Server Error' });
+    console.error('Error creating diet plan:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Update Diet Plan
+export const updateDietPlan = async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  try {
+    const updatedDietPlan = await DietPlan.findByIdAndUpdate(id, updates, {
+      new: true,
+    });
+
+    if (!updatedDietPlan) {
+      return res.status(404).json({ message: 'Diet plan not found' });
+    }
+
+    res.status(200).json({
+      message: 'Diet plan updated successfully',
+      dietPlan: updatedDietPlan,
+    });
+  } catch (error) {
+    console.error('Error updating diet plan:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Delete Diet Plan
+export const deleteDietPlan = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedDietPlan = await DietPlan.findByIdAndDelete(id);
+
+    if (!deletedDietPlan) {
+      return res.status(404).json({ message: 'Diet plan not found' });
+    }
+
+    res.status(200).json({ message: 'Diet plan deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting diet plan:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Create Day Plan
+export const createDayPlan = async (req, res) => {
+  const { title, description, exercises, userId, date } = req.body;
+
+  if (!title || !description || !exercises || !userId || !date) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  try {
+    const dayPlan = new DayPlan({
+      title,
+      description,
+      exercises,
+      userId,
+      date,
+    });
+
+    const savedDayPlan = await dayPlan.save();
+
+    res.status(201).json({
+      message: 'Day plan created successfully',
+      dayPlan: savedDayPlan,
+    });
+  } catch (error) {
+    console.error('Error creating day plan:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Update Day Plan
+export const updateDayPlan = async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  try {
+    const updatedDayPlan = await DayPlan.findByIdAndUpdate(id, updates, {
+      new: true,
+    });
+
+    if (!updatedDayPlan) {
+      return res.status(404).json({ message: 'Day plan not found' });
+    }
+
+    res.status(200).json({
+      message: 'Day plan updated successfully',
+      dayPlan: updatedDayPlan,
+    });
+  } catch (error) {
+    console.error('Error updating day plan:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Delete Day Plan
+export const deleteDayPlan = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedDayPlan = await DayPlan.findByIdAndDelete(id);
+
+    if (!deletedDayPlan) {
+      return res.status(404).json({ message: 'Day plan not found' });
+    }
+
+    res.status(200).json({ message: 'Day plan deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting day plan:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 

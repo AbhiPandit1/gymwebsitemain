@@ -14,7 +14,7 @@ const DescriptionComponent = () => {
       </p>
       <div className=" flex justify-center items-center hover:animate-shake">
         <img
-          src="https://s3-alpha-sig.figma.com/img/ca18/10e4/d6848140e07ec237e6e69c53e97c5f21?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=VodsFT9wB4r0Il8f0KJNjCwijwOLHOZ6wO2BhFZFBZ~9g6AX8wYQTxwlOsRKDNieAtGFkKrBdxLObKfvd3P4kVxdqX6PQA-jQRf0Mr~lHwCAUQoJrQVQ7aM~H7PNwVXxbl6LXZ5jwfY6xSV1dO65AAGRruQxNLhTqIH8KlXJXoVKyIJkKt-WuGp6eZUjbyO1bJ17cajGJpuzHCGKajANAcDbXqyZwfmHWJ2zZELBHZCKRuov07JAcYk40D3tpH-BmQEFGCi7LnveptwFJA5Mq0hf11OHZYGCzCnZcVJYmciNueSSDFAzgkSFWIYLehfbVChFuEGKE5J8YPh5ll8iUQ__"
+          src="https://res.cloudinary.com/dzy51cqxa/image/upload/v1724290224/profile_photos/jge8zbfg9q6aaklsw1ot.jpg"
           className="w-[80%] sm:w-[30vw] h-[40vh] object-cover rounded-[10px] border-b-4 border-r-2 border-r-orange-600 border-b-orange-600 m-5 hover:shadow-2xl hover:shadow-orange-700 z-10"
         />
       </div>

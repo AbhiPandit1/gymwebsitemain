@@ -22,6 +22,7 @@ export default {
         sans: ['Work Sans', 'sans-serif'],
         orbitron: ['Orbitron', 'sans-serif'],
         outfit: ['Outfit', 'sans-serif'],
+        bebes: ['Bebas Neue', 'sans-serif'],
       },
       lineHeight: {
         custom: '2.4rem', // 38.4px

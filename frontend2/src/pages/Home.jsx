@@ -19,9 +19,9 @@ const Home = () => {
     <>
       {/* Starting Section */}
       <div
-        className=" relative h-[60vh] sm:h-[100vh] w-[100vw] font-serif flex flex-col  max-w-[100vw] overflow-hidden "
+        className=" relative h-[60vh] sm:h-[100vh] w-[100vw] flex flex-col  max-w-[100vw] overflow-hidden "
         style={{
-          backgroundImage: `url("https://s3-alpha-sig.figma.com/img/04f8/7885/33cfe88c6aeff5201578e141512f3684?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=q9ZVsE4zQb1M8L3gyP9hB9sT8NbglIkgNqJGwGUKSRwx6LOQXCw2jzrvpPnIDcMQHEjjKNPS~uhWoZmd2cin29S9QXWxLsxaG05Pva-NK~3jG1RtfsoLPcI46N8Nhgy1m6iuCE~Do1Hhj3h07RUAPXiPOKiyplfYBco0OYPYBOhkH4XDiACq5c6OOG1cwcfaIMdVuvAnIcUPZy7fyMIdB1Cjz0-lfzA7c-4QvyCeaFGlpdBrju77gblgJzOn5mTSxoMuE2roVOeEXiRML93ZBQmYtD5UaHuRMShojFyoRCSc55EnyLRr8DYLDQ5jCSkLXGGFIicLvDfkPFz71Z0-EQ__")`,
+          backgroundImage: `url("https://res.cloudinary.com/dzy51cqxa/image/upload/v1721622305/profile_photos/q8ma28tbtysrusbc6ysv.jpg")`,
           backgroundPosition: '75% 15%',
           backgroundSize: 'cover', // Ensures the image covers the entire container
           backgroundRepeat: 'no-repeat', // Prevents the image from repeating
@@ -35,16 +35,18 @@ const Home = () => {
         </div>
         <div className="relative">
           {/* First Page Section */}
-          <div className=" flex flex-col justify-start gap-8 z-200 mt-[20%] sm:mt-[10%] w-full overflow-hidden">
-            <div className="text-white flex flex-col justify-start items-start">
-              <div className="flex justify-start ml-[4%] text-left font-extrabold text-3xl leading-none tracking-widest sm:text-[5rem] w-full overflow-hidden">
-                ACHIEVE MORE
+          <div className=" flex flex-col justify-start gap-8 z-200  font-[450]  font-bebes  mt-[20%] sm:mt-[10%] w-full overflow-hidden">
+            <div className="text-white flex flex-col justify-start   items-start">
+              <div className="flex justify-start ml-[4%] text-left text-3xl leading-none tracking-wide sm:text-[6rem] w-full overflow-hidden">
+                YOUR
+                <span className="relative  ml-[2%] font-bebes  text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 underline underline-offset-8">
+                  FITNESS
+                </span>
               </div>
 
-              <div className="font-bold text-3xl ml-[4%] sm:text-[5rem] leading-none tracking-widest text-white overflow-hidden">
-                THAN JUST{' '}
-                <span className="relative inline-block ml-[2%] text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 underline underline-offset-8">
-                  FITNESS
+              <div className="text-3xl ml-[4%] sm:text-[6rem] leading-none tracking-wide text-white overflow-hidden">
+                <span className="relative  ml-[2%] font-bebes text-transparent bg-clip-text text-white hover:underline hover:underline-offset-8 ">
+                  LIBRARY
                 </span>
               </div>
             </div>

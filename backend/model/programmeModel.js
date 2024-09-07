@@ -1,22 +1,5 @@
 import mongoose from 'mongoose';
 
-// Define the AboutProgramme subdocument schema
-const aboutProgrammeSchema = new mongoose.Schema({
-  overview: {
-    type: String,
-    required: true,
-  },
-  objectives: {
-    type: [String],
-    required: true,
-  },
-  benefits: {
-    type: [String],
-    required: true,
-  },
-});
-
-// Define the main Programme schema
 const programmeSchema = new mongoose.Schema({
   category: {
     type: [String],
@@ -42,10 +25,13 @@ const programmeSchema = new mongoose.Schema({
     min: 10, // Ensuring the price is always greater than 10
   },
   desc: {
+    type: [String], // Change desc to be an array of strings
+    required: true,
+  },
+  title: {
     type: String,
     required: true,
   },
-  title: { type: String, required: true },
   trainer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -56,15 +42,19 @@ const programmeSchema = new mongoose.Schema({
     enum: ['Diet', 'Day', 'Both'],
     required: true,
   },
-  about: aboutProgrammeSchema, // Include the about section as a subdocument
 });
 
+// Indexing for improved performance
+programmeSchema.index({ category: 1 });
+programmeSchema.index({ trainer: 1 });
+
+// Hook to ensure the trainer has the role of 'trainer'
 programmeSchema.pre('save', async function (next) {
   if (this.trainer) {
     const User = mongoose.model('User');
     const user = await User.findById(this.trainer);
     if (!user || user.role !== 'trainer') {
-      throw new Error('Assigned trainer must have a role of "trainer"');
+      return next(new Error('Assigned trainer must have a role of "trainer"'));
     }
   }
   next();

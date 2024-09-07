@@ -96,21 +96,21 @@ const CreatorHomeComponent = () => {
         className="hidden sm:block overflow-x-auto whitespace-nowrap scrollbar-hide"
         style={{ scrollBehavior: 'smooth' }}
       >
-        {trainerDatas.map((data) => (
+        {trainerDatas?.map((data) => (
           <div
             key={data._id}
             className="inline-block rounded-xl w-[30vw] bg-gray-800 p-6 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4  hover:shadow-orange-600"
           >
             <div className="overflow-hidden rounded-lg">
               <img
-                src={data.user.profilePhoto.url}
-                alt={data.user.name}
+                src={data?.user?.profilePhoto?.url}
+                alt={data?.user?.name}
                 className="object-cover w-full h-[250px] rounded-lg"
               />
             </div>
             <div className="mt-4">
               <h3 className="text-2xl font-bold hover:text-orange-300">
-                {data.user.name}
+                {data?.user?.name}
               </h3>
               <p className="text-gray-400 mt-1">Creator</p>
             </div>
@@ -124,20 +124,20 @@ const CreatorHomeComponent = () => {
         className="block sm:hidden overflow-x-auto whitespace-nowrap scrollbar-hide"
         style={{ scrollBehavior: 'smooth' }}
       >
-        {trainerDatas.map((data) => (
+        {trainerDatas?.map((data) => (
           <div
             key={data._id}
             className="inline-block rounded-xl w-[300px]  p-6 m-2 hover:shadow-lg bg-transparent border-2 border-orange-600 transition-shadow duration-300 border-b-4 hover:border-4 "
           >
             <div className="overflow-hidden rounded-lg">
               <img
-                src={data.user.profilePhoto.url}
-                alt={data.user.name}
+                src={data?.user?.profilePhoto.url}
+                alt={data?.user?.name}
                 className="object-cover w-full h-[250px] rounded-lg"
               />
             </div>
             <div className="mt-4">
-              <h3 className="text-2xl font-bold">{data.user.name}</h3>
+              <h3 className="text-2xl font-bold">{data?.user?.name}</h3>
               <p className="text-gray-400 mt-1">Creator</p>
             </div>
           </div>

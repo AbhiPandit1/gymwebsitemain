@@ -22,7 +22,7 @@ const AdminCreatingNewProgramme = () => {
   const [categoryPhotoName, setCategoryPhotoName] = useState('');
   const [trainerMail, setTrainerMail] = useState(user.user.email);
   const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
+  const [desc, setDesc] = useState(['']); // Initialize with one empty string
   const [loadings, setLoadings] = useState(false);
   const [planType, setPlanType] = useState('');
 
@@ -78,6 +78,7 @@ const AdminCreatingNewProgramme = () => {
     }
     resetForm();
   };
+
   const resetForm = () => {
     setCategory([]);
     setPrice('');
@@ -85,7 +86,7 @@ const AdminCreatingNewProgramme = () => {
     setCategoryPhotoName('');
     setTrainerMail(user.user.email);
     setTitle('');
-    setDesc('');
+    setDesc(['']); // Reset to one empty description
     setPlanType('');
   };
 
@@ -117,6 +118,21 @@ const AdminCreatingNewProgramme = () => {
 
   const handlePlanTypeChange = (e) => {
     setPlanType(e.target.value);
+  };
+
+  const handleDescChange = (index, value) => {
+    const newDesc = [...desc];
+    newDesc[index] = value;
+    setDesc(newDesc);
+  };
+
+  const handleAddDescField = () => {
+    setDesc([...desc, '']);
+  };
+
+  const handleRemoveDescField = (index) => {
+    const newDesc = desc.filter((_, i) => i !== index);
+    setDesc(newDesc);
   };
 
   const dashBoardLink = useDashboardLinks();
@@ -273,58 +289,66 @@ const AdminCreatingNewProgramme = () => {
               </div>
 
               {/* Price, Title, and Trainer Mail */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                <div className="flex flex-col w-full sm:w-[50%]">
-                  <label className="text-white mb-2">Price</label>
-                  <input
-                    type="number"
-                    className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
-                    min="1"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                </div>
-                <div className="flex flex-col w-full sm:w-[50%]">
-                  <label className="text-white mb-2">Programme Title</label>
-                  <input
-                    type="text"
-                    className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Trainer Email */}
-              <div className="mb-4">
-                <label className="text-white mb-2">Trainer Email</label>
+              <div className="flex flex-col gap-4 mb-4">
                 <input
-                  type="email"
-                  className="w-full h-12 bg-tertiary text-white p-2 rounded-[16px]"
+                  type="text"
+                  placeholder="Price > $10"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="p-2 rounded-lg bg-gray-700 text-white"
+                />
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="p-2 rounded-lg bg-gray-700 text-white"
+                />
+                <input
+                  type="text"
+                  placeholder="Trainer Mail"
                   value={trainerMail}
                   onChange={(e) => setTrainerMail(e.target.value)}
+                  className="p-2 rounded-lg bg-gray-700 text-white"
                 />
               </div>
 
               {/* Description */}
-              <div className="mb-4">
+              <div className="flex flex-col mb-4">
                 <label className="text-white mb-2">Description</label>
-                <textarea
-                  className="w-full h-32 bg-tertiary text-white p-2 rounded-[16px]"
-                  value={desc}
-                  onChange={(e) => setDesc(e.target.value)}
-                />
+                {desc.map((paragraph, index) => (
+                  <div key={index} className="flex flex-col mb-2">
+                    <textarea
+                      placeholder={`Description ${index + 1}`}
+                      value={paragraph}
+                      onChange={(e) => handleDescChange(index, e.target.value)}
+                      className="p-2 rounded bg-gray-700 text-white"
+                      rows="4"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveDescField(index)}
+                      className="mt-2 text-red-500"
+                    >
+                      <FaTimes /> Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={handleAddDescField}
+                  className="mt-2 text-blue-500"
+                >
+                  <FaPlus /> Add Description
+                </button>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
-                className={`w-full h-12 bg-orange-900 text-white rounded-[16px] ${
-                  loadings ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                className="bg-blue-500 text-white p-2 rounded"
                 disabled={loadings}
               >
-                {loadings ? 'Creating...' : 'Create Programme'}
+                {loadings ? 'Submitting...' : 'Submit'}
               </button>
             </form>
           </div>

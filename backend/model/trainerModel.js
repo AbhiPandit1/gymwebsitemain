@@ -1,19 +1,5 @@
 import mongoose from 'mongoose';
 
-// Define the Description schema as a subdocument
-const descriptionSchema = new mongoose.Schema({
-  paragraphs: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
-  image: {
-    type: String,
-    default: '',
-  },
-});
-
 // Define the Review schema as a subdocument
 const reviewSchema = new mongoose.Schema({
   rating: {
@@ -50,7 +36,7 @@ const trainerSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return /^(http|https):\/\/[^ "]+$/.test(v);
+          return v === '' || /^(http|https):\/\/[^ "]+$/.test(v);
         },
         message: (props) => `${props.value} is not a valid URL!`,
       },
@@ -60,7 +46,7 @@ const trainerSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return /^(http|https):\/\/[^ "]+$/.test(v);
+          return v === '' || /^(http|https):\/\/[^ "]+$/.test(v);
         },
         message: (props) => `${props.value} is not a valid URL!`,
       },
@@ -70,7 +56,7 @@ const trainerSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return /^(http|https):\/\/[^ "]+$/.test(v);
+          return v === '' || /^(http|https):\/\/[^ "]+$/.test(v);
         },
         message: (props) => `${props.value} is not a valid URL!`,
       },
@@ -78,9 +64,10 @@ const trainerSchema = new mongoose.Schema({
     },
   },
   description: {
-    type: descriptionSchema,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Description',
   },
+
   programmes: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -90,6 +77,7 @@ const trainerSchema = new mongoose.Schema({
   trainerReviews: [reviewSchema],
 });
 
+// Create and export the Trainer model
 const Trainer = mongoose.model('Trainer', trainerSchema);
 
 export default Trainer;

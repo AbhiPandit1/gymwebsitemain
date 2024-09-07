@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaArrowDown } from 'react-icons/fa';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { getProgramme } from '../action/programmeActions';
 
@@ -95,17 +96,40 @@ const CategoriesCard = () => {
     setIsScrolling(false);
   };
 
+  // Scroll to the left
+  const scrollLeftFunc = () => {
+    scrollContainerRef.current.scrollLeft -=
+      scrollContainerRef.current.offsetWidth / 2;
+  };
+
+  // Scroll to the right
+  const scrollRightFunc = () => {
+    scrollContainerRef.current.scrollLeft +=
+      scrollContainerRef.current.offsetWidth / 2;
+  };
+
   // Navigate to /categories
   const handleArrowDownClick = () => {
     navigate('/categories');
   };
 
   return (
-    <div className="text-white flex flex-col items-center max-w-[100%] mx-auto rounded-xl p-10">
+    <div className="text-white flex flex-col items-center max-w-[100%] mx-auto rounded-xl p-10 relative">
       <h1 className="text-xl sm:text-3xl text-center font-sans font-extrabold">
         Our Core Services
       </h1>
 
+      {/* Left Button - Hidden on small screens */}
+      {!isSmallScreen && (
+        <button
+          onClick={scrollLeftFunc}
+          className="absolute left-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-10"
+        >
+          <IoIosArrowBack color="white" className="w-6 h-6 sm:w-10 sm:h-10" />
+        </button>
+      )}
+
+      {/* Card Container */}
       <div
         className="gap-4 sm:gap-8 flex overflow-x-auto mt-4 rounded-lg p-6 w-full scrollbar-hide"
         ref={scrollContainerRef}
@@ -118,13 +142,13 @@ const CategoriesCard = () => {
         {visibleProgrammes.map((data) => (
           <div
             key={data._id}
-            className="relative rounded-xl overflow-hidden m-auto min-h-[40vh] max-h-[60vh] min-w-[60vw] sm:min-w-[30%] border-b-4 border-orange-600 transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-orange-500"
+            className="relative rounded-xl overflow-hidden brightness-200 h-[40vh] sm:min-h-[60vh] m-[2rem] max-h-[60vh] min-w-[60vw] sm:min-w-[20%] border-b-4 border-orange-600 transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-orange-500"
           >
             <div className="relative max-h-full overflow-hidden rounded-lg">
               <img
                 src={data.categoryPhoto.url || '/default-image.jpg'}
                 alt={`Category ${data._id}`}
-                className="h-[40vh] object-cover w-full"
+                className="sm:h-[60vh] h-[40vh] object-cover w-full"
               />
               <div className="absolute inset-x-0 bottom-0 h-[64rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
             </div>
@@ -136,6 +160,19 @@ const CategoriesCard = () => {
           </div>
         ))}
       </div>
+
+      {/* Right Button - Hidden on small screens */}
+      {!isSmallScreen && (
+        <button
+          onClick={scrollRightFunc}
+          className="absolute right-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-10"
+        >
+          <IoIosArrowForward
+            color="white"
+            className="w-6 h-6 sm:w-10 sm:h-10"
+          />
+        </button>
+      )}
 
       <div className="flex justify-center items-center mt-4">
         <button

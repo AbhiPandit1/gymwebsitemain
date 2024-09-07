@@ -1,7 +1,11 @@
+import mongoose from 'mongoose';
 import sendEmail from '../lib/sendEmail.js';
 import Payment from '../model/payementModel.js';
 import Programme from '../model/programmeModel.js';
 import User from '../model/userModel.js';
+import Trainer from '../model/trainerModel.js';
+import Description from '../model/descriptionModel.js';
+import cloudinary from 'cloudinary';
 
 export const getAllUser = async (req, res) => {
   try {
@@ -21,35 +25,123 @@ export const getAllUser = async (req, res) => {
 };
 
 export const deleteUsers = async (req, res) => {
-  const { userIds } = req.body;
-  const requestingUserId = req.params.id;
-
   try {
-    const requestingUser = await User.findById(requestingUserId);
-    if (!requestingUser) {
-      return res.status(404).json({ message: 'Requesting User Not Found' });
-    }
+    const { userIds } = req.body;
 
-    if (requestingUser.role !== 'admin' && requestingUser.role !== 'trainer') {
-      return res
-        .status(403)
-        .json({ message: 'You are not authorized to perform this action' });
-    }
+    console.log('Received User IDs:', userIds);
 
     if (!Array.isArray(userIds) || userIds.length === 0) {
       return res.status(400).json({ message: 'No users to delete' });
     }
 
-    const usersToDelete = await User.find({ _id: { $in: userIds } });
+    // Validate each ID
+    const validUserIds = [];
+    const invalidUserIds = [];
+
+    userIds.forEach((id) => {
+      if (id && mongoose.isValidObjectId(id)) {
+        validUserIds.push(id);
+      } else {
+        invalidUserIds.push(id);
+      }
+    });
+
+    if (invalidUserIds.length > 0) {
+      console.error('Invalid User IDs:', invalidUserIds);
+      return res
+        .status(400)
+        .json({ message: 'Invalid user IDs', invalidUserIds });
+    }
+
+    if (validUserIds.length === 0) {
+      return res.status(400).json({ message: 'No valid user IDs to delete' });
+    }
+
+    // Check if users exist
+    const usersToDelete = await User.find({ _id: { $in: validUserIds } });
+    console.log('Users to be deleted:', usersToDelete);
+
     if (usersToDelete.length === 0) {
       return res.status(404).json({ message: 'No users found to delete' });
     }
 
-    await User.deleteMany({ _id: { $in: userIds } });
+    // Delete associated data
+    for (const user of usersToDelete) {
+      // Delete profile photo from Cloudinary
+      if (user.profilePhoto.public_id) {
+        try {
+          await cloudinary.uploader.destroy(user.profilePhoto.public_id);
+        } catch (error) {
+          console.error(
+            `Failed to delete Cloudinary photo for user ${user._id}:`,
+            error.message
+          );
+        }
+      }
 
-    res
-      .status(200)
-      .json({ message: 'Users Deleted Successfully', deletedUserIds: userIds });
+      if (user.role === 'trainer') {
+        // Delete related Trainer
+        const trainer = await Trainer.findOne({ user: user._id });
+        if (trainer) {
+          // Delete description image from Cloudinary
+          if (trainer.description) {
+            const description = await Description.findById(trainer.description);
+            if (description && description.image.public_id) {
+              try {
+                await cloudinary.uploader.destroy(description.image.public_id);
+              } catch (error) {
+                console.error(
+                  `Failed to delete Cloudinary photo for description ${description._id}:`,
+                  error.message
+                );
+              }
+            }
+
+            // Delete related programmes and their photos from Cloudinary
+            const programmes = await Programme.find({
+              _id: { $in: trainer.programmes },
+            });
+            for (const programme of programmes) {
+              if (programme.categoryPhoto.public_id) {
+                try {
+                  await cloudinary.uploader.destroy(
+                    programme.categoryPhoto.public_id
+                  );
+                } catch (error) {
+                  console.error(
+                    `Failed to delete Cloudinary photo for programme ${programme._id}:`,
+                    error.message
+                  );
+                }
+              }
+              // Remove the programme from the trainer's programmes
+              trainer.programmes = trainer.programmes.filter(
+                (p) => !programme._id.equals(p)
+              );
+            }
+
+            // Save the trainer without the deleted programmes
+            await trainer.save();
+
+            // Delete Trainer
+            await Trainer.findByIdAndDelete(trainer._id);
+
+            // Delete Descriptions
+            await Description.deleteMany({
+              _id: { $in: [trainer.description] },
+            });
+          }
+        }
+      }
+    }
+
+    // Delete Users
+    await User.deleteMany({ _id: { $in: validUserIds } });
+
+    res.status(200).json({
+      message: 'Users and related data deleted successfully',
+      deletedUserIds: validUserIds,
+    });
   } catch (error) {
     console.error('Error:', error.message);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -145,29 +237,54 @@ export const getAllPayments = async (req, res) => {
 };
 
 export const sendAdvertisment = async (req, res) => {
-  const { subject, message } = req.body;
+  const { subject, message, recipientType } = req.body;
 
   // Validate input
-  if (!subject || !message) {
-    return res.status(400).json({ error: 'Subject and message are required' });
+  if (!subject || !message || !recipientType) {
+    return res
+      .status(400)
+      .json({ error: 'Subject, message, and recipientType are required' });
   }
 
   try {
-    // Fetch users from the database
-    const users = await User.find();
-    console.log('Users fetched:', users);
+    let recipients = [];
 
-    // Filter users with role 'user'
-    const usersToNotify = users.filter((user) => user.role === 'user');
+    if (recipientType === 'user') {
+      // Fetch users with the role 'user'
+      recipients = await User.find({ role: 'user' });
+    } else if (recipientType === 'trainer') {
+      // Fetch users with the role 'trainer'
+      recipients = await User.find({ role: 'trainer' });
+    } else if (recipientType === 'all') {
+      // Fetch all users
+      recipients = await User.find();
+    } else {
+      return res.status(400).json({
+        error:
+          'Invalid recipientType. It must be either "user", "trainer", or "all"',
+      });
+    }
 
-    // Send email to each user
-    for (const user of usersToNotify) {
-      try {
-        await sendEmail({ email: user.email, subject, message });
-        console.log(`Email sent to: ${user.email}`);
-      } catch (emailError) {
-        console.error(`Error sending email to ${user.email}:`, emailError);
-        // Optionally, you could collect errors and send a response indicating partial success/failure
+    console.log(`${recipientType}s fetched:`, recipients);
+
+    // Send email to each recipient
+    for (const recipient of recipients) {
+      // Determine email based on recipientType
+      const email = recipient.email;
+
+      if (email) {
+        try {
+          await sendEmail({ email, subject, message });
+          console.log(`Email sent to: ${email}`);
+        } catch (emailError) {
+          console.error(`Error sending email to ${email}:`, emailError);
+          // Optionally, you could collect errors and send a response indicating partial success/failure
+        }
+      } else {
+        console.error(
+          'Error: Email address is undefined for recipient',
+          recipient
+        );
       }
     }
 

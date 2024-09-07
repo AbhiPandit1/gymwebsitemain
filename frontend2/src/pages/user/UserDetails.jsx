@@ -55,7 +55,10 @@ const UserDetails = () => {
 
       if (response.user) {
         toast.success('User updated successfully');
-        navigate('/programmes');
+        console.log(response.user._id);
+        response.user.role === 'trainer'
+          ? navigate(`/trainer/about/${response.user._id}`)
+          : navigate('/programmes');
       } else {
         toast.error('Access Denied');
       }

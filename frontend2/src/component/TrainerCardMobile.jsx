@@ -5,6 +5,7 @@ import {
   AiFillInstagram,
   AiFillLinkedin,
 } from 'react-icons/ai';
+import { Link } from 'react-router-dom';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
@@ -114,12 +115,12 @@ const TrainerCardMobile = () => {
                 </a>
               )}
             </div>
-            <a
-              href={`/trainers/${data._id}`}
+            <Link
+              to={`/trainer/${data.user._id}`}
               className="text-white bg-orange-600 py-1 px-4 rounded-lg hover:bg-orange-800 transition duration-300"
             >
               Know More
-            </a>
+            </Link>
           </div>
           <div className="absolute bottom-24 left-4 right-4 text-white">
             <div className="font-extrabold text-xl">{data.user.name}</div>

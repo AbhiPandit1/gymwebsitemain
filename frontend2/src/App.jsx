@@ -24,6 +24,7 @@ import DayPlan from './pages/trainer/trainerProgrammeCreation/trainerProgrammes/
 import TrainerProfile from './pages/trainer/TrainerProfile';
 import DashboardPanel from './pages/DashboardPanel/DashboardPanel';
 import PersonalTrainer from './pages/trainer/PersonalTrainer/PersonalTrainer';
+import TrainerAboutSection from './pages/trainer/TrainerAboutSection';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -214,8 +215,12 @@ function App() {
             element={token ? <UserDetails /> : <Navigate to="/login" />}
           />
           <Route
-            path="/trainer/:trainerId/:programmeId"
+            path="/trainer/:trainerId"
             element={token ? <PersonalTrainer /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/trainer/about/:userId"
+            element={token ? <TrainerAboutSection /> : <Navigate to="/login" />}
           />
           <Route
             path="/payment/success"

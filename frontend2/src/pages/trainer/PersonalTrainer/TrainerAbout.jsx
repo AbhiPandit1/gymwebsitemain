@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
-import { Dialog } from '@headlessui/react';
-import { FaInfoCircle, FaCheckSquare } from 'react-icons/fa'; // Import the icons
-import ProgrammeInfo from './ProgrammeInfo';
+import React from 'react';
+import { FaCheckSquare } from 'react-icons/fa'; // Import the icons
 import Header from '../../../component/Header';
+import { useParams } from 'react-router-dom';
+import useTrainerDetailHook from '../../../../hook/useTrainerDetailHook';
+import { useSelector } from 'react-redux';
 
 const TrainerAbout = () => {
+  const { trainerId } = useParams();
+  const { user } = useSelector((state) => state.user);
+  const { trainer, description, loading, error, userTrainerDetails } =
+    useTrainerDetailHook(trainerId);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error loading trainer details.</p>;
+
   return (
     <>
       {/* Header */}
@@ -26,7 +35,6 @@ const TrainerAbout = () => {
 
           {/* Container for text content */}
           <div className="relative z-10 p-8 sm:p-16 text-center">
-            {/* Name */}
             <h1
               className="text-transparent font-extrabold text-4xl sm:text-6xl md:text-7xl"
               style={{
@@ -34,23 +42,19 @@ const TrainerAbout = () => {
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              Abhishek
+              {userTrainerDetails ? userTrainerDetails?.name : 'Loading...'}
             </h1>
 
             {/* Tagline */}
             <h2 className="text-orange-400 text-xl sm:text-2xl md:text-3xl mt-4">
-              Change Your World Here
+              {description ? description.tagline : 'Loading...'}
             </h2>
 
             {/* Pricing Information */}
             <div className="text-white text-lg sm:text-xl mt-6 flex justify-center items-center space-x-4">
               <button className="bg-orange-500 text-white py-2 px-6 rounded-lg shadow-lg hover:bg-orange-600 transition duration-300">
-                Buy Now
+                Happy to Help
               </button>
-              <div className="flex items-center space-x-2">
-                <p className="line-through text-red-400 text-lg">$22</p>
-                <p className="text-green-400 text-lg">$20</p>
-              </div>
             </div>
           </div>
         </div>

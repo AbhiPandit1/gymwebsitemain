@@ -24,7 +24,7 @@ router.post(
 );
 
 // Get all Programmes route
-router.get('/programme',getProgrammes);
+router.get('/programme', getProgrammes);
 
 // Get Programmes by category route
 router.get('/programmes', getByCategoryProgrammes);
@@ -37,7 +37,7 @@ router.route('/trainer/programme').delete(deleteProgramme);
 
 router
   .route('/trainer/programme/:id')
-  .get(protectRoute, getByTrainer)
+  .get(getByTrainer)
   .put(protectRoute, categoryImageUpload, updateProgramme);
 
 export default router;

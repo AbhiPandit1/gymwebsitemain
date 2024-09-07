@@ -34,7 +34,7 @@ const PersonalTrainerProgramme = () => {
           }
         );
         setTrainerDatas(response.data.programmes);
-        console.log(response.data.programmes);
+        console.log(response.data);
       } catch (error) {
         toast.error(error.response?.data?.message || 'Failed to fetch data.');
       }
@@ -53,7 +53,9 @@ const PersonalTrainerProgramme = () => {
           data: { programmeId: deleteId },
         }
       );
+
       setTrainerDatas(trainerDatas.filter((data) => data._id !== deleteId));
+
       setShowDeletePopup(false);
       toast.success('Programme deleted successfully.');
     } catch (error) {
@@ -61,6 +63,7 @@ const PersonalTrainerProgramme = () => {
       toast.error('Failed to delete programme.');
     }
   };
+  console.log(deleteId);
 
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
@@ -110,29 +113,40 @@ const PersonalTrainerProgramme = () => {
               {trainerDatas.map((card) => (
                 <div
                   key={card._id}
-                  className="rounded-[32px] gap-[5px] min-h-[400px] p-4 bg-tertiary w-full sm:w-[300.4px] m-[1rem] p-auto"
+                  className="rounded-[12px] gap-[5px] min-h-[400px]  max-h-[80vh] p-4 bg-gray-950 border-2 border-orange-600 w-full sm:w-[300.4px] m-[1rem] p-auto"
                 >
                   <img
                     src={card.categoryPhoto?.url || <GiAbdominalArmor />}
                     alt={card.type}
-                    className="h-[249px] object-cover rounded-[50px] p-4 opacity-1"
+                    className="h-[249px] object-cover w-full sm:w-[300.4px] rounded-[50px] p-4 opacity-1"
                   />
                   <button
                     onClick={() => handleCategoryToggle(card._id)}
-                    className="text-sm font-semibold h-[2rem] w-[8rem] py-1 px-4 rounded-lg bg-primary text-white shadow-md hover:bg-gray-500 transition-colors duration-300"
+                    className="text-sm font-semibold h-[2rem] border-2 border-orange-400 w-[8rem] py-1 px-4 rounded-lg bg-transparent text-white shadow-md hover:bg-gray-500 transition-colors duration-300"
                   >
                     {showCategory[card._id] ? 'Category' : 'Show'}
                   </button>
                   {showCategory[card._id] && (
                     <div className="mt-2">
-                      <p className="text-sm text-white">
+                      <p className="text-sm text-white ">
                         {card.category.join(', ')}
                       </p>
                     </div>
                   )}
-                  <div className="font-sans text-1xl text-paraColor w-[90%] m-[5%]">
-                    {card.desc}
+                  <div className="font-sans text-1xl text-paraColor w-[90%] m-[5%] h-[10vh] overflow-hidden">
+                    {/* Display only the first three items of the description */}
+                    {card.desc.slice(0, 3).map((item, index) => (
+                      <p key={index}>{item}</p>
+                    ))}
+                    {/* Show Know More button if there are more than 3 items */}
                   </div>
+                  {card.desc.length > 1 && (
+                    <Link to={`/trainer/programme/detail/${card._id}`}>
+                      <button className="mt-2 text-orange-500 underline hover:text-blue-700 transition-colors">
+                        Know More
+                      </button>
+                    </Link>
+                  )}
                   <div className="flex justify-between">
                     <div className="text-xl text-white font-sans font-bold flex justify-center items-center m-2">
                       ${card.price}

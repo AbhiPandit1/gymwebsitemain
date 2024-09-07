@@ -19,7 +19,7 @@ export const createProgramme =
       const formData = new FormData();
       formData.append('category', JSON.stringify(programmeData.category));
       formData.append('price', programmeData.price);
-      formData.append('desc', programmeData.desc);
+      formData.append('desc', JSON.stringify(programmeData.desc)); // Convert desc array to JSON string
       formData.append('title', programmeData.title);
       formData.append('planType', programmeData.planType); // Add planType to formData
 
@@ -40,7 +40,6 @@ export const createProgramme =
           },
         }
       );
-      console.log(response);
 
       if (response?.status === 201) {
         // Status 201 for successful creation
@@ -59,9 +58,9 @@ export const createProgramme =
 
 export const updateProgramme =
   (formData, programmeId, token) => async (dispatch) => {
-    try {
-      dispatch(createProgrammeStart());
+    dispatch(createProgrammeStart());
 
+    try {
       const response = await axios.put(
         `${
           import.meta.env.VITE_BACKEND_URL
@@ -76,7 +75,7 @@ export const updateProgramme =
       );
 
       if (response.status === 200 || response.status === 201) {
-        toast.success('Programme Updated');
+        toast.success('Programme updated successfully');
         dispatch(createProgrammeSuccess(response.data.programme));
       } else {
         const errorMessage =
@@ -90,7 +89,8 @@ export const updateProgramme =
       console.error('Error updating programme:', error);
 
       const errorMessage =
-        error.response?.data?.error || 'Error updating programme';
+        error.response?.data?.error ||
+        'An error occurred while updating the programme';
       toast.error(errorMessage);
       dispatch(createProgrammeFailure(errorMessage));
     }

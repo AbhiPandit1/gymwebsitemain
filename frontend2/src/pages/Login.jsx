@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Modal from 'react-modal'; // Import the modal library
 import loginImage from '../assets/loginImage.png';
 import { CiMail } from 'react-icons/ci';
 import { FaLock } from 'react-icons/fa';
@@ -8,6 +9,8 @@ import LoginLogo from '../component/LoginLogo';
 import { useDispatch } from 'react-redux';
 import { signInuser } from '../action/userActions';
 import SmallSpinner from '../../SmallSpinner';
+
+Modal.setAppElement('#root'); // For accessibility reasons, set the app element
 
 const Login = () => {
   const [seePassword, setSeePassword] = useState(false);
@@ -22,6 +25,7 @@ const Login = () => {
     password: '',
     terms: '',
   });
+  const [modalIsOpen, setModalIsOpen] = useState(false); // State for modal
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -92,128 +96,148 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-[100vh] bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4 overflow-scroll scrollbar-hide">
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2">
-        <div className="flex flex-col pt-[3%] gap-6">
-          <LoginLogo />
-
-          <div className="flex flex-col sm:ml-[22%]">
-            <label htmlFor="email" className="text-white">
-              Email
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={signField.email}
-                onChange={(e) =>
-                  setSignField({ ...signField, email: e.target.value })
-                }
-                className="w-full sm:w-[80%] text-white bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[15%] sm:pl-[10%] font-sans"
-                aria-describedby="email-error"
-              />
-              <div className="absolute top-[20%] left-[4%]">
-                <CiMail color="white" size={25} />
-              </div>
-            </div>
-            {errors.email && (
-              <p id="email-error" className="text-red-500 text-sm mt-1">
-                {errors.email}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col sm:ml-[22%]">
-            <label htmlFor="password" className="text-white">
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type={seePassword ? 'text' : 'password'}
-                id="password"
-                name="password"
-                value={signField.password}
-                onChange={(e) =>
-                  setSignField({ ...signField, password: e.target.value })
-                }
-                className="w-full sm:w-[80%] text-white bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[15%] sm:pl-[10%] font-sans"
-                aria-describedby="password-error"
-              />
-              <div className="absolute top-[20%] left-[4%]">
-                <FaLock color="white" size={25} />
-              </div>
-              <div
-                className="absolute right-[10%] sm:right-[23%] top-[20%] cursor-pointer"
-                onClick={() => setSeePassword((prev) => !prev)}
-                aria-label={seePassword ? 'Hide password' : 'Show password'}
-              >
-                {seePassword ? (
-                  <AiOutlineEye color="white" size={25} />
-                ) : (
-                  <AiOutlineEyeInvisible color="white" size={25} />
-                )}
-              </div>
-            </div>
-            {errors.password && (
-              <p id="password-error" className="text-red-500 text-sm mt-1">
-                {errors.password}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col items-center gap-4 w-full mt-2">
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="terms"
-                checked={agreedTerms}
-                onChange={() => setAgreedTerms(!agreedTerms)}
-                className="cursor-pointer"
-                aria-labelledby="terms-label"
-              />
-              <label
-                id="terms-label"
-                htmlFor="terms"
-                className="text-white text-[0.7rem] sm:text-xl cursor-pointer"
-              >
-                Agree with terms and conditions
-              </label>
-            </div>
-            {errors.terms && (
-              <p className="text-red-500 text-sm mt-1">{errors.terms}</p>
-            )}
-          </div>
-
-          <div className="flex justify-center items-center text-white sm:ml-[10%]">
-            <button
-              type="submit"
-              className="h-[3rem] w-[80%] bg-secondary rounded-xl"
-            >
-              {loading ? <SmallSpinner /> : 'Log In'}
-            </button>
-          </div>
-
-          <div className="flex justify-end items-center pr-[20%] sm:pr-[30%]">
-            <div className="text-sans text-white text-[0.9rem] pr-[2%]">
-              Already have an account?
-            </div>
-            <div className="text-sans text-secondary text-[0.9rem]">
-              <Link to="/signin">Sign In</Link>
-            </div>
-          </div>
-
-          <div className="flex justify-center text-green-600 text-sans text-[1.2rem] font-extrabold">
-            <Link to="/user/forgot/email">Forgot Password?</Link>
-          </div>
-        </div>
-
-        <div className="pt-[5%] rounded-[32px] hidden sm:flex">
-          <img
-            src={loginImage}
-            alt="bodybuilder"
-            className="rounded-[12px] border h-full"
+    <div>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        className="fixed inset-0 flex items-center justify-center w-[80vw] m-auto h-full  bg-transparent  rounded-lg p-6 shadow-lg"
+        overlayClassName="fixed bg-white bg-opacity-50"
+      >
+        <div className="relative w-full h-full">
+          <button
+            onClick={() => setModalIsOpen(false)}
+            className="absolute top-4 right-20 text-4xl font-bold text-orange-700"
+          >
+            ×
+          </button>
+          <iframe
+            src="https://drive.google.com/file/d/1UqMF3nxv4qzGL5382ojk_2l_bCQXaWAT/preview"
+            className="w-full h-[100vh]"
+            title="Terms of Service"
           />
+        </div>
+      </Modal>
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 min-h-screen overflow-auto bg-primary py-10 px-4 sm:px-10">
+          <div className="flex flex-col pt-8 gap-6 sm:gap-8">
+            <LoginLogo />
+
+            <div className="flex flex-col sm:ml-20">
+              <label
+                htmlFor="email"
+                className="text-white text-lg font-semibold"
+              >
+                Email
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  id="email"
+                  className="w-full sm:w-4/5 text-white bg-tertiary h-12 sm:h-12 rounded-full pl-12 font-sans border border-gray-300 focus:border-orange-600 focus:ring-orange-600"
+                  value={signField.email}
+                  onChange={(e) =>
+                    setSignField({ ...signField, email: e.target.value })
+                  }
+                />
+                <div className="absolute top-1/2 left-3 transform -translate-y-1/2">
+                  <CiMail color="white" size={25} />
+                </div>
+              </div>
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:ml-20">
+              <label
+                htmlFor="password"
+                className="text-white text-lg font-semibold"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={seePassword ? 'text' : 'password'}
+                  id="password"
+                  className="w-full sm:w-4/5 text-white bg-tertiary h-12 sm:h-12 rounded-full pl-12 font-sans border border-gray-300 focus:border-orange-600 focus:ring-orange-600"
+                  value={signField.password}
+                  onChange={(e) =>
+                    setSignField({ ...signField, password: e.target.value })
+                  }
+                />
+                <div className="absolute top-1/2 left-3 transform -translate-y-1/2">
+                  <FaLock color="white" size={25} />
+                </div>
+                <div
+                  className="absolute right-4 sm:right-[25%] top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  onClick={() => setSeePassword(!seePassword)}
+                >
+                  {!seePassword ? (
+                    <AiOutlineEyeInvisible color="white" size={25} />
+                  ) : (
+                    <AiOutlineEye color="white" size={25} />
+                  )}
+                </div>
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:ml-20">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={agreedTerms}
+                  onChange={() => setAgreedTerms(!agreedTerms)}
+                  className="text-orange-600"
+                />
+                <label
+                  htmlFor="terms"
+                  className="text-white text-lg font-semibold"
+                >
+                  I agree to the{' '}
+                  <span
+                    onClick={() => setModalIsOpen(true)}
+                    className="text-orange-600 cursor-pointer"
+                  >
+                    terms and conditions
+                  </span>
+                </label>
+              </div>
+              {errors.terms && (
+                <p className="text-red-500 text-sm mt-1">{errors.terms}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:ml-20">
+              <button
+                type="submit"
+                className="w-full sm:w-4/5 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-semibold"
+                disabled={loading}
+              >
+                {loading ? <SmallSpinner /> : 'Log In'}
+              </button>
+            </div>
+
+            <div className="flex justify-center sm:ml-20">
+              <p className="text-white text-lg">
+                Don't have an account?{' '}
+                <Link to="/signin" className="text-orange-600 font-semibold">
+                  Sign Up
+                </Link>
+              </p>
+            </div>
+          </div>
+
+          <div className="hidden sm:flex items-center justify-center">
+            <img
+              src={loginImage}
+              alt="Login Illustration"
+              className="object-cover w-full h-full"
+            />
+          </div>
         </div>
       </form>
     </div>

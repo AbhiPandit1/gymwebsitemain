@@ -5,6 +5,7 @@ const protectRoute = async (req, res, next) => {
   try {
     // Retrieve JWT token from Authorization header
     const authHeader = req.headers.authorization;
+
     const token = authHeader && authHeader.split(' ')[1]; // Token should be in the format "Bearer TOKEN"
 
     if (!token) {
@@ -24,7 +25,7 @@ const protectRoute = async (req, res, next) => {
     const user = await User.findById(decoded.userId).select('-password');
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not authorised' });
     }
 
     // Attach user and token to request object

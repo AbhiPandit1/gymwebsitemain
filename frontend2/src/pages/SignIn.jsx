@@ -8,6 +8,10 @@ import LoginLogo from '../component/LoginLogo';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../action/userActions';
 import SmallSpinner from '../../SmallSpinner';
+import Modal from 'react-modal';
+
+// Ensure to call Modal.setAppElement() to avoid accessibility issues
+Modal.setAppElement('#root');
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -16,6 +20,7 @@ const SignIn = () => {
   const [seePassword, setSeePassword] = useState(false);
   const [seeConfirmPassword, setSeeConfirmPassword] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
+  const [reviewedTerms, setReviewedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [signField, setSignField] = useState({
     email: '',
@@ -28,6 +33,7 @@ const SignIn = () => {
     confirmPassword: '',
     terms: '',
   });
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const handlePasswordField = () => {
     setSeePassword(!seePassword);
@@ -39,6 +45,11 @@ const SignIn = () => {
 
   const handleTermsChange = (e) => {
     setAgreedTerms(e.target.checked);
+  };
+
+  const handleReviewTerms = () => {
+    setModalIsOpen(true);
+    setReviewedTerms(true);
   };
 
   const clearErrors = () => {
@@ -76,7 +87,8 @@ const SignIn = () => {
     }
 
     if (!agreedTerms) {
-      newErrors.terms = 'Please agree to the terms and conditions.';
+      newErrors.terms =
+        'Please agree to the terms and conditions after reviewing them.';
       valid = false;
     }
 
@@ -115,53 +127,79 @@ const SignIn = () => {
 
   return (
     <div>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        className="fixed inset-0 flex items-center justify-center w-[80vw] m-auto h-full  bg-transparent  rounded-lg p-6 shadow-lg"
+        overlayClassName="fixed bg-white bg-opacity-50"
+      >
+        <div className="relative w-full h-full">
+          <button
+            onClick={() => setModalIsOpen(false)}
+            className="absolute top-4 right-20 text-4xl font-bold text-orange-700"
+          >
+            ×
+          </button>
+          <iframe
+            src="https://drive.google.com/file/d/1UqMF3nxv4qzGL5382ojk_2l_bCQXaWAT/preview"
+            className="w-full h-[100vh]"
+            title="Terms of Service"
+          />
+        </div>
+      </Modal>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[100vh] overflow-scroll bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4">
-          <div className="flex flex-col pt-[3%] gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 min-h-screen overflow-auto bg-primary py-10 px-4 sm:px-10">
+          <div className="flex flex-col pt-8 gap-6 sm:gap-8">
             <LoginLogo />
 
-            <div className="flex flex-col sm:ml-[22%]">
-              <label htmlFor="email" className="text-white">
+            <div className="flex flex-col sm:ml-20">
+              <label
+                htmlFor="email"
+                className="text-white text-lg font-semibold"
+              >
                 Email
               </label>
               <div className="relative">
                 <input
                   type="email"
                   id="email"
-                  className="flex w-full sm:w-[80%] justify-center items-center text-white bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[15%] sm:pl-[10%] font-sans"
+                  className="w-full sm:w-4/5 text-white bg-tertiary h-12 sm:h-12 rounded-full pl-12 font-sans border border-gray-300 focus:border-orange-600 focus:ring-orange-600"
                   value={signField.email}
                   onChange={(e) =>
                     setSignField({ ...signField, email: e.target.value })
                   }
                 />
-                <div className="absolute top-[20%] left-[4%]">
+                <div className="absolute top-1/2 left-3 transform -translate-y-1/2">
                   <CiMail color="white" size={25} />
                 </div>
               </div>
               {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email}</p>
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
               )}
             </div>
 
-            <div className="flex flex-col sm:ml-[22%]">
-              <label htmlFor="password" className="text-white">
+            <div className="flex flex-col sm:ml-20">
+              <label
+                htmlFor="password"
+                className="text-white text-lg font-semibold"
+              >
                 Password
               </label>
               <div className="relative">
                 <input
                   type={seePassword ? 'text' : 'password'}
                   id="password"
-                  className="flex w-full sm:w-[80%] justify-center text-white items-center bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[15%] sm:pl-[10%] font-sans"
+                  className="w-full sm:w-4/5 text-white bg-tertiary h-12 sm:h-12 rounded-full pl-12 font-sans border border-gray-300 focus:border-orange-600 focus:ring-orange-600"
                   value={signField.password}
                   onChange={(e) =>
                     setSignField({ ...signField, password: e.target.value })
                   }
                 />
-                <div className="absolute top-[20%] left-[4%]">
+                <div className="absolute top-1/2 left-3 transform -translate-y-1/2">
                   <FaLock color="white" size={25} />
                 </div>
                 <div
-                  className="absolute right-[10%] sm:right-[23%] top-[20%]"
+                  className="absolute right-4 sm:right-[25%] top-1/2 transform -translate-y-1/2 cursor-pointer"
                   onClick={handlePasswordField}
                 >
                   {!seePassword ? (
@@ -172,19 +210,22 @@ const SignIn = () => {
                 </div>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-sm">{errors.password}</p>
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
               )}
             </div>
 
-            <div className="flex flex-col sm:ml-[22%]">
-              <label htmlFor="confirmPassword" className="text-white">
+            <div className="flex flex-col sm:ml-20">
+              <label
+                htmlFor="confirmPassword"
+                className="text-white text-lg font-semibold"
+              >
                 Confirm Password
               </label>
               <div className="relative">
                 <input
                   type={seeConfirmPassword ? 'text' : 'password'}
                   id="confirmPassword"
-                  className="flex w-full sm:w-[80%] justify-center text-white items-center bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[15%] sm:pl-[10%] font-sans"
+                  className="w-full sm:w-4/5 text-white bg-tertiary h-12 sm:h-12 rounded-full pl-12 font-sans border border-gray-300 focus:border-orange-600 focus:ring-orange-600"
                   value={signField.confirmPassword}
                   onChange={(e) =>
                     setSignField({
@@ -193,11 +234,11 @@ const SignIn = () => {
                     })
                   }
                 />
-                <div className="absolute top-[20%] left-[4%]">
+                <div className="absolute top-1/2 left-3 transform -translate-y-1/2">
                   <FaLock color="white" size={25} />
                 </div>
                 <div
-                  className="absolute right-[10%] sm:right-[23%] top-[20%]"
+                  className="absolute right-4 sm:right-[25%] top-1/2 transform -translate-y-1/2 cursor-pointer"
                   onClick={handleConfirmPasswordField}
                 >
                   {!seeConfirmPassword ? (
@@ -208,60 +249,68 @@ const SignIn = () => {
                 </div>
               </div>
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword}
+                </p>
               )}
             </div>
 
-            <div className="flex flex-col justify-center sm:flex-col items-center gap-4 w-full mt-2">
+            <div className="flex flex-col sm:ml-20">
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="terms"
                   checked={agreedTerms}
                   onChange={handleTermsChange}
+                  className="text-orange-600"
                 />
-                <div>
-                  <label
-                    htmlFor="terms"
-                    className="text-white text-[0.7rem] sm:text-xl"
+                <label
+                  htmlFor="terms"
+                  className="text-white text-lg font-semibold"
+                >
+                  I agree to the{' '}
+                  <span
+                    onClick={handleReviewTerms}
+                    className="text-orange-600 cursor-pointer"
                   >
-                    Agree with terms and conditions
-                  </label>
-                </div>
+                    terms and conditions
+                  </span>
+                </label>
               </div>
               {errors.terms && (
-                <p className="text-red-500 text-sm">{errors.terms}</p>
+                <p className="text-red-500 text-sm mt-1">{errors.terms}</p>
               )}
             </div>
 
-            <div className="flex justify-center items-center text-white sm:ml-[10%]">
+            <div className="flex flex-col sm:ml-20">
               <button
                 type="submit"
-                className="h-[3rem] w-[80%] bg-secondary rounded-xl"
+                className="w-full sm:w-4/5 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-semibold"
+                disabled={loading}
               >
-                {loading ? <SmallSpinner /> : 'Sign In'}
+                {loading ? <SmallSpinner /> : 'Sign Up'}
               </button>
             </div>
 
-            <div className="flex justify-end items-center pr-[20%] sm:pr-[30%]">
-              <div className="text-sans text-white text-[0.9rem] pr-[2%]">
-                Already have an account?
-              </div>
-              <div className="text-sans text-secondary text-[0.9rem]">
-                <Link to="/login">Log In</Link>
-              </div>
+            <div className="flex justify-center sm:ml-20">
+              <p className="text-white text-lg">
+                Already have an account?{' '}
+                <Link to="/login" className="text-orange-600 font-semibold">
+                  Login
+                </Link>
+              </p>
             </div>
           </div>
-          <div className="pt-[5%] rounded-[32px] hidden sm:flex">
+
+          <div className="hidden sm:flex items-center justify-center">
             <img
               src={loginImage}
-              alt="bodybuilder"
-              className="rounded-[12px] border h-full"
+              alt="Login Illustration"
+              className="object-cover w-full h-full"
             />
           </div>
         </div>
       </form>
-      <div className="flex justify-center items-center mt-4"></div>
     </div>
   );
 };
