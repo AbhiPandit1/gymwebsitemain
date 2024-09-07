@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
-const TrainerCardMobile = () => {
+const TrainerCardMobile = ({ searchQuery }) => {
   const [trainerDatas, setTrainerDatas] = useState([]);
   const [displayedTrainers, setDisplayedTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +38,19 @@ const TrainerCardMobile = () => {
     fetchTrainerData();
   }, [displayCount]);
 
+  useEffect(() => {
+    // Filter trainers based on search query
+    const filteredTrainers = trainerDatas.filter((trainer) =>
+      trainer?.user?.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setDisplayedTrainers(filteredTrainers.slice(0, displayCount));
+    if (filteredTrainers.length <= displayCount) {
+      setHasMore(false);
+    } else {
+      setHasMore(true);
+    }
+  }, [searchQuery, trainerDatas, displayCount]);
+
   const loadMore = () => {
     setDisplayedTrainers(trainerDatas); // Show all trainers
     setDisplayCount(trainerDatas.length); // Update displayCount to the total number
@@ -63,21 +76,21 @@ const TrainerCardMobile = () => {
 
   return (
     <div className="grid grid-cols-1 gap-4 mt-4">
-      {displayedTrainers.map((data) => (
+      {displayedTrainers?.map((data) => (
         <div
           key={data._id} // Use the unique _id for the key
-          className="relative max-h-[400px] min-h-[400px] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
+          className="relative max-h-[400px] min-h-[400px] min-w-[80vw] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
         >
           <img
-            src={data.user.profilePhoto.url} // Use profilePhoto.url for the image source
-            alt={data.user.name} // Alt text should be descriptive
+            src={data?.user?.profilePhoto?.url} // Use profilePhoto.url for the image source
+            alt={data?.user?.name} // Alt text should be descriptive
             className="w-full h-[80%] object-cover transition-opacity duration-500 ease-in-out opacity-100"
           />
           <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-gradient-to-t from-black via-transparent to-transparent">
             <div className="flex items-center space-x-2">
-              {data.socialMediaLink.instagram && (
+              {data?.socialMediaLink?.instagram && (
                 <a
-                  href={data.socialMediaLink.instagram}
+                  href={data?.socialMediaLink?.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -88,9 +101,9 @@ const TrainerCardMobile = () => {
                   />
                 </a>
               )}
-              {data.socialMediaLink.linkedin && (
+              {data?.socialMediaLink?.linkedin && (
                 <a
-                  href={data.socialMediaLink.linkedin}
+                  href={data?.socialMediaLink?.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -101,9 +114,9 @@ const TrainerCardMobile = () => {
                   />
                 </a>
               )}
-              {data.socialMediaLink.facebook && (
+              {data?.socialMediaLink?.facebook && (
                 <a
-                  href={data.socialMediaLink.facebook}
+                  href={data?.socialMediaLink?.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -116,19 +129,19 @@ const TrainerCardMobile = () => {
               )}
             </div>
             <Link
-              to={`/trainer/${data.user._id}`}
-              className="text-white bg-orange-600 py-1 px-4 rounded-lg hover:bg-orange-800 transition duration-300"
+              to={`/trainer/${data?.user?._id}`}
+              className="text-white bg-orange-600 py-1 px-2 rounded-lg hover:bg-orange-800 transition duration-300"
             >
               Know More
             </Link>
           </div>
           <div className="absolute bottom-24 left-4 right-4 text-white">
-            <div className="font-extrabold text-xl">{data.user.name}</div>
+            <div className="font-extrabold text-xl">{data?.user?.name}</div>
             <div className="font-extrabold text-md text-gray-400">Creator</div>
           </div>
         </div>
       ))}
-      <div className="flex justify-center bg-red-400 mt-4 space-x-4">
+      <div className="flex justify-center  mt-4 space-x-4">
         {showLoadMore && (
           <button
             onClick={loadMore}

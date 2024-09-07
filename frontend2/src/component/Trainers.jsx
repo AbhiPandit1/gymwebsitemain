@@ -5,6 +5,7 @@ import { GoPlus } from 'react-icons/go';
 
 const Trainers = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     // Check screen size on component mount and resize
@@ -22,7 +23,7 @@ const Trainers = () => {
 
   return (
     <div
-      className=" flex flex-col items-center text-white min-h-screen w-[100%] min-w-[100%] mx-auto rounded-xl p-10"
+      className="flex flex-col items-center text-white min-h-screen w-[100%] min-w-[100%] mx-auto rounded-xl p-10"
       style={{
         background:
           'linear-gradient(270deg, #4F2222 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
@@ -30,23 +31,25 @@ const Trainers = () => {
     >
       <div className="flex flex-col ">
         <h1 className="text-3xl text-center">Our Creators</h1>
-        <div className=" flex flex-col justify-center  w-[100%] sm:w-[60%] sm:ml-[20%]   ">
-          <div className="   ">Search</div>
-          <div className="flex justify-center items-start   ">
+        <div className="flex flex-col justify-center w-[100%] sm:w-[60%] sm:ml-[20%]">
+          <div className="sm:ml-[10%]">Search</div>
+          <div className="flex justify-center items-start">
             <input
               type="text"
               placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full sm:w-[40rem] h-12 px-4 rounded-sm bg-tertiary border border-secondary focus:outline-none focus:ring-2 focus:ring-secondary"
             />
           </div>
         </div>
         {isSmallScreen ? (
           <div className="mt-4">
-            <TrainerCardMobile />
+            <TrainerCardMobile searchQuery={searchQuery} />
           </div>
         ) : (
           <div className="mt-4">
-            <TrainerCard />
+            <TrainerCard searchQuery={searchQuery} />
           </div>
         )}
       </div>
