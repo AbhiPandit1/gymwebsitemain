@@ -7,7 +7,7 @@ export default defineConfig({
     proxy: {
       // Proxy API requests to a backend server during development
       '/api': {
-        target: 'http://localhost:3000', // Backend server URL
+        target: 'https://gymwebsitemain-2.onrender.com', // Backend server URL
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''), // Optional: rewrite path if needed
       },
