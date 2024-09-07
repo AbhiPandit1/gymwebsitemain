@@ -42,6 +42,10 @@ const programmeSchema = new mongoose.Schema({
     enum: ['Diet', 'Day', 'Both'],
     required: true,
   },
+  isSelected: {
+    type: Boolean,
+    default: false, // Default to false if not set
+  },
 });
 
 // Indexing for improved performance

@@ -30,21 +30,16 @@ export const deleteUsers = async (req, res) => {
 
     console.log('Received User IDs:', userIds);
 
+    // Check if userIds is a valid array and non-empty
     if (!Array.isArray(userIds) || userIds.length === 0) {
       return res.status(400).json({ message: 'No users to delete' });
     }
 
-    // Validate each ID
-    const validUserIds = [];
-    const invalidUserIds = [];
-
-    userIds.forEach((id) => {
-      if (id && mongoose.isValidObjectId(id)) {
-        validUserIds.push(id);
-      } else {
-        invalidUserIds.push(id);
-      }
-    });
+    // Validate user IDs
+    const validUserIds = userIds.filter((id) => mongoose.isValidObjectId(id));
+    const invalidUserIds = userIds.filter(
+      (id) => !mongoose.isValidObjectId(id)
+    );
 
     if (invalidUserIds.length > 0) {
       console.error('Invalid User IDs:', invalidUserIds);
@@ -57,18 +52,17 @@ export const deleteUsers = async (req, res) => {
       return res.status(400).json({ message: 'No valid user IDs to delete' });
     }
 
-    // Check if users exist
+    // Find users by valid IDs
     const usersToDelete = await User.find({ _id: { $in: validUserIds } });
-    console.log('Users to be deleted:', usersToDelete);
 
     if (usersToDelete.length === 0) {
       return res.status(404).json({ message: 'No users found to delete' });
     }
 
-    // Delete associated data
+    // Loop through each user and delete associated data
     for (const user of usersToDelete) {
-      // Delete profile photo from Cloudinary
-      if (user.profilePhoto.public_id) {
+      // Delete user's profile photo from Cloudinary
+      if (user.profilePhoto?.public_id) {
         try {
           await cloudinary.uploader.destroy(user.profilePhoto.public_id);
         } catch (error) {
@@ -79,64 +73,75 @@ export const deleteUsers = async (req, res) => {
         }
       }
 
+      // If user is a trainer, handle additional trainer data
       if (user.role === 'trainer') {
-        // Delete related Trainer
         const trainer = await Trainer.findOne({ user: user._id });
+
         if (trainer) {
-          // Delete description image from Cloudinary
+          // Delete trainer's description image from Cloudinary
           if (trainer.description) {
             const description = await Description.findById(trainer.description);
-            if (description && description.image.public_id) {
+            if (description?.image?.public_id) {
               try {
                 await cloudinary.uploader.destroy(description.image.public_id);
               } catch (error) {
                 console.error(
-                  `Failed to delete Cloudinary photo for description ${description._id}:`,
+                  `Failed to delete description photo for trainer ${trainer._id}:`,
                   error.message
                 );
               }
             }
 
-            // Delete related programmes and their photos from Cloudinary
-            const programmes = await Programme.find({
-              _id: { $in: trainer.programmes },
-            });
-            for (const programme of programmes) {
-              if (programme.categoryPhoto.public_id) {
-                try {
-                  await cloudinary.uploader.destroy(
-                    programme.categoryPhoto.public_id
-                  );
-                } catch (error) {
-                  console.error(
-                    `Failed to delete Cloudinary photo for programme ${programme._id}:`,
-                    error.message
-                  );
-                }
-              }
-              // Remove the programme from the trainer's programmes
-              trainer.programmes = trainer.programmes.filter(
-                (p) => !programme._id.equals(p)
-              );
-            }
-
-            // Save the trainer without the deleted programmes
-            await trainer.save();
-
-            // Delete Trainer
-            await Trainer.findByIdAndDelete(trainer._id);
-
-            // Delete Descriptions
-            await Description.deleteMany({
-              _id: { $in: [trainer.description] },
-            });
+            // Delete description document
+            await Description.deleteOne({ _id: trainer.description });
           }
+
+          // Delete trainer's related programmes and their images
+          const programmes = await Programme.find({
+            _id: { $in: trainer.programmes },
+          });
+          for (const programme of programmes) {
+            if (programme.categoryPhoto?.public_id) {
+              try {
+                await cloudinary.uploader.destroy(
+                  programme.categoryPhoto.public_id
+                );
+              } catch (error) {
+                console.error(
+                  `Failed to delete programme photo for programme ${programme._id}:`,
+                  error.message
+                );
+              }
+            }
+          }
+
+          // Delete trainer document
+          await Trainer.deleteOne({ _id: trainer._id });
         }
       }
     }
 
-    // Delete Users
+    // Delete users from the database
     await User.deleteMany({ _id: { $in: validUserIds } });
+
+    const trainers = await Trainer.find();
+    for (const trainer of trainers) {
+      const findUser = await User.findById(trainer.user); // Use trainer.user directly
+      if (!findUser) {
+        try {
+          await Trainer.deleteOne({ _id: trainer._id });
+
+          console.log(
+            `Trainer with ID ${trainer._id} deleted as their user no longer exists`
+          );
+        } catch (error) {
+          console.error(
+            `Failed to delete trainer ${trainer._id}:`,
+            error.message
+          );
+        }
+      }
+    }
 
     res.status(200).json({
       message: 'Users and related data deleted successfully',
@@ -293,5 +298,52 @@ export const sendAdvertisment = async (req, res) => {
   } catch (error) {
     console.error('Error sending advertisements:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
+export const selectedProgramme = async (req, res) => {
+  const { programmeIds, isSelected } = req.body;
+
+  try {
+    // Check if programmeIds is an array and not empty
+    if (!Array.isArray(programmeIds) || programmeIds.length === 0) {
+      return res.status(400).json({
+        error: 'No programme IDs provided',
+      });
+    }
+
+    // Convert IDs to ObjectId if necessary
+    const programmeObjectIds = programmeIds.map(
+      (id) => new mongoose.Types.ObjectId(id)
+    );
+
+    // Fetch current state of the documents
+    const currentProgrammes = await Programme.find({
+      _id: { $in: programmeObjectIds },
+    });
+
+    // Perform the update operation
+    const result = await Programme.updateMany(
+      { _id: { $in: programmeObjectIds } },
+      { $set: { isSelected: isSelected } }
+    );
+
+    // Check if any documents were modified
+    if (result.modifiedCount > 0) {
+      res.status(200).json({
+        message: 'Programmes updated successfully',
+      });
+    } else {
+      res.status(404).json({
+        message: 'No programmes found to update or all are already selected',
+      });
+    }
+  } catch (error) {
+    console.error('Error updating programmes:', error);
+    res.status(500).json({
+      error: 'Programmes are not accessible',
+    });
   }
 };

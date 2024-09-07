@@ -5,6 +5,7 @@ import {
   getAllPayments,
   getAllTrainerProgrammes,
   getAllUser,
+  selectedProgramme,
   sendAdvertisment,
 } from '../controller/adminController.js';
 import protectRoute from '../middleware/authentication.js';
@@ -32,5 +33,9 @@ router
 router
   .route('/send/advertisment')
   .post(protectRoute, checkRole('admin'), sendAdvertisment);
+
+router
+  .route('/selected/programme')
+  .post(protectRoute, checkRole('admin'), selectedProgramme);
 
 export default router;

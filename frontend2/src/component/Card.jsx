@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import cardData from '../data/cardData'; // default import
+import axios from 'axios'; // Import axios
+import cardData from '../data/cardData'; // Ensure this import is needed
 import {
   IoIosArrowRoundForward,
   IoIosArrowBack,
@@ -7,6 +8,7 @@ import {
 } from 'react-icons/io';
 
 const Card = ({ title, backgroundColor }) => {
+  const backendapi = import.meta.env.VITE_BACKEND_URL;
   const [data, setData] = useState([]);
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(3);
@@ -17,7 +19,24 @@ const Card = ({ title, backgroundColor }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    setData(cardData);
+    // Define the async function inside the effect
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${backendapi}/api/admin/programme`);
+
+        // Filter the data to include only items where isSelected is true
+        const filteredData = response.data.filter(
+          (item) => item.isSelected === true
+        );
+
+        // Set the filtered data to state
+        setData(filteredData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
 
     // Adjust the number of items per page based on screen width
     const updateItemsPerPage = () => {
@@ -106,23 +125,23 @@ const Card = ({ title, backgroundColor }) => {
       {/* Card Container */}
       <div
         ref={containerRef}
-        className="overflow-x-auto w-full max-w-[95%]  mx-auto mt-4  cursor-grab scrollbar-hide"
+        className="overflow-x-auto w-full max-w-[95%] mx-auto mt-4 cursor-grab scrollbar-hide"
       >
         <div className="flex transition-transform duration-300 ease-in-out">
           {data.map((card) => (
             <div
-              key={card.id}
-              className={`bg-${backgroundColor} brightness-100 rounded-[2px] m-[4rem] p-4 h-[400px] border-y-2  flex-shrink-0 border-b-4 border-orange-400 hover:border hover:border-orange-600 transition-all`}
+              key={card?._id}
+              className={`bg-${backgroundColor} brightness-100 rounded-[2px] m-[4rem] p-4 h-[400px] border-y-2 flex-shrink-0 border-b-4 border-orange-400 hover:border hover:border-orange-600 transition-all`}
               style={{ minWidth: `calc(100% / ${itemsPerPage})` }}
             >
               <img
-                src={card.image}
+                src={card?.categoryPhoto?.url}
                 alt={card.type}
                 className="h-[300px] w-[400px] object-cover rounded-[12px]"
               />
               <div className="p-4 flex justify-between flex-col sm:flex-row">
                 <h2 className="text-xl text-white font-sans font-bold flex justify-center items-center">
-                  {card.type}
+                  {card?.category[0]}
                 </h2>
                 <h1 className="text-white font-orbitron flex justify-center items-center">
                   know more
