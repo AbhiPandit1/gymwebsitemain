@@ -7,6 +7,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import Header from '../../component/Header';
 import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css'; // Ensure toast styles are imported
+
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 const stripePromise = loadStripe(
   'pk_test_51Pa814I7lJRhp8GEBpmlT7u9bssCwu3MtiZALmBXBIsYkeqZboK3CT8JgOpMfwLdMXyyKrFXuUAc28crTu0DmJG300zMtqLK58'
@@ -16,8 +17,8 @@ const ProgrammeDetail = () => {
   const [singleProgramme, setSingleProgramme] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [showDescription, setShowDescription] = useState(false); // State to toggle description visibility
-  const [showCategories, setShowCategories] = useState(false); // State to toggle category visibility
+  const [showDescription, setShowDescription] = useState(false); // Toggle description visibility
+  const [showCategories, setShowCategories] = useState(false); // Toggle categories visibility
 
   const { programmeId } = useParams();
   const navigate = useNavigate();
@@ -101,91 +102,114 @@ const ProgrammeDetail = () => {
   };
 
   const toggleDescription = () => {
-    setShowDescription((prevState) => !prevState); // Toggle the description visibility
+    setShowDescription((prevState) => !prevState);
   };
 
   const toggleCategories = () => {
-    setShowCategories((prevState) => !prevState); // Toggle the categories visibility
+    setShowCategories((prevState) => !prevState);
   };
 
   return (
     <div className="bg-gray-900 min-h-screen flex flex-col">
       <Header />
-      <div className="flex-grow flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl bg-orange-500 rounded-2xl shadow-lg relative overflow-hidden mt-[30vh] sm:mt-[20%]">
+      <div className="flex-grow flex items-center justify-center p-6">
+        <div className="w-full max-w-3xl bg-gray-800 rounded-2xl shadow-lg relative overflow-hidden mt-20 sm:mt-16">
           <Elements stripe={stripePromise}>
-            <div className="bg-gray-900 p-6 rounded-2xl text-white">
-              {loading && <ProgrammeDetail />}{' '}
-              {/* Show skeleton loader while data is loading */}
-              {error && <div className="text-center text-red-500">{error}</div>}
-              {!loading && !error && singleProgramme && (
-                <div className="space-y-4">
-                  {showDescription && (
-                    <p className="text-lg mb-4">{singleProgramme.desc}</p>
-                  )}
-                  {singleProgramme.categoryPhoto && (
-                    <img
-                      src={singleProgramme.categoryPhoto.url}
-                      alt={singleProgramme.category}
-                      className="w-full h-auto max-h-60 object-cover rounded-md mb-4"
-                    />
-                  )}
-                  <div className="text-lg font-semibold mb-4">
-                    Category:{' '}
-                    <span className="inline-block bg-white text-black px-2 py-1 rounded-md">
-                      {Array.isArray(singleProgramme.category)
-                        ? singleProgramme.category.join(', ')
-                        : 'N/A'}
-                    </span>
-                  </div>
-                  <div className="text-lg font-semibold mb-4">
-                    Price: ${singleProgramme.price}
-                  </div>
-                  <div className="flex justify-between mb-4">
-                    <button
-                      onClick={handleBack}
-                      className="px-4 py-2 bg-orange-700 text-white rounded-md hover:bg-orange-600 transition"
-                    >
-                      Back
-                    </button>
-                    <button
-                      onClick={handleCheckout}
-                      className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
-                    >
-                      Check Out
-                    </button>
-                  </div>
-                  <button
-                    onClick={toggleDescription}
-                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                  >
-                    {showDescription ? 'Hide Description' : 'Show Description'}
-                  </button>
-                  {singleProgramme.categoryArray && (
-                    <>
+            <div className="bg-gray-900 p-8 rounded-2xl text-white">
+              {loading ? (
+                <div className="text-center">Loading...</div>
+              ) : error ? (
+                <div className="text-center text-red-500">{error}</div>
+              ) : (
+                singleProgramme && (
+                  <div className="space-y-6">
+                    {singleProgramme.categoryPhoto && (
+                      <img
+                        src={singleProgramme.categoryPhoto.url}
+                        alt={singleProgramme.category}
+                        className="w-full h-64 object-cover rounded-md"
+                      />
+                    )}
+
+                    <div className="text-2xl font-semibold">
+                      {singleProgramme.title}
+                    </div>
+
+                    {showDescription && (
+                      <p className="text-base leading-relaxed">
+                        {singleProgramme.desc}
+                      </p>
+                    )}
+
+                    <div className="flex items-center justify-between text-lg">
+                      <span className="font-medium">Category:</span>
+                      <span className="bg-white text-black px-2 py-1 rounded-lg">
+                        {Array.isArray(singleProgramme.category)
+                          ? singleProgramme.category.join(', ')
+                          : 'N/A'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-lg">
+                      <span className="font-medium">Price:</span>
+                      <span className="bg-white text-black px-2 py-1 rounded-lg">
+                        ${singleProgramme.price}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between mt-6">
                       <button
-                        onClick={toggleCategories}
-                        className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition"
+                        onClick={handleBack}
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition duration-300"
                       >
-                        {showCategories ? 'Hide Categories' : 'Show Categories'}
+                        Back
                       </button>
-                      {showCategories && (
-                        <div className="mt-4 space-y-2">
-                          {singleProgramme.categoryArray.map(
-                            (category, index) => (
-                              <div
-                                key={index}
-                                className="bg-gray-800 text-white px-4 py-2 rounded-md"
-                              >
-                                {category}
-                              </div>
-                            )
-                          )}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
+                      <button
+                        onClick={handleCheckout}
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition duration-300"
+                      >
+                        Check Out
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={toggleDescription}
+                      className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-300"
+                    >
+                      {showDescription
+                        ? 'Hide Description'
+                        : 'Show Description'}
+                    </button>
+
+                    {singleProgramme.categoryArray && (
+                      <>
+                        <button
+                          onClick={toggleCategories}
+                          className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-500 transition duration-300"
+                        >
+                          {showCategories
+                            ? 'Hide Categories'
+                            : 'Show Categories'}
+                        </button>
+
+                        {showCategories && (
+                          <div className="mt-4 grid grid-cols-2 gap-4">
+                            {singleProgramme.categoryArray.map(
+                              (category, index) => (
+                                <div
+                                  key={index}
+                                  className="bg-gray-800 text-white px-4 py-2 rounded-lg"
+                                >
+                                  {category}
+                                </div>
+                              )
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )
               )}
             </div>
           </Elements>

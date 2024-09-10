@@ -47,7 +47,6 @@ const PersonalUserProgramme = () => {
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
   };
-
   const handleCategoryToggle = (id) => {
     setShowCategory((prevState) => ({
       ...prevState,
@@ -61,27 +60,25 @@ const PersonalUserProgramme = () => {
         <div className="grid grid-cols-9 h-screen max-w-[100vw] gap-[2rem] text-white font-sans bg-gray-900">
           <div
             className={`transition-transform duration-300 ${
-              hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+              hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
             }`}
           >
             <DashboardComponent
               dashBoardLink={dashboardLink}
               hoverDashboard={hoverDashboard}
+              setHoverDashboard={setHoverDashboard}
             />
           </div>
           <div
             className={`transition-transform duration-300 ${
               hoverDashboard
                 ? 'col-span-9 sm:col-span-9'
-                : 'col-span-7 sm:col-span-8'
+                : 'col-span-6 sm:col-span-8'
             } overflow-auto`}
           >
             <DashboardHeader />
             {hoverDashboard && (
-              <div
-                className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-                onClick={handleClick}
-              >
+              <div className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
                 <BiSolidRightArrow
                   size={40}
                   color="white"

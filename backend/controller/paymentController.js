@@ -79,8 +79,8 @@ export const paymentCheckout = async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: 'http://localhost:5173/payment/success',
-      cancel_url: 'http://localhost:5173/payment/cancel',
+      success_url: `${process.env.FRONTEND_URL}/payment/success`,
+      cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
       payment_intent_data: {
         metadata: { paymentIntentId: paymentIntent.id },
       },

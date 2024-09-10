@@ -35,7 +35,7 @@ const programmeSchema = new mongoose.Schema({
   },
   trainer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Trainer',
+    ref: 'User',
     required: true,
   },
   planType: {

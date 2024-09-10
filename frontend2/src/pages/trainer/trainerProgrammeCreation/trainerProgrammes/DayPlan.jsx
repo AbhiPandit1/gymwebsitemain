@@ -146,9 +146,7 @@ const DayPlan = () => {
   const handleSubmit = async () => {
     try {
       await postDayPlan(programmeId, trainingPlan);
-      navigate(
-        `${backendapi}/trainer/programme/day/plan/${user.user._id}/${programmeId}`
-      );
+      navigate(`/user/dashboard/${user.user._id}`);
     } catch (err) {
       // Handle error (e.g., show an error message)
       toast.error('Failed to submit day plan.');

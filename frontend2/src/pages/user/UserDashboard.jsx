@@ -57,7 +57,7 @@ const UserDashboard = () => {
           <div className="bg-gray-800 h-full w-full flex flex-col mb-1">
             <div className="relative">
               <img
-                src="https://s3-alpha-sig.figma.com/img/de97/3247/22d2cdd901cc39df68864905ac8641de?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=CQmRo9i9-TzQwkosfJfL4W1I70fGa1T1svoWUOah4HrGT-fpWs7ZvjSJKRBHnAnKFLSCRHL1vUjG9n-239XWLg8VW6jwNfvCobjNoD8B79aNbmuMntyDVQznybRDWn-HovFtZR350v798Xcp1SQrqq3nbfxe6e4cgj3Oujh-bKMeocLUuSZxjAbRJ0IGIP728tJUtGyC8c7RRYeeH~GUb6XILuYmPp-YKJhc58ap9UpHOy~IYBASAHpE8t1M2EHu2ya3DurjkmApif9VxZD7nXEaqMuabnHFm3iT6-EC04l0GdW6J0qMYDmaS9UZdRq2F9IarNvga22nZ1ZPpBo-SA__"
+                src="https://res.cloudinary.com/dzy51cqxa/image/upload/v1724174237/profile_photos/oxnhsb37p3ilw26zropi.jpg"
                 alt="homeGirl"
                 className="h-[100vh] w-full object-right sm:object-cover rounded-[10px] "
               />

@@ -98,7 +98,7 @@ const DietPlan = () => {
         if (programme.planType === 'Both') {
           navigate(`/trainer/create/programme/day/plan/${id}/${programmeId}`);
         } else {
-          navigate(`/trainer/programme/diet/plan/${id}`);
+          navigate(`/user/dashboard/${id}`);
         }
       }
     } catch (error) {

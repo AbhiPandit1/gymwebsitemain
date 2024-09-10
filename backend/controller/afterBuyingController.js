@@ -5,55 +5,67 @@ import User from '../model/userModel.js';
 
 export const getAllBuyedProgramme = async (req, res) => {
   const { userId } = req.params;
-  
 
   try {
-    // Find the user by userId
-    const user = await User.findById(userId).select('-password'); // Exclude password from the user document
+    // Find the user by userId and exclude the password field
+    const user = await User.findById(userId).select('-password');
 
-    // If the user is not found, return an error
+    // If the user is not found, return a 404 error
     if (!user) {
-      return res.status(400).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     // Extract the array of programme IDs from the user's takenProgrammes field
     const programmeIds = user.takenProgrammes;
 
+    // If no programmes are found, return an empty response
+    if (!programmeIds || programmeIds.length === 0) {
+      return res.status(200).json({
+        availableProgrammes: [],
+        message: 'No programmes found for the user',
+      });
+    }
+
     // Fetch the details of all programmes that are available in the database
     const programmeDetails = await Promise.all(
       programmeIds.map(async (programmeId) => {
-        // Fetch the programme and populate the trainer field
-        const programme = await Programme.findById(programmeId).populate(
-          'trainer'
-        );
+        try {
+          // Populate the trainer field and exclude trainer password
+          const programme = await Programme.findById(programmeId).populate(
+            'trainer',
+            '-password'
+          );
 
-        if (programme) {
-          // Remove the password field from the trainer object
-          const trainer = programme.trainer
-            ? { ...programme.trainer.toObject(), password: undefined }
-            : null;
-
-          return {
-            ...programme.toObject(),
-            trainer, // Include the modified trainer object
-            trainerId: trainer ? trainer._id : null, // Include the trainerId if available
-          };
+          // If the programme exists, return its details
+          if (programme) {
+            return {
+              ...programme.toObject(),
+              trainerId: programme.trainer ? programme.trainer._id : null,
+            };
+          } else {
+            return null;
+          }
+        } catch (err) {
+          // Log the error if a specific programme fetch failed
+          console.error(
+            `Error fetching programme with ID ${programmeId}:`,
+            err
+          );
+          return null;
         }
-        return null; // Return null if the programme was not found
       })
     );
-    
 
-    // Filter out any null values (programmes that were not found)
+    // Filter out any null values (programmes that were not found or had errors)
     const availableProgrammes = programmeDetails.filter(
       (programme) => programme !== null
     );
-
+    console.log(availableProgrammes);
     // Return the details of the available programmes as the response
     return res.status(200).json({ availableProgrammes });
   } catch (error) {
     // Log the error message for debugging
-    console.error(error.message);
+    console.error('Server error:', error.message);
 
     // Return a server error response
     return res.status(500).json({ message: 'Server Error' });

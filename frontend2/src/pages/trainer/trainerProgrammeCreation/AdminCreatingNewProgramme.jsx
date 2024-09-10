@@ -64,7 +64,7 @@ const AdminCreatingNewProgramme = () => {
 
         if (planType === 'Day') {
           navigate(
-            `/trainer/programme/day/plan/${user.user._id}/${programmeId}`
+            `/trainer/create/programme/day/plan/${user.user._id}/${programmeId}`
           );
         } else {
           navigate(

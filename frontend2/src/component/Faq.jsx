@@ -27,6 +27,38 @@ const faqData = [
     answer:
       'We require a 24-hour notice for cancellations. If you cancel less than 24 hours before your session, you may incur a cancellation fee.',
   },
+  {
+    question: 'How much does it cost to start?',
+    answer:
+      'It is completely free to start. We only take a small commission based on your success.',
+  },
+  {
+    question: 'What is Program Panda?',
+    answer:
+      'Program Panda is a platform meant to help anyone create their own fitness program and sell it. It helps everyone in fitness achieve their goals by finding the right program for them.',
+  },
+  {
+    question:
+      'Why should I go with Program Panda when I can sell my program on my own?',
+    answer:
+      'You can do both if you’d like! We offer an extra channel for sales, an additional revenue stream, and more exposure. Program Panda markets the site as a whole, giving your programs more visibility. Plus, other creators on the platform bring traction to your program, giving you the opportunity to benefit from their exposure as well.',
+  },
+  {
+    question: 'Who can sell on Program Panda?',
+    answer:
+      'Anyone can sell on Program Panda. It’s designed for influencers, trainers, and fitness enthusiasts to organize and sell their programs on one platform.',
+  },
+  {
+    question: 'Is it okay to do two programs at the same time?',
+    answer:
+      'Yes, if you find two programs you like, feel free to combine them, or use one for workouts and another for diet.',
+  },
+  {
+    question:
+      'Does Program Panda offer any support for sales, marketing, and program creation?',
+    answer:
+      'Yes, we offer guides to help with your marketing process, depending on your sales goals, and support with creating and personalizing your fitness programs. Program Panda is here to make your experience easier, even if you’re new to writing fitness programs.',
+  },
 ];
 
 const Faq = () => {

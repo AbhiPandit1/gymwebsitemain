@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux'; // Import useSelector to get token
-import LoadingSpinner from '../../../LoadingSpinner';
 import HomeSkeleton from '../skeletons/HomeSkeleton';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
@@ -48,7 +46,7 @@ const PaymentInvoice = () => {
     } else {
       setLoading(false);
     }
-  }, [user.user._id, token]); // Add token to dependency array to refetch if token changes
+  }, [user.user._id, token]);
 
   const formatDateTime = (dateString) => {
     const options = {
@@ -64,7 +62,7 @@ const PaymentInvoice = () => {
   };
 
   if (loading) return <HomeSkeleton />;
-  if (error) return <div>Error loading payment details: {error}</div>;
+  if (error) return <div className="text-red-500 text-center">{error}</div>;
   if (!paymentDetails.length)
     return (
       <div className="text-white min-h-[100vh] flex justify-center items-center">
@@ -73,63 +71,68 @@ const PaymentInvoice = () => {
     );
 
   return (
-    <div className="payment-invoice min-h-screen bg-gray-800 text-white p-8">
-      <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+    <div className="payment-invoice min-h-screen bg-gray-900 text-white p-8">
+      <h2 className="text-4xl md:text-5xl font-bold text-center mb-8">
         Payment Invoice
       </h2>
 
       {paymentDetails.map((payment, index) => (
-        <div key={index} className="bg-gray-700 rounded-lg p-4 mb-6">
-          <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2">
-            Invoice Details
+        <div key={index} className="bg-gray-800 shadow-md rounded-lg p-6 mb-8">
+          <h3 className="text-2xl md:text-3xl font-semibold mb-4 text-gray-100">
+            Invoice #{index + 1}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="mb-4">
-              <p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p className="mb-2">
                 <strong>User ID:</strong> {payment.userId}
               </p>
-              <p>
+              <p className="mb-2">
                 <strong>Amount:</strong> {payment.amount} {payment.currency}
               </p>
             </div>
-            <div className="mb-4">
-              <p>
+            <div>
+              <p className="mb-2">
                 <strong>Payment Intent ID:</strong> {payment.paymentIntentId}
               </p>
-              <p>
+              <p className="mb-2">
                 <strong>Payment Date & Time:</strong>{' '}
-                {payment.paymentDate && formatDateTime(payment.paymentDate)}
+                {formatDateTime(payment.paymentDate)}
               </p>
             </div>
           </div>
 
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2">
+          <div className="mt-6">
+            <h4 className="text-xl font-semibold text-gray-100 mb-4">
               Programmes Purchased:
-            </h3>
-            {payment.programmes &&
-              payment.programmes.map((programme) => (
-                <div
-                  key={programme._id}
-                  className="flex flex-col md:flex-row items-center mb-4"
-                >
-                  <div className="w-full md:w-20 h-20 md:h-20 rounded-md overflow-hidden mb-4 md:mb-0 md:mr-4">
-                    <img
-                      src={
-                        programme.imageUrl || 'https://via.placeholder.com/150'
-                      }
-                      alt="Programme"
-                      className="object-cover w-full h-full"
-                    />
+            </h4>
+            <div className="grid grid-cols-1 gap-4">
+              {payment.programmes &&
+                payment.programmes.map((programme) => (
+                  <div
+                    key={programme._id}
+                    className="flex items-center bg-gray-700 rounded-lg p-4"
+                  >
+                    <div className="w-20 h-20 rounded-md overflow-hidden mr-4">
+                      <img
+                        src={
+                          programme.imageUrl ||
+                          'https://via.placeholder.com/150'
+                        }
+                        alt="Programme"
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold">
+                        {programme.category}
+                      </p>
+                      <p>
+                        <strong>Price:</strong> {programme.price}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold mb-1">{programme.category}</p>
-                    <p>
-                      <strong>Price:</strong> {programme.price}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))}
+            </div>
           </div>
         </div>
       ))}
