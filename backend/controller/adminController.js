@@ -301,8 +301,6 @@ export const sendAdvertisment = async (req, res) => {
   }
 };
 
-
-
 export const selectedProgramme = async (req, res) => {
   const { programmeIds, isSelected } = req.body;
 
@@ -344,6 +342,54 @@ export const selectedProgramme = async (req, res) => {
     console.error('Error updating programmes:', error);
     res.status(500).json({
       error: 'Programmes are not accessible',
+    });
+  }
+};
+
+export const getAdminTrainerTotalRevenue = async (req, res) => {
+  const { trainerId } = req.params; // Extract trainerId from request body
+  console.log(trainerId);
+
+  try {
+    // Step 1: Find the trainer based on the `trainerId`
+    const trainer = await Trainer.findOne({ user: trainerId });
+
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    const programmeIds = trainer.programmes; // Assuming 'programmes' is an array of ObjectIds
+
+    // Step 2: Fetch each programme individually based on the programmeIds array
+    const programmes = await Promise.all(
+      programmeIds.map(async (programmeId) => {
+        // Fetch the programme by its _id
+        const programme = await Programme.findById(programmeId);
+
+        // Step 3: Search for users who have this programmeId in their `takenProgrammes` array
+        const users = await User.find({
+          takenProgrammes: { $in: [programmeId] },
+        });
+
+        // Return the programme along with the users who have taken it
+        return {
+          programme,
+          users,
+        };
+      })
+    );
+    
+
+    // Step 4: Send the trainer and all programmes (including users who took the programme)
+    return res.status(200).json({
+      trainer,
+      programmes,
+    });
+    
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: 'Something went wrong',
     });
   }
 };

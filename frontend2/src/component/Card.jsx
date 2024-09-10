@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
-import axios from 'axios'; // Import axios
-import cardData from '../data/cardData'; // Ensure this import is needed
+import axios from 'axios';
 import {
   IoIosArrowRoundForward,
   IoIosArrowBack,
   IoIosArrowForward,
 } from 'react-icons/io';
+import CardSkeleton from '../pages/skeletons/CardSkeleton';
 
 const Card = ({ title, backgroundColor }) => {
   const backendapi = import.meta.env.VITE_BACKEND_URL;
@@ -15,30 +15,27 @@ const Card = ({ title, backgroundColor }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [loading, setLoading] = useState(true); // State for loading
 
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // Define the async function inside the effect
     const fetchData = async () => {
       try {
         const response = await axios.get(`${backendapi}/api/admin/programme`);
-
-        // Filter the data to include only items where isSelected is true
         const filteredData = response.data.filter(
           (item) => item.isSelected === true
         );
-
-        // Set the filtered data to state
         setData(filteredData);
+        setLoading(false); // Data fetched, set loading to false
       } catch (error) {
         console.error('Error fetching data:', error);
+        setLoading(false); // Handle error and stop loading
       }
     };
 
     fetchData();
 
-    // Adjust the number of items per page based on screen width
     const updateItemsPerPage = () => {
       if (window.innerWidth <= 640) {
         setItemsPerPage(1);
@@ -57,33 +54,28 @@ const Card = ({ title, backgroundColor }) => {
     };
   }, []);
 
-  // Mouse down event to start dragging
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - containerRef.current.offsetLeft);
     setScrollLeft(containerRef.current.scrollLeft);
   };
 
-  // Mouse move event to scroll horizontally
   const handleMouseMove = (e) => {
     if (!isDragging) return;
     const x = e.pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // Adjust scroll speed
+    const walk = (x - startX) * 2;
     containerRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  // Mouse up and leave events to stop dragging
   const handleMouseUpOrLeave = () => {
     setIsDragging(false);
   };
 
-  // Scroll to the left
   const scrollLeftFunc = () => {
     containerRef.current.scrollLeft -=
       containerRef.current.offsetWidth / itemsPerPage;
   };
 
-  // Scroll to the right
   const scrollRightFunc = () => {
     containerRef.current.scrollLeft +=
       containerRef.current.offsetWidth / itemsPerPage;
@@ -108,13 +100,16 @@ const Card = ({ title, backgroundColor }) => {
     };
   }, [isDragging]);
 
+  if (loading) {
+    return <CardSkeleton />; // Return skeleton loader while loading
+  }
+
   return (
     <div className="relative">
       <h1 className="text-white font-extrabold text-[40px] sm:text-[48px] mt-10 sm:mt-20 border-b-2 border-orange-500 text-center">
         {title}
       </h1>
 
-      {/* Left Button */}
       <button
         onClick={scrollLeftFunc}
         className="hidden sm:block absolute left-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-10"
@@ -122,7 +117,6 @@ const Card = ({ title, backgroundColor }) => {
         <IoIosArrowBack color="white" className="w-6 h-6 sm:w-10 sm:h-10" />
       </button>
 
-      {/* Card Container */}
       <div
         ref={containerRef}
         className="overflow-x-auto w-full max-w-[95%] mx-auto mt-4 cursor-grab scrollbar-hide"
@@ -158,7 +152,6 @@ const Card = ({ title, backgroundColor }) => {
         </div>
       </div>
 
-      {/* Right Button */}
       <button
         onClick={scrollRightFunc}
         className="hidden sm:block absolute right-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-10"

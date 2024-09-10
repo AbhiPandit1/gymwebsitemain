@@ -19,26 +19,36 @@ const useDashboardLinks = () => {
       name: 'Home',
       link: '/',
       role: 'user',
-      icon: <BiHome size={40} color="orange" />, // Added color
+      icon: <BiHome size={40} color="orange" />,
     },
     {
       id: '2',
       name: 'Programs',
       link: programLink,
       role: '',
-      icon: <CgGym size={40} color="orange" />, // Added color
+      icon: <CgGym size={40} color="orange" />,
     },
     {
       id: '3',
       name: 'Settings',
       link: '/settings',
-      icon: <IoSettingsOutline size={40} color="orange" />, // Added color
+      icon: <IoSettingsOutline size={40} color="orange" />,
     },
     {
       id: '4',
       name: 'Edit',
       link: `/user/detail/${user.user._id}`,
-      icon: <CiEdit size={40} color="orange" />, // Added color
+      icon: <CiEdit size={40} color="orange" />,
+    },
+  ];
+
+  const trainerLinks = [
+    ...userLinks, // Include all user links
+    {
+      id: '5',
+      name: 'Revenue',
+      link: `/payment/invoices/${user.user._id}`,
+      icon: <TbInvoice size={40} color="orange" />,
     },
   ];
 
@@ -48,41 +58,49 @@ const useDashboardLinks = () => {
       name: 'Home',
       link: '/',
       role: 'admin',
-      icon: <BiHome size={40} color="orange" />, // Added color
+      icon: <BiHome size={40} color="orange" />,
     },
     {
       id: '2',
       name: 'Programmes',
       link: '/admin/programmes',
-      icon: <CgGym size={40} color="orange" />, // Added color
+      icon: <CgGym size={40} color="orange" />,
     },
     {
       id: '3',
       name: 'Users',
       link: '/admin/user',
-      icon: <TbUserSquareRounded size={40} color="orange" />, // Added color
+      icon: <TbUserSquareRounded size={40} color="orange" />,
     },
     {
       id: '4',
       name: 'Invoices',
       link: '/admin/invoices',
-      icon: <TbInvoice size={40} color="orange" />, // Added color
+      icon: <TbInvoice size={40} color="orange" />,
     },
     {
       id: '5',
       name: 'Settings',
       link: '/settings',
-      icon: <IoSettingsOutline size={40} color="orange" />, // Added color
+      icon: <IoSettingsOutline size={40} color="orange" />,
     },
     {
       id: '6',
       name: 'Advertisement',
       link: `/admin/ads/mail`,
-      icon: <CiEdit size={40} color="orange" />, // Added color
+      icon: <CiEdit size={40} color="orange" />,
     },
   ];
 
-  return user.user.role === 'admin' ? adminLinks : userLinks;
+  switch (user.user.role) {
+    case 'admin':
+      return adminLinks;
+    case 'trainer':
+      return trainerLinks;
+    case 'user':
+    default:
+      return userLinks;
+  }
 };
 
 export default useDashboardLinks;

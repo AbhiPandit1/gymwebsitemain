@@ -3,48 +3,52 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux'; // Import useSelector to get token
 import LoadingSpinner from '../../../LoadingSpinner';
+import HomeSkeleton from '../skeletons/HomeSkeleton';
+
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
 const PaymentInvoice = () => {
   const [paymentDetails, setPaymentDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { id } = useParams();
+
   const { user } = useSelector((state) => state.user); // Retrieve token from Redux store
-  const token = user.token;
+  const token = user?.token; // Use optional chaining to handle undefined user
 
   useEffect(() => {
     const getPaymentDetail = async () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${backendapi}/api/payment/detail/${id}`,
+          `${backendapi}/api/payment/detail/${user.user._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`, // Include JWT token in request headers
             },
           }
         );
-        const sortedPayments = response?.data.payments
-          .flat()
+
+        const sortedPayments = response?.data?.payments
+          ?.flat()
           .sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
-        console.log(sortedPayments);
         setPaymentDetails(sortedPayments);
         setError(null);
       } catch (error) {
         console.error('Error fetching payment details:', error);
-        setError('Error loading payment details');
+        setError(
+          error.response?.data?.message || 'Error loading payment details'
+        );
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
+    if (user.user._id && token) {
       getPaymentDetail();
     } else {
       setLoading(false);
     }
-  }, [id, token]); // Add token to dependency array to refetch if token changes
+  }, [user.user._id, token]); // Add token to dependency array to refetch if token changes
 
   const formatDateTime = (dateString) => {
     const options = {
@@ -59,14 +63,14 @@ const PaymentInvoice = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  if (loading)
+  if (loading) return <HomeSkeleton />;
+  if (error) return <div>Error loading payment details: {error}</div>;
+  if (!paymentDetails.length)
     return (
-      <div>
-        <LoadingSpinner />
+      <div className="text-white min-h-[100vh] flex justify-center items-center">
+        No payment details found
       </div>
     );
-  if (error) return <div>Error loading payment details: {error}</div>;
-  if (!paymentDetails.length) return <div>No payment details found</div>;
 
   return (
     <div className="payment-invoice min-h-screen bg-gray-800 text-white p-8">
@@ -75,10 +79,7 @@ const PaymentInvoice = () => {
       </h2>
 
       {paymentDetails.map((payment, index) => (
-        <div
-          key={index}
-          className="bg-gray-700 rounded-lg p-4 mb-6 max-h-[200vh]"
-        >
+        <div key={index} className="bg-gray-700 rounded-lg p-4 mb-6">
           <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2">
             Invoice Details
           </h3>

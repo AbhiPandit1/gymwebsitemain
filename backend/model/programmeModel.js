@@ -12,6 +12,7 @@ const programmeSchema = new mongoose.Schema({
       'PowerLifting',
       'General',
       'Recovery',
+      'Calisthenics',
     ],
     required: true,
   },
@@ -34,7 +35,7 @@ const programmeSchema = new mongoose.Schema({
   },
   trainer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Trainer',
     required: true,
   },
   planType: {

@@ -141,7 +141,7 @@ const PersonalTrainerProgramme = () => {
                     {/* Show Know More button if there are more than 3 items */}
                   </div>
                   {card.desc.length > 1 && (
-                    <Link to={`/trainer/programme/detail/${card._id}`}>
+                    <Link to={`/trainer/${user.user._id}`}>
                       <button className="mt-2 text-orange-500 underline hover:text-blue-700 transition-colors">
                         Know More
                       </button>

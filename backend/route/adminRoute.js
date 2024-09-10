@@ -2,6 +2,7 @@ import express from 'express';
 import {
   deleteTrainerProgrammes,
   deleteUsers,
+  getAdminTrainerTotalRevenue,
   getAllPayments,
   getAllTrainerProgrammes,
   getAllUser,
@@ -37,5 +38,7 @@ router
 router
   .route('/selected/programme')
   .post(protectRoute, checkRole('admin'), selectedProgramme);
+
+router.route('/payment/invoice/:trainerId').get(getAdminTrainerTotalRevenue);
 
 export default router;

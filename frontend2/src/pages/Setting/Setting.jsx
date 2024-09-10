@@ -3,10 +3,9 @@ import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 import DashboardComponent from '../../component/DashboardComponent';
 import DashboardHeader from '../../component/DashboardHeader';
 
-import ComplaintForm from './Component/ComplaintForm';
 import EmailChange from './Component/EmailChange';
 import PasswordChange from './Component/PasswordChange';
-import ReviewForm from './Component/ReviewForm';
+import ComplaintForm from './Component/ComplaintForm';
 import SocialMediaLinkChange from './Component/SocialMediaLinkChange';
 import { useState } from 'react';
 
@@ -19,17 +18,17 @@ const Setting = () => {
   };
 
   return (
-    <div className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans bg-gray-900">
+    <div className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans ">
       {/* Sidebar with Dashboard Links */}
       <div
-        className={`transition-transform duration-300 bg-gray-900 ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        className={`transition-transform duration-300 ${
+          hoverDashboard ? 'hidden sm:col-span-2' : 'col-span-3 sm:col-span-1'
         }`}
-        onClick={handleClick}
       >
         <DashboardComponent
           dashBoardLink={dashBoardLink}
           hoverDashboard={hoverDashboard}
+          setHoverDashboard={setHoverDashboard}
         />
       </div>
 
@@ -38,17 +37,13 @@ const Setting = () => {
         className={`transition-transform duration-300 ${
           hoverDashboard
             ? 'col-span-9 sm:col-span-9'
-            : 'col-span-7 sm:col-span-8'
-        } overflow-hidden`}
+            : 'col-span-6 sm:col-span-8'
+        } overflow-scroll`}
       >
         <DashboardHeader />
-
         {hoverDashboard && (
-          <div
-            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-            onClick={handleClick}
-          >
-            <BiSolidRightArrow size={40} color="orange" />
+          <div className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
+            <BiSolidRightArrow size={40} color="orange" onClick={handleClick} />
           </div>
         )}
 

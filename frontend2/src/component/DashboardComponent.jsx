@@ -26,7 +26,7 @@ const DashboardComponent = ({
     >
       {/* Dashboard Links */}
       <div className={`h-full w-full py-[80%] ${!showNames ? 'px-8' : 'px-2'}`}>
-        {dashBoardLink.map((dashboard) => (
+        {dashBoardLink?.map((dashboard) => (
           <div
             key={dashboard.id}
             className="mt-[1rem] overflow-hidden w-full flex items-center justify-center hover:bg-orange-900 hover:rounded-full transition duration-300 ease-in-out py-2 px-4"

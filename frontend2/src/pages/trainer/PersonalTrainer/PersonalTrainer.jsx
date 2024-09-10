@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useParams, useNavigate } from 'react-router-dom';
 import ProgrammeInfo from './ProgrammeInfo';
 import TrainerAbout from './TrainerAbout';
 import PersonalInfoTrainer from './PersonalInfoTrainer';
 import ReviewCard from '../../../component/ReviewCard';
 import Footer from '../../../component/Footer';
 import useTrainerDetailHook from '../../../../hook/useTrainerDetailHook';
+import TrainerProfileSkeleton from '../../skeletons/TrainerProfileSkeleton';
+
 
 const PersonalTrainer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { trainerId } = useParams();
   const { user } = useSelector((state) => state.user);
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
 
-  const personalId = user?.user?._id; // Ensure user and user._id are defined
+  const personalId = user?.user?._id;
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -28,12 +30,11 @@ const PersonalTrainer = () => {
     navigate(`/trainer/about/${trainerId}`);
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading trainer details.</p>;
-
   // Check if userTrainerDetails is defined before comparison
   const isOwner = userTrainerDetails?._id === personalId;
-  console.log(description?.paragraphs);
+
+  if (loading) return <TrainerProfileSkeleton />; // Show the skeleton while loading
+  if (error) return <p>Error loading trainer details.</p>;
 
   return (
     <>
@@ -46,7 +47,7 @@ const PersonalTrainer = () => {
       >
         <ProgrammeInfo
           descriptionImage={description?.image?.url}
-          description={description?.paragraphs} // Assuming description is an array of bullet points
+          description={description?.paragraphs}
           orderPara={1}
           orderImage={2}
         />

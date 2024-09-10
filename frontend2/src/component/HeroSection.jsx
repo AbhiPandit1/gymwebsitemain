@@ -1,8 +1,13 @@
+import React, { useState, useEffect } from 'react';
 import { IoIosArrowRoundDown } from 'react-icons/io';
-import trainerMainImage from '../assets/trainerMainImage.jpeg';
 import Header from './Header';
+import HeroSectionSkeleton from '../pages/skeletons/HeroSectionSkeleton';
 
-const HeroSection = ({ category, para, searchCategory }) => {
+const HeroSection = ({ category, para, searchCategory, isLoading }) => {
+  if (isLoading) {
+    return <HeroSectionSkeleton />;
+  }
+
   return (
     <div className="relative w-[100vw] h-[60vh] sm:h-[80vh] overflow-hidden">
       <div
@@ -27,9 +32,9 @@ const HeroSection = ({ category, para, searchCategory }) => {
           <div className="font-sans text-[0.8rem] sm:text-[1.2rem] text-paraColor w-[80%] sm:w-[50%]">
             {para}
           </div>
-          <div className="flex justify-start  items-center  right-0">
+          <div className="flex justify-start items-center right-0">
             <a href="#">
-              <button className="h-[3.5rem] w-[16rem] flex justify-center items-center bg-orange-600 text-white  mr-2 rounded-sm">
+              <button className="h-[3.5rem] w-[16rem] flex justify-center items-center bg-orange-600 text-white mr-2 rounded-sm">
                 {searchCategory}
                 <IoIosArrowRoundDown color="white" size={30} />
               </button>

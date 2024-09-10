@@ -6,6 +6,7 @@ import {
   getAllTrainer,
   getTrainerDetail,
   getTrainerDetails,
+  getTrainerTotalRevenue,
   updateTrainer,
 } from '../controller/trainerController.js';
 import checkRole from '../middleware/authorization.js';
@@ -37,11 +38,9 @@ router
   .route('/about/edit/:trainerId')
   .put(protectRoute, checkRole('trainer'), aboutUpload, aboutTrainer);
 
-router.route('/about/get/detail/:trainerId').get(
-  protectRoute,
-  checkRole('trainer'),
+router.route('/about/get/detail/:trainerId').get(getTrainerDetails);
 
-  getTrainerDetails
-);
-
+router
+  .route('/payment/:trainerId')
+  .get(protectRoute, checkRole(['trainer', 'admin']), getTrainerTotalRevenue);
 export default router;

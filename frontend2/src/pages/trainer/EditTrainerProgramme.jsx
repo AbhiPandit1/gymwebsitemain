@@ -36,6 +36,7 @@ const EditTrainerProgramme = () => {
     'PowerLifting',
     'General',
     'Recovery',
+    'Calisthenics',
   ];
 
   // Load programme details into the form when the component mounts
@@ -68,7 +69,7 @@ const EditTrainerProgramme = () => {
 
       if (response?.status === 200) {
         toast.success('Programme updated successfully');
-        navigate(`/trainer/programme/${id}`);
+        navigate(`/trainer/programmes/${id}`);
       }
     } catch (error) {
       toast.error('Error updating programme: ' + error.message);

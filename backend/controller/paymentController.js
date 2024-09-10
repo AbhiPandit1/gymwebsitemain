@@ -4,6 +4,8 @@ import User from '../model/userModel.js';
 import Payment from '../model/payementModel.js';
 import sendEmail from '../lib/sendEmail.js';
 import Programme from '../model/programmeModel.js';
+import Trainer from '../model/trainerModel.js';
+import cloudinary from 'cloudinary';
 
 dotenv.config();
 
@@ -12,8 +14,6 @@ const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
 export const paymentCheckout = async (req, res) => {
   const { amount } = req.body;
   const userId = req.user._id;
-  console.log(userId);
-  
 
   // Validate id parameter
   const id = req.params.id;
@@ -24,17 +24,41 @@ export const paymentCheckout = async (req, res) => {
     if (!programme) {
       return res.status(404).json({ error: 'Programme not found' });
     }
-    const user = await User.findById(userId);
-    
-    
+    console.log(programme.trainer);
+    // Check if the trainer exists
+    const trainer = await Trainer.findOne({ user: programme.trainer });
+    console.log(trainer);
 
-    if (user.takenProgrammes.includes(id)) {
-      return res.status(404).json({ error: 'You cant buy a programme twice' });
+    if (!trainer) {
+      console.log('This programme is out of date');
+      if (programme.categoryPhoto && programme.categoryPhoto.public_id) {
+        const publicId = programme.categoryPhoto.public_id;
+
+        // Call Cloudinary API to delete the image
+        await cloudinary.v2.uploader.destroy(publicId, (error, result) => {
+          if (error) {
+            console.error('Error deleting image from Cloudinary:', error);
+          } else {
+            console.log('Image deleted from Cloudinary:', result);
+          }
+        });
+      }
+
+      await Programme.deleteOne({ _id: id });
+      return res
+        .status(404)
+        .json({ error: 'Trainer not found, programme removed' });
     }
+
+    // Proceed with the remaining logic if the trainer exists
+    // Update Trainer's programmes
+    trainer.programmes = trainer.programmes || []; // Ensure programmes is initialized
+    trainer.programmes.push(programme._id);
+    await trainer.save();
 
     // Create a Payment Intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100,
+      amount: amount * 100, // amount should be in cents
       currency: 'usd',
       description: 'Your Product Name',
     });
@@ -75,23 +99,24 @@ export const paymentCheckout = async (req, res) => {
       amount: amount,
       currency: 'usd',
       paymentIntentId: paymentIntent.id,
-      programmes: [programme], // Assuming id is the ObjectId of the programme
+      programmes: [programme._id], // Store only the programme ID
     });
     await paymentDetails.save();
 
     // Add the paymentIntentId to the user's paymentIntents array
+    updatedUser.paymentIntents = updatedUser.paymentIntents || [];
+    updatedUser.takenProgrammes = updatedUser.takenProgrammes || [];
     updatedUser.paymentIntents.push(paymentIntent.id);
     updatedUser.takenProgrammes.push(id);
-
     await updatedUser.save();
 
     // Send email confirmation
     const emailData = {
       email: updatedUser.email,
       subject: 'Purchase Confirmation',
-      message: `Thank you for your purchase of ${amount} USD. Your payment ID is ${paymentIntent.id}. and details ${paymentDetails}`,
+      message: `Thank you for your purchase of ${amount} USD. Your payment ID is ${paymentIntent.id}. Details: ${paymentDetails}`,
     };
-    await sendEmail(emailData);
+    await sendEmail(emailData); // Ensure sendEmail is correctly imported and available
 
     // Return session ID, Payment Intent ID, and updated user data to client
     res.json({

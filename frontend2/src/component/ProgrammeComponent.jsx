@@ -21,6 +21,7 @@ const ProgrammeComponent = () => {
     const fetchData = async () => {
       try {
         const action = await dispatch(getProgramme());
+
         if (action && action.categories) {
           setProgrammeData(action.categories);
         }
@@ -32,6 +33,7 @@ const ProgrammeComponent = () => {
 
     fetchData();
   }, [dispatch]);
+  console.log(programmeData);
 
   useEffect(() => {
     // Check screen size on component mount and resize
@@ -70,7 +72,7 @@ const ProgrammeComponent = () => {
       : true;
     return matchesSearch && matchesCategory;
   });
-
+  console.log(filteredProgrammes);
   return (
     <div>
       <HeroSection
@@ -139,6 +141,7 @@ const ProgrammeComponent = () => {
                   <option value="PowerLifting">Power Lifting</option>
                   <option value="General">General</option>
                   <option value="Recovery">Recovery</option>
+                  <option value="Recovery">Calistehnics</option>
                 </select>
               </div>
             )}

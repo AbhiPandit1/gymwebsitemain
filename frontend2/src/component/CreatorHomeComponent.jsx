@@ -1,6 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios'; // Import axios for HTTP requests
+import axios from 'axios';
 import { FaArrowRight } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+
+// Skeleton component for loading placeholders
+const Skeleton = () => (
+  <div className="flex gap-4 p-4">
+    {Array(5)
+      .fill(null)
+      .map((_, index) => (
+        <div
+          key={index}
+          className="w-[30vw] h-[350px] bg-gray-700 rounded-xl animate-pulse"
+        >
+          <div className="w-full h-[250px] bg-gray-600 rounded-t-xl"></div>
+          <div className="p-4">
+            <div className="w-3/4 h-6 bg-gray-600 rounded mb-2"></div>
+            <div className="w-1/2 h-4 bg-gray-600 rounded"></div>
+          </div>
+        </div>
+      ))}
+  </div>
+);
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
@@ -15,7 +36,6 @@ const CreatorHomeComponent = () => {
   const [isScrolling, setIsScrolling] = useState(false);
 
   useEffect(() => {
-    // Fetch trainer data from the backend API
     const fetchTrainerData = async () => {
       try {
         const response = await axios.get(`${backendapi}/api/trainer`);
@@ -31,14 +51,12 @@ const CreatorHomeComponent = () => {
     fetchTrainerData();
   }, []);
 
-  // Mouse down event to start scrolling
   const handleMouseDown = (e) => {
     setIsScrolling(true);
     scrollStartPosition.current = scrollContainerRef.current.scrollLeft;
     scrollStartX.current = e.pageX - scrollContainerRef.current.offsetLeft;
   };
 
-  // Mouse move event to scroll horizontally
   const handleMouseMove = (e) => {
     if (!isScrolling) return;
     const x = e.pageX - scrollContainerRef.current.offsetLeft;
@@ -47,12 +65,10 @@ const CreatorHomeComponent = () => {
       scrollStartPosition.current - scroll;
   };
 
-  // Mouse up event to stop scrolling
   const handleMouseUp = () => {
     setIsScrolling(false);
   };
 
-  // Mouse leave event to stop scrolling
   const handleMouseLeave = () => {
     setIsScrolling(false);
   };
@@ -77,7 +93,14 @@ const CreatorHomeComponent = () => {
   }, [isScrolling]);
 
   if (loading) {
-    return <div className="text-center text-white">Loading...</div>;
+    return (
+      <div className="p-8 text-white">
+        <h1 className="text-4xl font-extrabold text-center mb-8">
+          Meet Our Creators
+        </h1>
+        <Skeleton />
+      </div>
+    );
   }
 
   if (error) {
@@ -85,7 +108,7 @@ const CreatorHomeComponent = () => {
   }
 
   return (
-    <div className="p-8  text-white">
+    <div className="p-8 text-white">
       <h1 className="text-4xl font-extrabold text-center mb-8">
         Meet Our Creators
       </h1>
@@ -99,7 +122,7 @@ const CreatorHomeComponent = () => {
         {trainerDatas?.map((data) => (
           <div
             key={data._id}
-            className="inline-block rounded-xl w-[30vw] bg-gray-800 p-6 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4  hover:shadow-orange-600"
+            className="inline-block rounded-xl w-[30vw] bg-gray-800 p-6 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4 hover:shadow-orange-600"
           >
             <div className="overflow-hidden rounded-lg">
               <img
@@ -127,7 +150,7 @@ const CreatorHomeComponent = () => {
         {trainerDatas?.map((data) => (
           <div
             key={data._id}
-            className="inline-block rounded-xl w-[300px]  p-6 m-2 hover:shadow-lg bg-transparent border-2 border-orange-600 transition-shadow duration-300 border-b-4 hover:border-4 "
+            className="inline-block rounded-xl w-[300px] p-6 m-2 hover:shadow-lg bg-transparent border-2 border-orange-600 transition-shadow duration-300 border-b-4 hover:border-4"
           >
             <div className="overflow-hidden rounded-lg">
               <img
@@ -146,13 +169,13 @@ const CreatorHomeComponent = () => {
 
       {/* View All Trainers Button */}
       <div className="flex justify-center mt-8">
-        <a
-          href="/trainer"
-          className="px-4 py-2 bg-orange-600 hover:shadow-lg hover:shadow-orange-600   text-white rounded-full flex items-center"
+        <Link
+          to="/trainers"
+          className="px-4 py-2 bg-orange-600 hover:shadow-lg hover:shadow-orange-600 text-white rounded-full flex items-center"
         >
           View All Trainers
           <FaArrowRight className="ml-2" />
-        </a>
+        </Link>
       </div>
     </div>
   );

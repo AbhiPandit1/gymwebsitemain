@@ -117,7 +117,7 @@ const DayPlan = () => {
   };
 
   const handleBack = () => {
-    navigate(`/trainer/create/programme/${user.user._id}`);
+    navigate(`/trainer/programmes/${user.user._id}`);
   };
   const backendapi = import.meta.env.VITE_BACKEND_URL;
 

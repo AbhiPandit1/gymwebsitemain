@@ -224,3 +224,50 @@ export const getTrainerDetails = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+export const getTrainerTotalRevenue = async (req, res) => {
+  const { trainerId } = req.params;
+  console.log(trainerId);
+
+  try {
+    // Step 1: Find the trainer based on the `trainerId`
+    const trainer = await Trainer.findOne({ user: trainerId });
+
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    const programmeIds = trainer.programmes; // Assuming 'programmes' is an array of ObjectIds
+
+    // Step 2: Fetch each programme individually based on the programmeIds array
+    const programmes = await Promise.all(
+      programmeIds.map(async (programmeId) => {
+        // Fetch the programme by its _id
+        const programme = await Programme.findById(programmeId);
+
+        // Step 3: Search for users who have this programmeId in their `takenProgrammes` array
+        const users = await User.find({
+          takenProgrammes: { $in: [programmeId] },
+        });
+        console.log(users);
+
+        // Return the programme along with the users who have taken it
+        return {
+          programme,
+          users, // Users who have taken this programme
+        };
+      })
+    );
+
+    // Step 4: Send the trainer and all programmes (including users who took the programme)
+    return res.status(200).json({
+      trainer,
+      programmes,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: 'Something went wrong',
+    });
+  }
+};

@@ -7,7 +7,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import Header from '../../component/Header';
 import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css'; // Ensure toast styles are imported
-
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 const stripePromise = loadStripe(
   'pk_test_51Pa814I7lJRhp8GEBpmlT7u9bssCwu3MtiZALmBXBIsYkeqZboK3CT8JgOpMfwLdMXyyKrFXuUAc28crTu0DmJG300zMtqLK58'
@@ -116,7 +115,8 @@ const ProgrammeDetail = () => {
         <div className="w-full max-w-4xl bg-orange-500 rounded-2xl shadow-lg relative overflow-hidden mt-[30vh] sm:mt-[20%]">
           <Elements stripe={stripePromise}>
             <div className="bg-gray-900 p-6 rounded-2xl text-white">
-              {loading && <div className="text-center">Loading...</div>}
+              {loading && <ProgrammeDetail />}{' '}
+              {/* Show skeleton loader while data is loading */}
               {error && <div className="text-center text-red-500">{error}</div>}
               {!loading && !error && singleProgramme && (
                 <div className="space-y-4">

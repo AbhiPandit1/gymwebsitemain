@@ -1,3 +1,4 @@
+import HomeSkeleton from '../pages/skeletons/HomeSkeleton';
 import TrainerCard from './TrainerCard';
 import TrainerCardMobile from './TrainerCardMobile';
 import { useEffect, useState } from 'react';

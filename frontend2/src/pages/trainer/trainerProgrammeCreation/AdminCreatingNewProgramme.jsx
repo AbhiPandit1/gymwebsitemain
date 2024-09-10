@@ -35,6 +35,7 @@ const AdminCreatingNewProgramme = () => {
     'PowerLifting',
     'General',
     'Recovery',
+    'Calisthenics',
   ];
 
   const handleMakeCategories = async (e) => {

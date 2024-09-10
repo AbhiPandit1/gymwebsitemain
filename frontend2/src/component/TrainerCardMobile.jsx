@@ -6,6 +6,7 @@ import {
   AiFillLinkedin,
 } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import TrainerSkeleton from '../pages/skeletons/TrainerSkeleton';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
@@ -67,7 +68,11 @@ const TrainerCardMobile = ({ searchQuery }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <TrainerSkeleton />
+      </div>
+    );
   }
 
   if (error) {
@@ -82,8 +87,8 @@ const TrainerCardMobile = ({ searchQuery }) => {
           className="relative max-h-[400px] min-h-[400px] min-w-[80vw] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
         >
           <img
-            src={data?.user?.profilePhoto?.url} // Use profilePhoto.url for the image source
-            alt={data?.user?.name} // Alt text should be descriptive
+            src={data?.user?.profilePhoto?.url}
+            alt={data?.user?.name}
             className="w-full h-[80%] object-cover transition-opacity duration-500 ease-in-out opacity-100"
           />
           <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-gradient-to-t from-black via-transparent to-transparent">

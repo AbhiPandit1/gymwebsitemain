@@ -1,20 +1,23 @@
-const checkRole = (requiredRole) => {
+const checkRole = (requiredRoles) => {
   return (req, res, next) => {
     const user = req.user;
     const userId = req.params.id;
+    const trainerId = req.params.trainerId;
 
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    // Check if the user is either the owner of the resource or an admin
-    if (user._id.toString() !== userId && !user.role.includes(requiredRole)) {
+    // Check if the user role is included in requiredRoles or if user is the owner
+    const hasRequiredRole = requiredRoles.includes(user.role);
+    const isOwner =
+      user._id.toString() === userId || user._id.toString() === trainerId;
+
+    if (!hasRequiredRole && !isOwner) {
       return res.status(403).json({ message: 'Forbidden' });
     }
 
-    console.log('yoy are trainer')
-
-    // If the user is the owner of the resource or an admin, proceed to the next middleware or route handler
+    console.log('User has the required role or is the owner');
     next();
   };
 };

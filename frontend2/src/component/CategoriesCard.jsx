@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaArrowDown } from 'react-icons/fa';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getProgramme } from '../action/programmeActions';
 
 const CategoriesCard = () => {
@@ -175,12 +175,14 @@ const CategoriesCard = () => {
       )}
 
       <div className="flex justify-center items-center mt-4">
-        <button
-          className="w-12 h-12 bg-transparent text-white rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-colors duration-300"
-          onClick={handleArrowDownClick}
-        >
-          <FaArrowDown size={50} />
-        </button>
+        <Link to="/categories">
+          <div
+            className="w-12 h-12 bg-transparent text-white rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-colors duration-300"
+            onClick={handleArrowDownClick}
+          >
+            <FaArrowDown size={50} />
+          </div>
+        </Link>
       </div>
     </div>
   );

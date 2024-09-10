@@ -5,16 +5,24 @@ import ProgrammeComponentCardMobile from '../../component/ProgrammeComponentCard
 import ProgrammeComponentCard from '../../component/ProgrammeComponentCard';
 import { useSelector } from 'react-redux';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'; // Import skeleton CSS
 
 const UserProgramme = () => {
-  {
-    /*"/user/programme/:id" */
-  }
   const { user } = useSelector((state) => state.user.user);
-
   const dashBoardLink = useDashboardLinks();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [hoverDashboard, setHoverDashboard] = useState(false);
+  const [loading, setLoading] = useState(true); // Add loading state
+
+  useEffect(() => {
+    // Simulate a network request
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Mock loading time (adjust as needed)
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   useEffect(() => {
     // Check screen size on component mount and resize
@@ -29,9 +37,10 @@ const UserProgramme = () => {
       window.removeEventListener('resize', checkScreenSize); // Cleanup listener
     };
   }, []);
+
   return (
-    <div className="grid sm:grid-cols-7 grid-cols-1 text-white font-sans ">
-      <div className="hidden sm:grid  sm:col-span-2 ">
+    <div className="grid sm:grid-cols-7 grid-cols-1 text-white font-sans">
+      <div className="hidden sm:grid sm:col-span-2">
         <DashboardComponent
           dashBoardLink={dashBoardLink}
           hoverDashboard={hoverDashboard}
@@ -43,12 +52,19 @@ const UserProgramme = () => {
           <DashboardHeader />
         </div>
         <div>
-          <div className="bg-footerColor flex flex-col items-center text-white min-h-screen w-[100%] max-w-screen-lg mx-auto rounded-[32px] p-5  overflow-scroll max-h-[80vh] scrollbar-hide ">
+          <div className="bg-footerColor flex flex-col items-center text-white min-h-screen w-[100%] max-w-screen-lg mx-auto rounded-[32px] p-5 overflow-scroll max-h-[80vh] scrollbar-hide">
             <h1 className="font-sans text-3xl flex justify-center items-center text-white font-extrabold">
               Your Programme
             </h1>
 
-            {isSmallScreen ? (
+            {loading ? (
+              // Show skeleton loader while loading
+              <div className="mt-4 w-full">
+                <Skeleton height={40} width={300} className="mb-4" />
+                <Skeleton height={200} width={300} className="mb-4" />
+                <Skeleton height={200} width={300} className="mb-4" />
+              </div>
+            ) : isSmallScreen ? (
               <div className="mt-4">
                 <ProgrammeComponentCardMobile />
               </div>

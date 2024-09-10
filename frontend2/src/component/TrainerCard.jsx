@@ -6,6 +6,7 @@ import {
   AiFillLinkedin,
 } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import TrainerSkeleton from '../pages/skeletons/TrainerSkeleton';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
@@ -68,7 +69,11 @@ const TrainerCard = ({ searchQuery }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <TrainerSkeleton />
+      </div>
+    );
   }
 
   if (error) {

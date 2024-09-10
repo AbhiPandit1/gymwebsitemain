@@ -3,9 +3,13 @@ import { useSelector } from 'react-redux';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import ProgrammeCardMobile from './ProgrammeCardMobile';
 import EquipCard from './EquipCard';
+import SkeletonCard from '../pages/skeletons/SkeletonCard';
+import SkeletonLoader from '../pages/skeletons/SkeletonLoader';
+import Footer from './Footer';
 
 const ProgrammeCard = () => {
   const [loadButton, setLoadButton] = useState(false);
+  const [loading, setLoading] = useState(true); // State to manage loading
   const { programme } = useSelector((state) => state.programme);
 
   // Toggle Load More/Load Less button
@@ -55,6 +59,14 @@ const ProgrammeCard = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Simulate data fetching
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false); // Set loading to false after 2 seconds
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="text-white">
       <div className="bg-footerColor flex flex-col items-center text-white min-h-screen max-w-[90%] mx-auto rounded-xl p-10">
@@ -67,9 +79,20 @@ const ProgrammeCard = () => {
           </div>
         </div>
 
-        {!isSmallScreen ? (
+        {loading ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-4 rounded-lg p-6 bg-trainerColor w-[90%]">
+              {Array(4)
+                .fill(null)
+                .map((_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
+            </div>
+            <SkeletonLoader />
+          </>
+        ) : !isSmallScreen ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-4 rounded-lg p-6  w-[90%]">
               {visibleProgrammes.map((data) => (
                 <div
                   key={data._id}
@@ -78,7 +101,7 @@ const ProgrammeCard = () => {
                   <img
                     src={data.categoryPhoto?.url || '/default-image.jpg'}
                     alt={`Trainer ${data._id}`}
-                    className="object-cover w-full h-full rounded-lg opacity-30"
+                    className="object-cover w-full h-full rounded-lg brightness-125 opacity-30"
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="font-extrabold text-2xl sm:text-4xl text-white text-center">
@@ -90,7 +113,7 @@ const ProgrammeCard = () => {
             </div>
             <div className="flex justify-center items-center mt-4">
               <button
-                className="w-40 h-12 text-lg bg-secondary text-white px-5 flex items-center justify-between rounded-lg shadow-md"
+                className="w-40 h-12 text-lg bg-orange-600 text-white px-5 flex items-center justify-between rounded-lg shadow-md"
                 onClick={handleLoadMore}
               >
                 {loadButton ? (
@@ -114,6 +137,9 @@ const ProgrammeCard = () => {
 
       <div className="mt-4">
         <EquipCard />
+      </div>
+      <div>
+        <Footer />
       </div>
     </div>
   );

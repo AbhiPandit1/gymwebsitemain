@@ -8,7 +8,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
-import { BiSolidRightArrow } from 'react-icons/bi'; // Import added
+import { BiSolidRightArrow } from 'react-icons/bi';
+import SkeletonLoader from '../skeletons/SkeletonLoader';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
@@ -56,13 +57,12 @@ const PersonalUserProgramme = () => {
 
   return (
     <>
-      {trainerDatas.length > 0 ? (
+      {trainerDatas?.length > 0 ? (
         <div className="grid grid-cols-9 h-screen max-w-[100vw] gap-[2rem] text-white font-sans bg-gray-900">
           <div
             className={`transition-transform duration-300 ${
               hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
             }`}
-            onClick={handleClick}
           >
             <DashboardComponent
               dashBoardLink={dashboardLink}
@@ -82,7 +82,11 @@ const PersonalUserProgramme = () => {
                 className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
                 onClick={handleClick}
               >
-                <BiSolidRightArrow size={40} color="white" />
+                <BiSolidRightArrow
+                  size={40}
+                  color="white"
+                  onClick={handleClick}
+                />
               </div>
             )}
             <div className="grid grid-cols-3 sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-auto">
@@ -90,13 +94,13 @@ const PersonalUserProgramme = () => {
                 <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-4">
                   {trainerDatas.map((card) => (
                     <div
-                      key={card._id}
-                      className="bg-gray-800 rounded-[32px] m-auto min-h-[400px] p-4  w-[300px] shadow-lg"
+                      key={card?._id}
+                      className="bg-gray-800 rounded-[10px] m-auto min-h-[400px] p-4  w-[300px] shadow-lg border-4 border-orange-600 "
                     >
                       <img
                         src={card.categoryPhoto.url}
                         alt={card.type}
-                        className="h-[249px] object-cover rounded-[50px] mb-4"
+                        className="h-[249px]  w-[320px] object-cover rounded-[10px] mb-4"
                       />
                       <div className="h-[2rem] max-w-[5rem] m-[5%] text-[0.8rem] rounded-[10px] bg-orange-700 font-sans flex justify-center items-center text-white">
                         Category
@@ -122,7 +126,7 @@ const PersonalUserProgramme = () => {
                           <ImCheckboxChecked color="green" size={40} />
                         </div>
                         <button className="w-[3.6rem] h-[3.2rem] bg-orange-600 flex items-center justify-center ml-4 mr-2 rounded-xl">
-                          <Link to={`/user/payment/detail/${user.user._id}`}>
+                          <Link to={`/user/payment/invoice`}>
                             <IoIosArrowRoundForward
                               color="white"
                               className="w-14 h-10"
@@ -171,9 +175,7 @@ const PersonalUserProgramme = () => {
                       </div>
 
                       <div className="h-[3rem] w-[6rem] mt-[4%] flex justify-center items-center text-sans font-extrabold bg-orange-500 text-white hover:bg-orange-400 cursor-pointer text-center rounded-lg">
-                        <Link
-                          to={`/trainer/profile/${card._id}/${card.trainerId}`}
-                        >
+                        <Link to={`/trainer/${card.trainer?._id}`}>
                           Trainer
                         </Link>
                       </div>
@@ -186,7 +188,12 @@ const PersonalUserProgramme = () => {
         </div>
       ) : (
         <div className="flex items-center justify-center h-screen text-white">
-          ...Loading
+          <div className="text-center">
+            <p>No programs are available for you at the moment.</p>
+            <p>
+              Please check back later or contact your trainer for more details.
+            </p>
+          </div>
         </div>
       )}
     </>

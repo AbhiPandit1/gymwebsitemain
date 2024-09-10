@@ -32,10 +32,14 @@ const Form = ({
 
   return (
     <div>
+      {/* Main Container */}
       <div className="grid grid-cols-1 sm:grid-cols-2 min-h-[100vh] max-h-[100vh] overflow-hidden bg-primary pt-10 pl-10 pr-10 pb-10 sm:p-4">
+        {/* Left Column */}
         <div className="flex flex-col pt-[3%] gap-6">
+          {/* Logo */}
           <LoginLogo />
 
+          {/* Email Input */}
           <div className="flex flex-col sm:ml-[22%]">
             <label htmlFor="" className="text-white">
               Email
@@ -53,6 +57,7 @@ const Form = ({
             </div>
           </div>
 
+          {/* Password Input */}
           <div className="flex flex-col sm:ml-[22%]">
             <label htmlFor="" className="text-white">
               Password
@@ -80,6 +85,7 @@ const Form = ({
             </div>
           </div>
 
+          {/* Confirm Password Input (for sign up only) */}
           {isLogin && (
             <div className="flex flex-col sm:ml-[22%]">
               <label htmlFor="" className="text-white">
@@ -109,6 +115,7 @@ const Form = ({
             </div>
           )}
 
+          {/* Terms Checkbox and Forgot Password Link */}
           <div className="flex justify-between sm:pl-[20%] sm:pr-[15%]">
             <div className="flex gap-4 justify-center items-center">
               <input
@@ -128,16 +135,18 @@ const Form = ({
             )}
           </div>
 
+          {/* Submit Button */}
           <div className="flex justify-center items-center text-white sm:ml-[10%]">
             <button
               className="h-[3rem] w-[80%] bg-secondary rounded-xl"
               onClick={onSubmit}
               disabled={!agreedTerms} // Disable button if terms not agreed
             >
-              Sign Up
+              {isLogin ? 'Log In' : 'Sign Up'}
             </button>
           </div>
 
+          {/* Sign In/Sign Up Link */}
           {isLogin ? (
             <div className="flex justify-end items-center pr-[20%] sm:pr-[30%]">
               <div className="text-sans text-white text-[0.9rem] pr-[2%]">
@@ -150,7 +159,7 @@ const Form = ({
           ) : (
             <div className="flex justify-end items-center pr-[20%] sm:pr-[30%]">
               <div className="text-sans text-white pr-[2%]">
-                Dont have an account?
+                Don't have an account?
               </div>
               <div className="text-sans text-secondary">
                 <Link to="/login">Log In</Link>
@@ -158,6 +167,8 @@ const Form = ({
             </div>
           )}
         </div>
+
+        {/* Right Column (Image) */}
         <div className="pt-[5%] rounded-[32px] hidden sm:flex">
           <img
             src={loginImage}

@@ -25,6 +25,7 @@ import TrainerProfile from './pages/trainer/TrainerProfile';
 import DashboardPanel from './pages/DashboardPanel/DashboardPanel';
 import PersonalTrainer from './pages/trainer/PersonalTrainer/PersonalTrainer';
 import TrainerAboutSection from './pages/trainer/TrainerAboutSection';
+import TrainerInvoiceInfo from './pages/trainer/TrainerInvoiceInfo';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -235,6 +236,10 @@ function App() {
             }
           />
           <Route
+            path="/payment/invoices/:trainerId"
+            element={token ? <TrainerInvoiceInfo /> : <Navigate to="/login" />}
+          />
+          <Route
             path="/programmes/:id"
             element={token ? <ProductPage /> : <Navigate to="/login" />}
           />
@@ -271,7 +276,7 @@ function App() {
             path="/admin/create/programme"
             element={<AdminCreatingNewProgramme />}
           />
-          <Route path="/admin/payment/invoice" element={<PaymentInvoice />} />
+          <Route path="/user/payment/invoice" element={<PaymentInvoice />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
