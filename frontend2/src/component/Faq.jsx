@@ -3,31 +3,6 @@ import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 
 const faqData = [
   {
-    question: 'What qualifications do your trainers have?',
-    answer:
-      'Our trainers are certified by reputable fitness organizations and have extensive experience in personal training and fitness coaching.',
-  },
-  {
-    question: 'What types of fitness programs do you offer?',
-    answer:
-      'We offer a variety of fitness programs including weight training, cardio workouts, group classes, and personalized training plans.',
-  },
-  {
-    question: 'Do you offer any products for sale?',
-    answer:
-      'Yes, we offer a range of fitness products including protein supplements, workout gear, and branded gym apparel.',
-  },
-  {
-    question: 'How can I book a session with a trainer?',
-    answer:
-      'You can book a session with a trainer through our website or by visiting our front desk. We offer flexible scheduling to fit your needs.',
-  },
-  {
-    question: 'What is your cancellation policy?',
-    answer:
-      'We require a 24-hour notice for cancellations. If you cancel less than 24 hours before your session, you may incur a cancellation fee.',
-  },
-  {
     question: 'How much does it cost to start?',
     answer:
       'It is completely free to start. We only take a small commission based on your success.',
@@ -52,12 +27,6 @@ const faqData = [
     question: 'Is it okay to do two programs at the same time?',
     answer:
       'Yes, if you find two programs you like, feel free to combine them, or use one for workouts and another for diet.',
-  },
-  {
-    question:
-      'Does Program Panda offer any support for sales, marketing, and program creation?',
-    answer:
-      'Yes, we offer guides to help with your marketing process, depending on your sales goals, and support with creating and personalizing your fitness programs. Program Panda is here to make your experience easier, even if you’re new to writing fitness programs.',
   },
 ];
 
