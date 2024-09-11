@@ -5,6 +5,7 @@ import cloudinary from 'cloudinary';
 export const createProgrammeDayPlan = async (req, res) => {
   const { id } = req.params; // Programme ID from the request parameters
   const { days } = req.body; // Array of day plans
+  console.log(req.body);
 
   try {
     if (!Array.isArray(days)) {

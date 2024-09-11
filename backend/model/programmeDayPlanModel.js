@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 const exerciseSchema = new mongoose.Schema({
   name: { type: String, required: true }, // Name of the exercise
-  sets: { type: Number, default: 0 }, // Number of sets
-  reps: { type: Number, default: 0 }, // Number of repetitions
+  sets: { type: String, default: 0 }, // Number of sets
+  reps: { type: String, default: 0 }, // Number of repetitions
   videoName: { type: String, default: '' }, // Name of the video file
   videoUrl: { type: String, default: '' }, // URL of the exercise video
 });
