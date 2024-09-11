@@ -154,7 +154,7 @@ const CreatorHomeComponent = () => {
           >
             <div className="overflow-hidden rounded-lg">
               <img
-                src={data?.user?.profilePhoto.url}
+                src={data?.user?.profilePhoto?.url}
                 alt={data?.user?.name}
                 className="object-cover w-full h-[250px] rounded-lg"
               />
