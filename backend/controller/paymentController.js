@@ -14,6 +14,7 @@ const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
 export const paymentCheckout = async (req, res) => {
   const { amount } = req.body;
   const userId = req.user._id;
+  console.log(req.body);
 
   // Validate id parameter
   const id = req.params.id;
@@ -77,8 +78,8 @@ export const paymentCheckout = async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/payment/success`,
-      cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
+      success_url: `https://gymwebsitemain-1.onrender.com/payment/success`,
+      cancel_url: `https://gymwebsitemain-1.onrender.com/payment/cancel`,
       payment_intent_data: {
         metadata: { paymentIntentId: paymentIntent.id },
       },

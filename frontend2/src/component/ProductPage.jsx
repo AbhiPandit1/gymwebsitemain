@@ -21,7 +21,7 @@ const ProductPage = () => {
   const { id } = useParams;
 
   const [checkoutDetails] = useState({
-    amount: price * 100, // Stripe requires the amount in cents
+    amount: price, // Stripe requires the amount in cents
     country: country,
     trainerName: trainerName,
     trainerExperience: trainerExperience,

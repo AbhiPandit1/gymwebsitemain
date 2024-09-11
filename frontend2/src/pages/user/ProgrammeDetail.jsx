@@ -66,7 +66,7 @@ const ProgrammeDetail = () => {
       const response = await axios.post(
         `${backendapi}/api/payment/checkout/${programmeId}`,
         {
-          amount: singleProgramme.price * 100, // Ensure amount is in cents
+          amount: singleProgramme.price, // Ensure amount is in cents
           country: 'usa',
           client_reference_id: user.id, // Assuming user ID as client_reference_id
         },

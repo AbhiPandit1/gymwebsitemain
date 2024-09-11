@@ -393,6 +393,7 @@ export const deleteDietPlan = async (req, res) => {
 // Create Day Plan
 export const createDayPlan = async (req, res) => {
   const { title, description, exercises, userId, date } = req.body;
+  console.log(req.body)
 
   if (!title || !description || !exercises || !userId || !date) {
     return res.status(400).json({ error: 'Missing required fields' });

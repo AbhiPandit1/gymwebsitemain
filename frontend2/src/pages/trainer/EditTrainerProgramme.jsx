@@ -69,7 +69,7 @@ const EditTrainerProgramme = () => {
 
       if (response?.status === 200) {
         toast.success('Programme updated successfully');
-        navigate(`/trainer/programme/${id}`);
+        navigate(`/user/dashboard/${user.user._id}`);
       }
     } catch (error) {
       toast.error('Error updating programme: ' + error.message);

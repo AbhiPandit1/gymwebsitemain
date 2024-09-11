@@ -145,7 +145,8 @@ const DayPlan = () => {
 
   const handleSubmit = async () => {
     try {
-      await postDayPlan(programmeId, trainingPlan);
+      const respone = await postDayPlan(programmeId, trainingPlan);
+      console.log(respone);
       navigate(`/user/dashboard/${user.user._id}`);
     } catch (err) {
       // Handle error (e.g., show an error message)
