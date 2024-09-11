@@ -9,7 +9,6 @@ import Footer from '../../../component/Footer';
 import useTrainerDetailHook from '../../../../hook/useTrainerDetailHook';
 import TrainerProfileSkeleton from '../../skeletons/TrainerProfileSkeleton';
 
-
 const PersonalTrainer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { trainerId } = useParams();
@@ -17,6 +16,8 @@ const PersonalTrainer = () => {
   const navigate = useNavigate();
 
   const personalId = user?.user?._id;
+
+  console.log(user.user.profilePhoto.url);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -46,7 +47,7 @@ const PersonalTrainer = () => {
         }}
       >
         <ProgrammeInfo
-          descriptionImage={description?.image?.url}
+          descriptionImage={user.user?.profilePhoto?.url}
           description={description?.paragraphs}
           orderPara={1}
           orderImage={2}

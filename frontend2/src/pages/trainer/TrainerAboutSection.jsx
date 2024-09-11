@@ -1,20 +1,18 @@
-import { FaUser, FaPlus, FaTimes } from 'react-icons/fa';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import SmallSpinner from '../../../SmallSpinner';
 import LoginLogo from '../../component/LoginLogo';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const TrainerAboutSection = () => {
   const [paragraphs, setParagraphs] = useState(['']);
-  const [image, setImage] = useState(null);
-  const [imageName, setImageName] = useState('');
   const [loading, setLoading] = useState(false);
   const { trainerId } = useParams();
   const backendapi = import.meta.env.VITE_BACKEND_URL;
   const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const handleParagraphChange = (index, e) => {
     const newParagraphs = [...paragraphs];
@@ -28,17 +26,6 @@ const TrainerAboutSection = () => {
     setParagraphs(paragraphs.filter((_, i) => i !== index));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setImageName(file.name);
-    } else {
-      setImage(null);
-      setImageName('');
-    }
-  };
-
   const handleTrainerDetailSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,7 +34,6 @@ const TrainerAboutSection = () => {
       return;
     }
 
-    // Create a FormData object to handle the multipart/form-data
     const formData = new FormData();
 
     // Append paragraphs to FormData
@@ -56,11 +42,6 @@ const TrainerAboutSection = () => {
         formData.append(`paragraphs[${index}]`, paragraph);
       }
     });
-
-    // Append the image to FormData
-    if (image) {
-      formData.append('aboutImage', image);
-    }
 
     try {
       setLoading(true);
@@ -77,6 +58,7 @@ const TrainerAboutSection = () => {
 
       if (response.status === 200) {
         toast.success('Trainer details updated successfully');
+        navigate('/home');
       } else {
         toast.error('Failed to update trainer details');
         if (response.data.message) {
@@ -94,7 +76,7 @@ const TrainerAboutSection = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center pt-6 min-h-screen bg-gray-900 p-4">
+    <div className="flex flex-col justify-center items-center pt-6 min-h-[100vh] bg-gray-900 p-4 overflow-scroll">
       <Link to="/home" className="mb-8">
         <LoginLogo />
       </Link>
@@ -103,42 +85,6 @@ const TrainerAboutSection = () => {
         className="flex flex-col items-center bg-gray-800 mx-auto max-w-md w-full p-8 rounded-lg shadow-lg border border-orange-600"
         onSubmit={handleTrainerDetailSubmit}
       >
-        <div className="flex flex-col items-center mb-6">
-          <label className="bg-orange-600 border-b border-dotted border-gray-500 w-full max-w-xs h-24 flex flex-col justify-center items-center cursor-pointer rounded-2xl p-3 relative transition-all duration-200 hover:bg-orange-700">
-            <input
-              type="file"
-              className="absolute inset-0 opacity-0 cursor-pointer"
-              onChange={handleImageChange}
-            />
-            {imageName ? (
-              <div className="flex items-center gap-2">
-                <h1 className="text-white font-sans truncate">{imageName}</h1>
-                <button
-                  type="button"
-                  className="text-white"
-                  onClick={() => {
-                    setImage(null);
-                    setImageName('');
-                  }}
-                >
-                  <FaTimes />
-                </button>
-              </div>
-            ) : (
-              <>
-                <FaPlus size={40} color="white" />
-                <h1 className="text-white font-sans mt-2">Upload Image</h1>
-              </>
-            )}
-          </label>
-          <p className="mt-3 text-white font-sans text-lg font-semibold">
-            Upload Trainer Image
-          </p>
-          <p className="text-gray-400 font-sans text-sm">
-            Please upload a high-quality image.
-          </p>
-        </div>
-
         <div className="flex flex-col w-full mb-6">
           <label
             htmlFor="description"

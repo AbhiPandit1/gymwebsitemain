@@ -34,9 +34,6 @@ router
   .post(protectRoute, checkRole('trainer'), aboutUpload, aboutTrainer);
 
 // Future edit route for about section (not yet implemented)
-router
-  .route('/about/edit/:trainerId')
-  .put(protectRoute, checkRole('trainer'), aboutUpload, aboutTrainer);
 
 router.route('/about/get/detail/:trainerId').get(getTrainerDetails);
 
