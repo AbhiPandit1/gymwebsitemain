@@ -78,8 +78,8 @@ export const paymentCheckout = async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `https://gymwebsitemain-1.onrender.com/payment/success`,
-      cancel_url: `https://gymwebsitemain-1.onrender.com/payment/cancel`,
+      success_url: `https://gymwebsitemain-1-6fnd.onrender.com/payment/success`,
+      cancel_url: `https://gymwebsitemain-1-6fnd.onrender.com/payment/cancel`,
       payment_intent_data: {
         metadata: { paymentIntentId: paymentIntent.id },
       },

@@ -15,8 +15,8 @@ const LoginLogo = () => {
           </div>
         </Link>
       </div>
-      <div className="font-sans text-white text-[1.4rem] sm:text-[2.6rem] w-[full]  flex justify-center items-center font-extrabold ">
-        Sign in to ProgramPanda
+      <div className="font-sans text-white text-[1.4rem] sm:text-[2.2rem] w-[full] mt-[2rem]  flex justify-center items-center font-extrabold ">
+        Sign up 
       </div>
       <div className="font-sans text-paraColor text-[0.8rem] sm:text-[1.4rem] w-[full] font-extrabold  flex justify-center items-center">
         Lets get your fitness personalized
