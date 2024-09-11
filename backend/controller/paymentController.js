@@ -24,13 +24,11 @@ export const paymentCheckout = async (req, res) => {
     if (!programme) {
       return res.status(404).json({ error: 'Programme not found' });
     }
-    console.log(programme.trainer);
+
     // Check if the trainer exists
     const trainer = await Trainer.findOne({ user: programme.trainer });
-    console.log(trainer);
 
     if (!trainer) {
-      console.log('This programme is out of date');
       if (programme.categoryPhoto && programme.categoryPhoto.public_id) {
         const publicId = programme.categoryPhoto.public_id;
 

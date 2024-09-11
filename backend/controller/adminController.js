@@ -19,7 +19,6 @@ export const getAllUser = async (req, res) => {
 
     res.status(200).json(response);
   } catch (err) {
-    console.error('Error fetching users:', err);
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -27,8 +26,6 @@ export const getAllUser = async (req, res) => {
 export const deleteUsers = async (req, res) => {
   try {
     const { userIds } = req.body;
-
-    console.log('Received User IDs:', userIds);
 
     // Check if userIds is a valid array and non-empty
     if (!Array.isArray(userIds) || userIds.length === 0) {
@@ -42,7 +39,6 @@ export const deleteUsers = async (req, res) => {
     );
 
     if (invalidUserIds.length > 0) {
-      console.error('Invalid User IDs:', invalidUserIds);
       return res
         .status(400)
         .json({ message: 'Invalid user IDs', invalidUserIds });
@@ -130,10 +126,6 @@ export const deleteUsers = async (req, res) => {
       if (!findUser) {
         try {
           await Trainer.deleteOne({ _id: trainer._id });
-
-          console.log(
-            `Trainer with ID ${trainer._id} deleted as their user no longer exists`
-          );
         } catch (error) {
           console.error(
             `Failed to delete trainer ${trainer._id}:`,
@@ -270,8 +262,6 @@ export const sendAdvertisment = async (req, res) => {
       });
     }
 
-    console.log(`${recipientType}s fetched:`, recipients);
-
     // Send email to each recipient
     for (const recipient of recipients) {
       // Determine email based on recipientType
@@ -280,7 +270,6 @@ export const sendAdvertisment = async (req, res) => {
       if (email) {
         try {
           await sendEmail({ email, subject, message });
-          console.log(`Email sent to: ${email}`);
         } catch (emailError) {
           console.error(`Error sending email to ${email}:`, emailError);
           // Optionally, you could collect errors and send a response indicating partial success/failure
@@ -293,7 +282,6 @@ export const sendAdvertisment = async (req, res) => {
       }
     }
 
-    console.log('All emails processed');
     res.status(200).json({ message: 'Emails sent successfully' });
   } catch (error) {
     console.error('Error sending advertisements:', error);
@@ -348,7 +336,6 @@ export const selectedProgramme = async (req, res) => {
 
 export const getAdminTrainerTotalRevenue = async (req, res) => {
   const { trainerId } = req.params; // Extract trainerId from request body
-  console.log(trainerId);
 
   try {
     // Step 1: Find the trainer based on the `trainerId`
@@ -378,14 +365,12 @@ export const getAdminTrainerTotalRevenue = async (req, res) => {
         };
       })
     );
-    
 
     // Step 4: Send the trainer and all programmes (including users who took the programme)
     return res.status(200).json({
       trainer,
       programmes,
     });
-    
   } catch (err) {
     console.error(err);
     return res.status(500).json({

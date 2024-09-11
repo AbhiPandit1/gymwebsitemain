@@ -8,7 +8,6 @@ export const forgotPasswordController = async (req, res) => {
     const { email } = req.body;
 
     // Log the received email to debug
-    console.log('Received email:', email);
 
     // Find the user by email
     const user = await User.findOne({ email });
@@ -32,8 +31,6 @@ export const forgotPasswordController = async (req, res) => {
     const message = `Click on the link to reset your password: ${resetUrl}. If you did not request this, please ignore this email.`;
 
     // Log the email details before sending
-    console.log('Sending email to:', user.email);
-    console.log('Email message:', message);
 
     // Send the email
     await sendEmail({

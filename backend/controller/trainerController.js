@@ -197,7 +197,7 @@ export const aboutTrainer = async (req, res) => {
       trainer,
       description,
     });
-    console.log(description);
+  
   } catch (error) {
     console.error('Error processing trainer description:', error.message);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -227,7 +227,6 @@ export const getTrainerDetails = async (req, res) => {
 
 export const getTrainerTotalRevenue = async (req, res) => {
   const { trainerId } = req.params;
-  console.log(trainerId);
 
   try {
     // Step 1: Find the trainer based on the `trainerId`
@@ -249,7 +248,7 @@ export const getTrainerTotalRevenue = async (req, res) => {
         const users = await User.find({
           takenProgrammes: { $in: [programmeId] },
         });
-        console.log(users);
+        
 
         // Return the programme along with the users who have taken it
         return {

@@ -121,14 +121,14 @@ const Home = () => {
         <div className="absolute inset-x-0 bottom-0 h-[2rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
       </div>
 
-      <div
+      {/*  <div
         style={{
           background:
             'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
         }}
       >
         <DescriptionComponent />
-      </div>
+      </div>*/}
 
       <div className="bg-tertiary p-10">
         <Faq />

@@ -7,10 +7,6 @@ export const createReview = async (req, res) => {
     const { userId, trainerId } = req.params;
     const { rating, reviewText } = req.body;
 
-    console.log(userId,trainerId)
-
-    console.log(rating, reviewText);
-
     // Validate if the user and trainer exist
     const user = await User.findById(userId);
     const trainer = await Trainer.findById(trainerId);

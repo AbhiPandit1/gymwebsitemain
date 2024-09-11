@@ -38,7 +38,7 @@ export const getSingleUser = async (req, res) => {
 //Post User(create new user)
 export const postUser = async (req, res) => {
   const { password, email, confirmPassword } = req.body;
-  console.log(req.body);
+  
 
   try {
     // Check if user already exists by email
@@ -64,10 +64,10 @@ export const postUser = async (req, res) => {
       email,
       password: hashedPassword,
     });
-    console.log(user);
+    
     try {
       await user.save();
-      console.log('User saved successfully!');
+      
     } catch (error) {
       console.error('Error saving user:', error);
       return res.status(500).json({ error: 'Server Error' });
@@ -82,7 +82,7 @@ export const postUser = async (req, res) => {
     const userResponse = user.toObject();
     delete userResponse.password; // Remove password from the response
 
-    console.log(token);
+    
 
     res.status(201).json({
       message: 'User created successfully',
@@ -135,7 +135,7 @@ export const updateUser = async (req, res) => {
 //Admin Route Delete User
 export const deleteUser = async (req, res) => {
   const {userId }= req.body; // Extract user ID from route parameters
-  console.log(userId)
+  
 
   try {
     // Find user by ID and delete from database

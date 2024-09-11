@@ -5,9 +5,6 @@ export const createProgrammeDietPlan = async (req, res) => {
   const { days } = req.body; // Extract days from the request body
   const id = req.params.id; // Programme ID from the request parameters
 
-  console.log(days);
-  console.log('Type of days:', Array.isArray(days) ? 'Array' : 'Not an Array'); // Debugging output
-
   try {
     // Find the programme by ID
     const programme = await Programme.findById(id);
@@ -36,7 +33,6 @@ export const createProgrammeDietPlan = async (req, res) => {
 
     // Save the DietPlan to the database
     await newDietPlan.save();
-    
 
     // Send a success response with the created diet plan
     res

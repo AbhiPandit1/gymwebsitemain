@@ -60,7 +60,7 @@ export const getAllBuyedProgramme = async (req, res) => {
     const availableProgrammes = programmeDetails.filter(
       (programme) => programme !== null
     );
-    console.log(availableProgrammes);
+
     // Return the details of the available programmes as the response
     return res.status(200).json({ availableProgrammes });
   } catch (error) {
