@@ -96,16 +96,20 @@ const CategoriesCard = () => {
     setIsScrolling(false);
   };
 
-  // Scroll to the left
+  // Scroll to the left with smooth behavior
   const scrollLeftFunc = () => {
-    scrollContainerRef.current.scrollLeft -=
-      scrollContainerRef.current.offsetWidth / 2;
+    scrollContainerRef.current.scrollBy({
+      left: -scrollContainerRef.current.offsetWidth / 2,
+      behavior: 'smooth',
+    });
   };
 
-  // Scroll to the right
+  // Scroll to the right with smooth behavior
   const scrollRightFunc = () => {
-    scrollContainerRef.current.scrollLeft +=
-      scrollContainerRef.current.offsetWidth / 2;
+    scrollContainerRef.current.scrollBy({
+      left: scrollContainerRef.current.offsetWidth / 2,
+      behavior: 'smooth',
+    });
   };
 
   // Navigate to /categories

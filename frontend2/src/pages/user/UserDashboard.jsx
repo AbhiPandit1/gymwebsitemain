@@ -59,15 +59,15 @@ const UserDashboard = () => {
               <img
                 src="https://res.cloudinary.com/dzy51cqxa/image/upload/v1724174237/profile_photos/oxnhsb37p3ilw26zropi.jpg"
                 alt="homeGirl"
-                className="h-[100vh] w-full object-right sm:object-cover rounded-[10px] "
+                className="h-[100vh] w-full object-right sm:object-cover "
               />
-              <div className="absolute flex flex-col justify-center top-1/3 w-full">
+              <div className="absolute flex flex-col justify-center top-1/3 w-full font-bebes">
                 <div className="text-gray-100 flex flex-col justify-center items-center">
-                  <div className="text-2xl font-extrabold tracking-tighter sm:text-2xl md:text-4xl">
-                    ACHIEVE MORE
+                  <div className="text-3xl font-extrabold tracking-wider   sm:text-[3rem] md:text-4xl">
+                    YOUR FITNESS
                   </div>
-                  <div className="text-2xl font-bold tracking-tighter md:text-4xl sm:text-2xl mt-2">
-                    THAN JUST FITNESS
+                  <div className="text-3xl font-bold tracking-wider md:text-4xl sm:text-[3rem] mt-2">
+                    LIBRARY
                   </div>
                 </div>
                 <div className="text-gray-100 flex items-start justify-center w-full mt-8">
@@ -82,7 +82,7 @@ const UserDashboard = () => {
                     <button className="w-[17rem] sm:w-[18rem] h-[4rem] bg-orange-500 flex justify-between items-center ml-4 mr-2 pr-4 rounded-xl">
                       <span className="ml-4 text-xl">
                         {role === 'trainer'
-                          ? 'Make your own programs'
+                          ? 'Create New Program'
                           : 'Your Programs'}
                       </span>
                     </button>

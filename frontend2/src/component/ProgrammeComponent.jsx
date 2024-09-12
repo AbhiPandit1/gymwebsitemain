@@ -90,25 +90,19 @@ const ProgrammeComponent = () => {
         <h1 className="text-2xl font-bold mb-6">Our Programs</h1>
         <div className="flex flex-col   sm:flex-row items-center gap-2 justify-start mb-6">
           <div className="mt-3 px-8 py-2   flex flex-col">
-            <label htmlFor="filter" className="mb-2 font-semibold">
-              Sort By
-            </label>
             <select
               id="filter"
               value={filter}
               onChange={handleFilterChange}
               className="p-2 border bg-tertiary rounded-sm border-gray-300"
             >
-              <option value="">Select Filter</option>
+              <option value="">Sort</option>
               <option value="priceLowToHigh">Price Low to High</option>
               <option value="priceHighToLow">Price High to Low</option>
               <option value="bestsellers">Bestsellers</option>
             </select>
           </div>
           <div className="p-2 flex flex-col">
-            <label htmlFor="search" className="mb-2 font-semibold">
-              Search
-            </label>
             <input
               type="text"
               id="search"
@@ -117,35 +111,26 @@ const ProgrammeComponent = () => {
               onChange={(e) => setSearchBox(e.target.value)}
             />
           </div>
-          <div className="mt-8 p-2 flex flex-col justify-center items-center">
-            <button
+          <div className=" p-2 flex flex-col justify-center items-center">
+            <select
               id="category"
-              onClick={toggleCategoryDropdown}
-              className="px-8 py-2  border bg-tertiary rounded-lg border-gray-300"
+              className="px-8 py-2 border bg-tertiary rounded-lg border-gray-300"
+              value={categoryFilter}
+              onChange={handleCategoryChange}
             >
-              {categoryFilter ? categoryFilter : 'Category'}
-            </button>
-            {isCategoryDropdownOpen && (
-              <div className="absolute mt-2 bg-tertiary border border-gray-300 rounded-lg">
-                <select
-                  value={categoryFilter}
-                  onChange={handleCategoryChange}
-                  className="p-2 border-none bg-tertiary rounded-sm"
-                >
-                  <option value="">All Categories</option>
-                  <option value="Nutrition">Nutrition</option>
-                  <option value="Bodybuilding">Bodybuilding</option>
-                  <option value="Sports">Sports</option>
-                  <option value="Women">Women</option>
-                  <option value="WeightLoss">Weight Loss</option>
-                  <option value="PowerLifting">Power Lifting</option>
-                  <option value="General">General</option>
-                  <option value="Recovery">Recovery</option>
-                  <option value="Recovery">Calistehnics</option>
-                </select>
-              </div>
-            )}
+              <option value="">All Categories</option>
+              <option value="Nutrition">Nutrition</option>
+              <option value="Bodybuilding">Bodybuilding</option>
+              <option value="Sports">Sports</option>
+              <option value="Women">Women</option>
+              <option value="WeightLoss">Weight Loss</option>
+              <option value="PowerLifting">Power Lifting</option>
+              <option value="General">General</option>
+              <option value="Recovery">Recovery</option>
+              <option value="Calisthenics">Calisthenics</option>
+            </select>
           </div>
+
           <div className="absolute inset-x-0 bottom-0 h-[14rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
         </div>
         <div className="mt-4 r">

@@ -7,7 +7,7 @@ const ProgrammeCategory = () => {
       <HeroSection
         category="Programs Category"
         para="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae distinctio laborum ex veritatis saepe iste? In iure animi commodi rem, vel asperiores."
-        searchCategory="See all Category"
+        searchCategory="See all Categories"
       />
       <div>
         <ProgrammeCard />

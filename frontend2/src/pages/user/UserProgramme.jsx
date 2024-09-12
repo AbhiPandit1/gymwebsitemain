@@ -39,8 +39,8 @@ const UserProgramme = () => {
   }, []);
 
   return (
-    <div className="grid sm:grid-cols-7 grid-cols-1 text-white font-sans">
-      <div className="hidden sm:grid sm:col-span-2">
+    <div className="grid sm:grid-cols-2 grid-cols-1 text-white font-sans">
+      <div className="hidden sm:grid sm:col-span-7">
         <DashboardComponent
           dashBoardLink={dashBoardLink}
           hoverDashboard={hoverDashboard}

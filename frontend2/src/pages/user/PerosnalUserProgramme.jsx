@@ -33,8 +33,8 @@ const PersonalUserProgramme = () => {
             },
           }
         );
-        setTrainerDatas(response.data.availableProgrammes);
-        console.log(response.data);
+        setTrainerDatas(response?.data?.availableProgrammes);
+        console.log(response?.data);
       } catch (error) {
         console.error(error);
         toast.error(error.response?.data?.error || 'Something went wrong');
@@ -42,7 +42,7 @@ const PersonalUserProgramme = () => {
     };
 
     getPersonalProgramme();
-  }, [user.user._id, token]);
+  }, [user?.user?._id, token]);
 
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
@@ -89,14 +89,14 @@ const PersonalUserProgramme = () => {
             <div className="grid grid-cols-3 sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-auto">
               <div className="col-span-3 items-start justify-center overflow-auto">
                 <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-4">
-                  {trainerDatas.map((card) => (
+                  {trainerDatas?.map((card) => (
                     <div
                       key={card?._id}
                       className="bg-gray-800 rounded-[10px] m-auto min-h-[400px] p-4  w-[300px] shadow-lg border-4 border-orange-600 "
                     >
                       <img
-                        src={card.categoryPhoto.url}
-                        alt={card.type}
+                        src={card?.categoryPhoto?.url}
+                        alt={card?.type}
                         className="h-[249px]  w-[320px] object-cover rounded-[10px] mb-4"
                       />
                       <div className="h-[2rem] max-w-[5rem] m-[5%] text-[0.8rem] rounded-[10px] bg-orange-700 font-sans flex justify-center items-center text-white">
@@ -108,7 +108,7 @@ const PersonalUserProgramme = () => {
                       >
                         {showCategory[card._id] ? 'Hide' : 'Show'}
                       </button>
-                      {showCategory[card._id] && (
+                      {showCategory[card?._id] && (
                         <div className="mt-2">
                           <p className="text-sm text-white">
                             {card.category.join(', ')}
@@ -116,7 +116,7 @@ const PersonalUserProgramme = () => {
                         </div>
                       )}
                       <div className="font-sans text-1xl text-orange-300 w-[90%] m-[5%] line-clamp-3">
-                        {card.desc}
+                        {card?.desc}
                       </div>
                       <div className="flex justify-between items-center mt-4">
                         <div className="text-xl text-white font-sans font-bold flex justify-center items-center m-2">

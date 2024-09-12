@@ -2,7 +2,7 @@ import { TiPlus } from 'react-icons/ti';
 import SignInLogo from '../assets/NewLogo.png';
 import { Link } from 'react-router-dom';
 
-const LoginLogo = () => {
+const LoginLogo = ({header}) => {
   return (
     <div>
       <div className="h-[10%] w-full    flex justify-center items-center">
@@ -16,7 +16,7 @@ const LoginLogo = () => {
         </Link>
       </div>
       <div className="font-sans text-white text-[1.4rem] sm:text-[2.2rem] w-[full] mt-[2rem]  flex justify-center items-center font-extrabold ">
-        Sign up 
+       {header}
       </div>
       <div className="font-sans text-paraColor text-[0.8rem] sm:text-[1.4rem] w-[full] font-extrabold  flex justify-center items-center">
         Lets get your fitness personalized

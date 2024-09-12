@@ -82,16 +82,16 @@ const TrainerCard = ({ searchQuery }) => {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-[5rem] mt-4">
         {displayedTrainers?.map((data) => (
           <div
             key={data._id} // Use the unique _id for the key
-            className="relative max-h-[400px] min-w-[30vw]  min-h-[400px] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
+            className="relative max-h-[400px] max-w-[20vw]  min-h-[500px] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
           >
             <img
               src={data?.user?.profilePhoto?.url} // Use profilePhoto.url for the image source
               alt={data?.user?.name} // Alt text should be descriptive
-              className="w-full h-[80%] object-cover transition-opacity duration-500 ease-in-out opacity-100"
+              className="w-full h-[100%] object-cover transition-opacity duration-500 ease-in-out opacity-100"
             />
             <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-gradient-to-t from-black via-transparent to-transparent">
               <div className="flex items-center space-x-2">
@@ -144,7 +144,7 @@ const TrainerCard = ({ searchQuery }) => {
             </div>
             <div className="absolute bottom-24 left-4 right-4 text-white">
               <div className="font-extrabold text-xl">{data?.user?.name}</div>
-              <div className="font-extrabold text-md text-gray-400">
+              <div className="font-extrabold text-md text-gray-white">
                 Creator
               </div>
             </div>

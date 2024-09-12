@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import ProgrammeInfo from './ProgrammeInfo';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify'; // Make sure you have react-toastify installed
-import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const PersonalInfoTrainer = () => {
   const { user, token } = useSelector((state) => state.user);
@@ -11,6 +11,7 @@ const PersonalInfoTrainer = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { trainerId } = useParams();
   const backendapi = import.meta.env.VITE_BACKEND_URL;
+  const navigate = useNavigate(); // Use navigate for redirection
 
   useEffect(() => {
     const getPersonalProgramme = async () => {
@@ -27,38 +28,33 @@ const PersonalInfoTrainer = () => {
         console.log(response.data.programmes);
       } catch (error) {
         console.error(error);
-        toast.error(error.response?.data?.error || 'Something went wrong');
+        toast.error(error.response?.data?.error || 'Add a programme');
       }
     };
 
     getPersonalProgramme();
   }, [trainerId, token]);
 
-  // Function to go to the previous programme
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex > 0 ? prevIndex - 1 : trainerDatas.length - 1
     );
   };
 
-  // Function to go to the next programme
   const handleNext = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex < trainerDatas.length - 1 ? prevIndex + 1 : 0
     );
   };
 
-  // Extract description and profile image from current programme
   const currentProgramme = trainerDatas[currentIndex];
   const descriptionArray = currentProgramme ? currentProgramme.desc : [];
   const descriptionImage = currentProgramme?.categoryPhoto?.url || '';
 
-  // Process description to handle newlines and format it properly with bullet points
   const processedDescription = `
     <ul>
       ${descriptionArray
         .map((text) => {
-          // Split text by full stops and wrap each sentence in <li> tags
           return text
             .split('.')
             .filter(Boolean)
@@ -69,14 +65,22 @@ const PersonalInfoTrainer = () => {
     </ul>
   `;
 
+  // Function to handle redirection to the program purchase page
+  const handleBuyProgram = () => {
+    if (currentProgramme) {
+      // Redirect to the specific program's page using its ID
+      navigate(`/programme/${currentProgramme._id}`);
+    }
+  };
+
   return (
     <div>
       {trainerDatas.length > 0 && (
         <ProgrammeInfo
-          description={processedDescription} // Pass formatted description
+          description={processedDescription}
           descriptionImage={descriptionImage}
-          orderPara={1} // Adjust as needed
-          orderImage={2} // Adjust as needed
+          orderPara={1}
+          orderImage={2}
           title="About"
         />
       )}
@@ -94,6 +98,16 @@ const PersonalInfoTrainer = () => {
           className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed ml-4"
         >
           Next
+        </button>
+      </div>
+
+      {/* Buy Program Button */}
+      <div className="mt-8 flex justify-center">
+        <button
+          onClick={handleBuyProgram} // Redirect to the program's specific page
+          className="bg-green-500 text-white py-3 px-8 rounded-lg shadow-lg hover:bg-green-600 transition duration-300"
+        >
+          Buy Program
         </button>
       </div>
     </div>

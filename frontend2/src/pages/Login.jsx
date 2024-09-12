@@ -100,9 +100,9 @@ const Login = () => {
         <LoginSkeleton /> // Show skeleton loader when loading
       ) : (
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 min-h-screen overflow-auto bg-primary py-10 px-4 sm:px-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 min-h-screen overflow-auto font-bebes bg-primary py-10 px-4 sm:px-10">
             <div className="flex flex-col pt-8 gap-6 sm:gap-8">
-              <LoginLogo />
+              <LoginLogo header="Log in" />
 
               <div className="flex flex-col sm:ml-20">
                 <label

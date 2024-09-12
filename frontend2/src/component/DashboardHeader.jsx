@@ -45,8 +45,8 @@ const DashboardHeader = () => {
           <Logo backgroundImage={logoDahsboard} />
         </div>
         <Link to={`/user/dashboard/${user._id}`}>
-          <div className="text-xl sm:text-3xl font-sans sm:flex hidden font-bold">
-            <span className="text-orange-400">D</span>ashboard
+          <div className="text-xl sm:text-3xl text-white font-sans sm:flex hidden font-bold">
+            Dashboard
           </div>
         </Link>
         <div className="flex items-center justify-between gap-2">

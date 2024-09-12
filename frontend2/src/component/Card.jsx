@@ -6,11 +6,11 @@ import {
   IoIosArrowForward,
 } from 'react-icons/io';
 import CardSkeleton from '../pages/skeletons/CardSkeleton';
+import { Link } from 'react-router-dom';
 
 const Card = ({ title, backgroundColor }) => {
   const backendapi = import.meta.env.VITE_BACKEND_URL;
   const [data, setData] = useState([]);
-  const [visibleIndex, setVisibleIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -72,13 +72,21 @@ const Card = ({ title, backgroundColor }) => {
   };
 
   const scrollLeftFunc = () => {
-    containerRef.current.scrollLeft -=
-      containerRef.current.offsetWidth / itemsPerPage;
+    containerRef.current.scrollTo({
+      left:
+        containerRef.current.scrollLeft -
+        containerRef.current.offsetWidth / itemsPerPage,
+      behavior: 'smooth',
+    });
   };
 
   const scrollRightFunc = () => {
-    containerRef.current.scrollLeft +=
-      containerRef.current.offsetWidth / itemsPerPage;
+    containerRef.current.scrollTo({
+      left:
+        containerRef.current.scrollLeft +
+        containerRef.current.offsetWidth / itemsPerPage,
+      behavior: 'smooth',
+    });
   };
 
   useEffect(() => {
@@ -119,33 +127,34 @@ const Card = ({ title, backgroundColor }) => {
 
       <div
         ref={containerRef}
-        className="overflow-x-auto w-full max-w-[95%] mx-auto mt-4 cursor-grab scrollbar-hide"
+        className="overflow-x-auto w-full max-w-[100%] mx-auto mt-4 cursor-grab scrollbar-hide"
       >
         <div className="flex transition-transform duration-300 ease-in-out">
           {data.map((card) => (
             <div
               key={card?._id}
-              className={`bg-${backgroundColor} brightness-100 rounded-[2px] m-[4rem] p-4 h-[400px] border-y-2 flex-shrink-0 border-b-4 border-orange-400 hover:border hover:border-orange-600 transition-all`}
-              style={{ minWidth: `calc(100% / ${itemsPerPage})` }}
+              className={`bg-${backgroundColor} brightness-100 rounded-[2px] max-w-[300px]  m-[4rem] p-4 h-[400px] border-y-2 flex-shrink-0 border-b-4 border-orange-400 hover:border hover:border-orange-600 transition-all`}
             >
               <img
                 src={card?.categoryPhoto?.url}
                 alt={card.type}
-                className="h-[300px] w-[400px] object-cover rounded-[12px]"
+                className="h-[300px] w-[250px] object-cover rounded-[12px] brightness-100"
               />
-              <div className="p-4 flex justify-between flex-col sm:flex-row">
+              <div className="p-4 flex justify-between  items-center flex-col ">
                 <h2 className="text-xl text-white font-sans font-bold flex justify-center items-center">
                   {card?.category[0]}
                 </h2>
-                <h1 className="text-white font-orbitron flex justify-center items-center">
-                  know more
-                  <span>
-                    <IoIosArrowRoundForward
-                      color="orange"
-                      className="w-10 h-8 sm:w-14 sm:h-10"
-                    />
-                  </span>
-                </h1>
+                <Link to={`/programme/${card._id}`}>
+                  <h1 className="text-white font-orbitron flex justify-center items-center">
+                    know more
+                    <span>
+                      <IoIosArrowRoundForward
+                        color="orange"
+                        className="w-10 h-8 sm:w-14 sm:h-10"
+                      />
+                    </span>
+                  </h1>
+                </Link>
               </div>
             </div>
           ))}

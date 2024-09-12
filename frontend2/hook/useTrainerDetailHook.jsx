@@ -25,10 +25,11 @@ const useTrainerDetailHook = (trainerId) => {
             },
           }
         );
+
         setTrainer(response.data.trainer);
-        setDescription(response.data.description);
+        setDescription(response?.data.description);
         setLoading(false);
-        setUserTrainerDetails(response.data.user);
+        setUserTrainerDetails(response?.data?.user);
       } catch (error) {
         setLoading(false);
         setError(error);

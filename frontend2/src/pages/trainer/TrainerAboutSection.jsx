@@ -90,7 +90,7 @@ const TrainerAboutSection = () => {
             htmlFor="description"
             className="text-white mb-2 font-semibold"
           >
-            Description
+            Bio
           </label>
           {paragraphs.map((paragraph, index) => (
             <div key={index} className="flex flex-col mb-4">

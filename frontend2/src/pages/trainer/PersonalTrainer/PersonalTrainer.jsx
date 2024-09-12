@@ -25,6 +25,7 @@ const PersonalTrainer = () => {
   // Destructure values from the custom hook
   const { trainer, description, loading, error, userTrainerDetails } =
     useTrainerDetailHook(trainerId);
+  console.log(trainer);
 
   const handleEditClick = () => {
     // Navigate to the edit page with the trainerId
@@ -47,7 +48,7 @@ const PersonalTrainer = () => {
         }}
       >
         <ProgrammeInfo
-          descriptionImage={user.user?.profilePhoto?.url}
+          descriptionImage={userTrainerDetails?.profilePhoto?.url}
           description={description?.paragraphs}
           orderPara={1}
           orderImage={2}

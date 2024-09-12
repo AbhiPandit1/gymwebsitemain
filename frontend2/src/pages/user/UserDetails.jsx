@@ -74,7 +74,7 @@ const UserDetails = () => {
     <div className="flex flex-col pt-4 gap-6 min-h-screen bg-gray-800 p-4">
       {/* Login Logo */}
       <Link to="/home" className="mb-4">
-        <LoginLogo />
+        <LoginLogo header='' />
       </Link>
 
       {/* Form */}

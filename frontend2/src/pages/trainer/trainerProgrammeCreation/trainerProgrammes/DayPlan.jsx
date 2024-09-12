@@ -9,6 +9,8 @@ import Modal from 'react-modal';
 import { useSelector } from 'react-redux';
 import usePostDayPlan from '../../../../../hook/usePostDayPlan';
 import { toast } from 'react-toastify';
+import { CgCross } from 'react-icons/cg';
+import { ImCross } from 'react-icons/im';
 
 const DayPlan = () => {
   const { programmeId } = useParams();
@@ -335,27 +337,31 @@ const DayPlan = () => {
         >
           Submit Day Plan
         </button>
-
         <Modal
           isOpen={isModalOpen}
           onRequestClose={closeModal}
           contentLabel="Video Modal"
-          className="fixed inset-0 bg-black text-white p-4 rounded-lg mx-auto max-w-4xl w-full max-h-full flex items-center justify-center"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-75"
+          className="inset-0 top-[20%] bg-gray-950 text-black p-6 rounded-lg shadow-lg mx-auto max-w-4xl w-full h-[60vh] max-h-[100%] flex flex-col items-center justify-center relative overflow-auto"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-70 z-40"
         >
           <button
             onClick={closeModal}
-            className="absolute top-2 right-2 text-2xl text-white"
+            className="absolute top-3 right-3 text-white bg-gray-800 hover:bg-gray-600 rounded-full p-2 text-3xl transition-colors"
           >
-            <BiCross />
+            <ImCross />
           </button>
-          <h2 className="text-3xl mb-4">{currentVideoName}</h2>
-          <ReactPlayer
-            url={currentVideoUrl}
-            controls
-            width="100%"
-            height="auto"
-          />
+          <h2 className="text-2xl sm:text-3xl mb-4 font-semibold text-center">
+            {currentVideoName}
+          </h2>
+          <div className="w-full min-h-[full] h-[50vh]">
+            <ReactPlayer
+              url={currentVideoUrl}
+              controls
+              width="100%"
+              height="100%"
+              className="rounded-lg overflow-hidden"
+            />
+          </div>
         </Modal>
       </div>
     </div>

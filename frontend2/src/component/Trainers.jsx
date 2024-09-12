@@ -31,10 +31,9 @@ const Trainers = () => {
       }}
     >
       <div className="flex flex-col ">
-        <h1 className="text-3xl text-center">Our Creators</h1>
+        <h1 className="text-3xl text-center ">Our Creators</h1>
         <div className="flex flex-col justify-center w-[100%] sm:w-[60%] sm:ml-[20%]">
-          <div className="sm:ml-[10%]">Search</div>
-          <div className="flex justify-center items-start">
+          <div className="flex justify-center items-start mt-5">
             <input
               type="text"
               placeholder="Search..."

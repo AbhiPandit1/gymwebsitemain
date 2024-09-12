@@ -39,63 +39,78 @@ const Footer = () => {
     setModalType('');
   };
 
+  const getPdfUrl = () => {
+    if (modalType === 'privacy') {
+      return 'https://drive.google.com/file/d/1UqMF3nxv4qzGL5382ojk_2l_bCQXaWAT/preview';
+    }
+    if (modalType === 'terms') {
+      return 'https://drive.google.com/file/d/1SbW_QMZVnrpWcvaMJj65JixuO0GTqcZT/preview';
+    }
+    return '';
+  };
+
   return (
-    <div
-      className="flex flex-col gap-10 h-[85vh] p-2 sm:p-10 w-full"
-      style={{
-        backgroundColor: 'linear-gradient(90deg, #18171A 0%, #18171A 100%)',
-      }}
-    >
+    <footer className="flex flex-col min-h-[85vh] p-6 sm:p-10 w-full bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white">
       {loading ? (
         <FooterSkeleton />
       ) : (
         <>
-          {/* First Division */}
-          <div className="flex flex-col sm:flex sm:flex-row justify-between">
-            <div className="mt-20 mb-10 sm:m-20">
+          {/* First Section */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-10 sm:py-20 border-b border-gray-600">
+            <div className="flex flex-col items-start sm:items-center">
               <Logo backgroundImage={footerImage} />
+              <p className="text-white mt-4 max-w-sm text-lg font-light leading-relaxed">
+                Empowering developers with modern tools and resources to build
+                seamless digital experiences.
+              </p>
             </div>
-            <div className="text-white font-sans text-[24px] w-[95%] sm:w-[40%] sm:m-20">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            <div className="flex space-x-5 mt-10 sm:mt-0">
+              <a
+                href="https://www.instagram.com/programpanda"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="h-[60px] w-[60px] flex justify-center items-center bg-footerColor border-2 border-paraColor rounded-full transition duration-300 hover:bg-orange-600"
+              >
+                <FaInstagram size={30} color="white" />
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61565627881781"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="h-[60px] w-[60px] flex justify-center items-center bg-footerColor border-2 border-paraColor rounded-full transition duration-300 hover:bg-orange-600"
+              >
+                <FaFacebook size={30} color="white" />
+              </a>
+              <a
+                href="https://www.youtube.com/@ProgramPanda"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="h-[60px] w-[60px] flex justify-center items-center bg-footerColor border-2 border-paraColor rounded-full transition duration-300 hover:bg-orange-600"
+              >
+                <FaYoutube size={30} color="white" />
+              </a>
             </div>
           </div>
 
-          {/* Second Division */}
-          <div className="flex flex-col sm:flex-row sm:justify-between gap-10">
-            <div className="ml-5 sm:ml-20">
-              <div className="flex">
-                <div className="h-[60px] w-[60px] flex justify-center items-center bg-footerColor border-2 border-x-paraColor rounded-[15px]">
-                  <FaInstagram size={25} color="white" />
-                </div>
-                <div className="h-[60px] w-[60px] flex justify-center items-center bg-footerColor border-2 border-x-paraColor rounded-[15px]">
-                  <FaFacebook size={25} color="white" />
-                </div>
-                <div className="h-[60px] w-[60px] flex justify-center items-center bg-footerColor border-2 border-x-paraColor rounded-[15px]">
-                  <FaYoutube size={25} color="white" />
-                </div>
-              </div>
-              <div className="text-copyrightColor font-sans font-semibold mt-10">
-                Copyright ©2024, All Rights Reserved
-              </div>
-            </div>
-
-            {/* Data Content */}
-            <div className="flex justify-between sm:w-[40vw] font-extrabold">
-              <div>
-                <div className="mt-10 flex flex-col ">
-                  <button
-                    onClick={() => openModal('privacy')}
-                    className="text-white hover:text-orange-800 font-sans text-[3rem] mt-2 sm:mt-0 ml-0 sm:ml-4"
-                  >
-                    Privacy Policy
-                  </button>
-                  <button
-                    onClick={() => openModal('terms')}
-                    className="text-white hover:text-orange-800 font-sans text-[3rem] mt-2 sm:mt-0 ml-0 sm:ml-4"
-                  >
-                    Terms of Service
-                  </button>
-                </div>
+          {/* Second Section */}
+          <div className="flex flex-col sm:flex-row justify-between gap-10 mt-10 border-t border-gray-600 pt-10">
+            <div className="sm:ml-20">
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => openModal('privacy')}
+                  className="text-white hover:text-orange-800 font-sans text-xl "
+                >
+                  Privacy Policy
+                </button>
+                <button
+                  onClick={() => openModal('terms')}
+                  className="text-white hover:text-orange-800 font-sans text-xl"
+                >
+                  Terms of Service
+                </button>
               </div>
             </div>
           </div>
@@ -106,30 +121,35 @@ const Footer = () => {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        className="fixed inset-0 flex items-center justify-center w-[80vw] m-auto h-full bg-transparent rounded-lg p-6 shadow-lg"
-        overlayClassName="fixed bg-white bg-opacity-5"
+        className="fixed inset-0 flex items-center justify-center p-6 bg-white rounded-lg shadow-lg max-w-4xl mx-4 sm:mx-auto"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
       >
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full bg-gray-100 rounded-lg overflow-hidden">
           <button
             onClick={closeModal}
-            className="absolute top-10 right-10 text-4xl font-bold text-orange-700"
+            className="absolute top-3 right-3 p-2 text-gray-600 hover:text-gray-800 text-2xl font-bold"
           >
             ×
           </button>
-          <iframe
-            src={
-              modalType === 'privacy'
-                ? 'https://coral-chad-43.tiiny.site/' // Replace with actual Privacy Policy URL
-                : 'https://drive.google.com/file/d/1UqMF3nxv4qzGL5382ojk_2l_bCQXaWAT/preview' // Replace with actual Terms of Service URL
-            }
-            className="w-full h-[100vh]"
-            title={
-              modalType === 'privacy' ? 'Privacy Policy' : 'Terms of Service'
-            }
-          />
+          {modalType && (
+            <iframe
+              src={getPdfUrl()}
+              width="100%"
+              height="80vh"
+              frameBorder="0"
+              title={
+                modalType === 'privacy' ? 'Privacy Policy' : 'Terms of Service'
+              }
+              className="w-full h-full"
+            ></iframe>
+          )}
         </div>
       </Modal>
-    </div>
+
+      <div className="text-center py-6 text-xs border-t border-gray-700 mt-auto">
+        <p>© 2024 ProgramPanda. All Rights Reserved.</p>
+      </div>
+    </footer>
   );
 };
 

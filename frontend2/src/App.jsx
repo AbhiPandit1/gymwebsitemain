@@ -42,7 +42,6 @@ const AdminCreatingNewProgramme = lazy(() =>
 const StripePayment = lazy(() => import('./pages/payment/StripePayment'));
 
 const UserProgramme = lazy(() => import('./pages/user/UserProgramme'));
-const ProductPage = lazy(() => import('./component/ProductPage'));
 const ForgortPassword = lazy(() => import('./pages/user/ForgotPassword'));
 const EmailField = lazy(() => import('./pages/user/EmailField'));
 const ProgrammeDetail = lazy(() => import('./pages/user/ProgrammeDetail'));
@@ -107,7 +106,7 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <div className="bg-primary">
+    <div className="bg-gray-950">
       {showHeaderFooter && <Header />}
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
@@ -239,10 +238,7 @@ function App() {
             path="/payment/invoices/:trainerId"
             element={token ? <TrainerInvoiceInfo /> : <Navigate to="/login" />}
           />
-          <Route
-            path="/programmes/:id"
-            element={token ? <ProductPage /> : <Navigate to="/login" />}
-          />
+
           <Route
             path="/user/dashboard/:id"
             element={token ? <UserDashboard /> : <Navigate to="/login" />}

@@ -34,10 +34,10 @@ const Home = () => {
     <>
       {/* Starting Section */}
       <div
-        className="relative h-[60vh] sm:h-[100vh] w-[100vw] flex flex-col max-w-[100vw] overflow-hidden"
+        className="relative h-[60vh] sm:h-[100vh]  w-[100vw] flex flex-col max-w-[100vw] overflow-hidden"
         style={{
           backgroundImage: `url("https://res.cloudinary.com/dzy51cqxa/image/upload/v1721622305/profile_photos/q8ma28tbtysrusbc6ysv.jpg")`,
-          backgroundPosition: '75% 15%',
+          backgroundPosition: '50%',
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           opacity: '90%',
@@ -49,14 +49,14 @@ const Home = () => {
           {/* First Page Section */}
           <div className="flex flex-col justify-start gap-8 z-200 font-[450] font-bebes mt-[20%] sm:mt-[10%] w-full overflow-hidden">
             <div className="text-white flex flex-col justify-start items-start">
-              <div className="flex justify-start ml-[4%] text-left text-3xl leading-none tracking-wide sm:text-[6rem] w-full overflow-hidden">
+              <div className="flex justify-start ml-[4%] text-left text-[2.5rem] leading-none tracking-wide sm:text-[6rem] w-full overflow-hidden">
                 YOUR
                 <span className="relative ml-[2%] font-bebes text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 underline underline-offset-8">
                   FITNESS
                 </span>
               </div>
 
-              <div className="text-3xl ml-[4%] sm:text-[6rem] leading-none tracking-wide text-white overflow-hidden">
+              <div className="text-[2.5rem] ml-[4%] sm:text-[6rem] leading-none tracking-wide text-white overflow-hidden">
                 <span className="relative ml-[2%] font-bebes text-transparent bg-clip-text text-white hover:underline hover:underline-offset-8">
                   LIBRARY
                 </span>
@@ -64,11 +64,8 @@ const Home = () => {
             </div>
 
             <div className="text-paraColor flex flex-col justify-start w-[100%] overflow-hidden">
-              <p className="text-[0.8rem] w-[100%] sm:w-[85%] sm:text-[1.5rem] text-wrap ml-[4%]">
+              <p className="text-[1.2rem] w-[90%] sm:w-[85%] sm:text-[1.5rem] text-wrap ml-[4%]">
                 Decades of fitness experience at your fingertips.
-              </p>
-              <p className="text-[0.8rem] sm:text-[1.5rem] ml-[4%]">
-                labore autem tempora libero consequuntur Lorem ipsum?
               </p>
             </div>
             <div className="text-white flex items-start justify-start sm:ml-[4%] ml-[2%] overflow-hidden w-full mt-1 sm:mt-8">

@@ -84,12 +84,12 @@ const TrainerCardMobile = ({ searchQuery }) => {
       {displayedTrainers?.map((data) => (
         <div
           key={data._id} // Use the unique _id for the key
-          className="relative max-h-[400px] min-h-[400px] min-w-[80vw] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
+          className="relative max-h-[400px] min-h-[450px] max-w-[70vw] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
         >
           <img
             src={data?.user?.profilePhoto?.url}
             alt={data?.user?.name}
-            className="w-full h-[80%] object-cover transition-opacity duration-500 ease-in-out opacity-100"
+            className="w-full h-[100%] object-cover transition-opacity duration-500 ease-in-out opacity-100"
           />
           <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-gradient-to-t from-black via-transparent to-transparent">
             <div className="flex items-center space-x-2">
@@ -142,7 +142,7 @@ const TrainerCardMobile = ({ searchQuery }) => {
           </div>
           <div className="absolute bottom-24 left-4 right-4 text-white">
             <div className="font-extrabold text-xl">{data?.user?.name}</div>
-            <div className="font-extrabold text-md text-gray-400">Creator</div>
+            <div className="font-extrabold text-md text-white">Creator</div>
           </div>
         </div>
       ))}
