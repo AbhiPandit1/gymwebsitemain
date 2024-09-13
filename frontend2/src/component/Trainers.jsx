@@ -23,13 +23,7 @@ const Trainers = () => {
   }, []);
 
   return (
-    <div
-      className="flex flex-col items-center text-white min-h-screen w-[100%] min-w-[100%] mx-auto rounded-xl p-10"
-      style={{
-        background:
-          'linear-gradient(270deg, #4F2222 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-      }}
-    >
+    <div className="flex flex-col items-center text-white min-h-screen w-[100%] min-w-[100%] mx-auto rounded-xl p-10">
       <div className="flex flex-col ">
         <h1 className="text-3xl text-center ">Our Creators</h1>
         <div className="flex flex-col justify-center w-[100%] sm:w-[60%] sm:ml-[20%]">

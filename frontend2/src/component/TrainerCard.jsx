@@ -4,7 +4,8 @@ import {
   AiFillFacebook,
   AiFillInstagram,
   AiFillLinkedin,
-} from 'react-icons/ai';
+  AiOutlineUser,
+} from 'react-icons/ai'; // Import an icon for fallback
 import { Link } from 'react-router-dom';
 import TrainerSkeleton from '../pages/skeletons/TrainerSkeleton';
 
@@ -15,9 +16,8 @@ const TrainerCard = ({ searchQuery }) => {
   const [displayedTrainers, setDisplayedTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [hasMore, setHasMore] = useState(true);
-  const [displayCount, setDisplayCount] = useState(3);
-  const [showLoadMore, setShowLoadMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const trainersPerPage = 3; // Number of trainers per page
 
   useEffect(() => {
     // Fetch trainer data from the backend API
@@ -25,55 +25,58 @@ const TrainerCard = ({ searchQuery }) => {
       try {
         const response = await axios.get(`${backendapi}/api/trainer`);
         setTrainerDatas(response.data.trainers);
-        setDisplayedTrainers(response.data.trainers.slice(0, displayCount));
-        if (response.data.trainers.length <= displayCount) {
-          setHasMore(false);
-        }
+        setLoading(false);
       } catch (err) {
         console.error('Error fetching trainer data:', err);
         setError('Failed to fetch trainer data');
-      } finally {
         setLoading(false);
       }
     };
 
     fetchTrainerData();
-  }, [displayCount]);
+  }, []);
 
   useEffect(() => {
     // Filter trainers based on search query
     const filteredTrainers = trainerDatas.filter((trainer) =>
       trainer?.user?.name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    setDisplayedTrainers(filteredTrainers.slice(0, displayCount));
-    if (filteredTrainers.length <= displayCount) {
-      setHasMore(false);
-    } else {
-      setHasMore(true);
-    }
-  }, [searchQuery, trainerDatas, displayCount]);
 
-  const loadMore = () => {
-    setDisplayedTrainers(trainerDatas); // Show all trainers
-    setDisplayCount(trainerDatas.length); // Update displayCount to the total number
-    setShowLoadMore(false); // Hide "Load More" button
-    setHasMore(false); // No more trainers to load
+    // Pagination logic
+    const indexOfLastTrainer = currentPage * trainersPerPage;
+    const indexOfFirstTrainer = indexOfLastTrainer - trainersPerPage;
+    const currentTrainers = filteredTrainers.slice(
+      indexOfFirstTrainer,
+      indexOfLastTrainer
+    );
+
+    setDisplayedTrainers(currentTrainers);
+  }, [searchQuery, trainerDatas, currentPage]);
+
+  const totalPages = Math.ceil(
+    trainerDatas.filter((trainer) =>
+      trainer?.user?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+    ).length / trainersPerPage
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
-  const loadLess = () => {
-    const initialDisplayCount = 3;
-    setDisplayedTrainers(trainerDatas.slice(0, initialDisplayCount));
-    setDisplayCount(initialDisplayCount);
-    setShowLoadMore(true); // Show "Load More" button
-    setHasMore(true); // Enable "Load More" if more trainers exist
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   if (loading) {
-    return (
-      <div>
-        <TrainerSkeleton />
-      </div>
-    );
+    return <TrainerSkeleton />;
   }
 
   if (error) {
@@ -83,16 +86,22 @@ const TrainerCard = ({ searchQuery }) => {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[5rem] mt-4">
-        {displayedTrainers?.map((data) => (
+        {displayedTrainers.map((data) => (
           <div
             key={data._id} // Use the unique _id for the key
-            className="relative max-h-[400px] max-w-[20vw]  min-h-[500px] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
+            className="relative max-h-[400px] max-w-[20vw] min-h-[500px] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
           >
-            <img
-              src={data?.user?.profilePhoto?.url} // Use profilePhoto.url for the image source
-              alt={data?.user?.name} // Alt text should be descriptive
-              className="w-full h-[100%] object-cover transition-opacity duration-500 ease-in-out opacity-100"
-            />
+            {data?.user?.profilePhoto?.url ? (
+              <img
+                src={data?.user?.profilePhoto?.url} // Use profilePhoto.url for the image source
+                alt={data?.user?.name} // Alt text should be descriptive
+                className="w-full h-[100%] object-cover transition-opacity duration-500 ease-in-out opacity-100"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                <AiOutlineUser size={50} color="gray" />
+              </div>
+            )}
             <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-gradient-to-t from-black via-transparent to-transparent">
               <div className="flex items-center space-x-2">
                 {data?.socialMediaLink?.instagram && (
@@ -152,22 +161,33 @@ const TrainerCard = ({ searchQuery }) => {
         ))}
       </div>
       <div className="flex justify-center mt-4 space-x-4">
-        {showLoadMore && (
+        <button
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+          className="px-4 py-2 rounded-lg bg-gray-200 text-black disabled:bg-gray-300"
+        >
+          Previous
+        </button>
+        {Array.from({ length: totalPages }, (_, index) => (
           <button
-            onClick={loadMore}
-            className="px-4 py-2 bg-orange-600 text-center flex justify-center items-center text-white rounded-lg"
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            className={`px-4 py-2 rounded-lg ${
+              currentPage === index + 1
+                ? 'bg-orange-600 text-white'
+                : 'bg-gray-200 text-black'
+            }`}
           >
-            Load More
+            {index + 1}
           </button>
-        )}
-        {!showLoadMore && (
-          <button
-            onClick={loadLess}
-            className="px-4 py-2 bg-orange-600 text-white rounded-lg"
-          >
-            Load Less
-          </button>
-        )}
+        ))}
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 rounded-lg bg-gray-200 text-black disabled:bg-gray-300"
+        >
+          Next
+        </button>
       </div>
     </>
   );

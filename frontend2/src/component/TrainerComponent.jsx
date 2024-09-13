@@ -27,21 +27,21 @@ const TrainerComponent = () => {
         ) : (
           <HeroSection
             category="Search Creators"
-            para="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae distinctio laborum ex veritatis saepe iste? In iure animi commodi rem, vel asperiores."
-            searchCategory="See all Creators"
+            para="Empower your training with our best Creator"
+            title="Creators"
           />
         )}
+        <div className="h-auto top-[20%]">
+          <Trainers />
+        </div>
+
+        {/* EquipCard */}
+        <div className="h-auto top-[20%]">
+          <EquipCard />
+        </div>
+        <Footer />
       </div>
       {/* Trainers */}
-      <div className="h-auto top-[20%]">
-        <Trainers />
-      </div>
-
-      {/* EquipCard */}
-      <div className="h-auto top-[20%]">
-        <EquipCard />
-      </div>
-      <Footer />
     </>
   );
 };

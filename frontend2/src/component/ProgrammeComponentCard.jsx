@@ -9,10 +9,6 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
   const [expandedCard, setExpandedCard] = useState(null); // Track the expanded card
   const [showCategory, setShowCategory] = useState({}); // Track category visibility
 
-  const handleLoadMore = () => {
-    setLoadButton(!loadButton);
-  };
-
   const applyFilter = (data) => {
     switch (filter) {
       case 'priceLowToHigh':
@@ -95,29 +91,16 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
               </div>
 
               {/* Arrow icon to toggle description visibility */}
-              <div className="absolute bottom-4 w-full flex justify-center">
-                <button
-                  className={`bg-gray-950 rounded-full p-3 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 ${
-                    expandedCard === card._id ? 'bg-opacity-80' : ''
-                  }`}
-                  onClick={() => handleExpandToggle(card._id)}
-                >
-                  <AiOutlineArrowUp
-                    color="white"
-                    className={`w-8 h-8 transform transition-transform duration-300 ${
-                      expandedCard === card._id ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-              </div>
 
-              <div className="flex flex-col sm:flex-row justify-between mt-4 z-99">
-                <div className="text-lg sm:text-xl text-white font-sans font-bold flex items-center">
-                  ${card.price}
+              <div className="flex justify-between mt-4 z-99">
+                <div className="h-[3rem] w-[6rem] bg-gray-950 rounded-3x flex justify-center items-center border-4 border-orange-600 rounded-3xl">
+                  <div className="text-lg sm:text-xl text-white font-sans font-bold flex items-center">
+                    ${card.price}
+                  </div>
                 </div>
 
                 <Link to={`/programme/${card._id}`} className="relative z-10">
-                  <button className="w-12 sm:w-[3.6rem] h-10 sm:h-[3.2rem] bg-gray-900 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 flex items-center justify-center rounded-xl">
+                  <button className="w-[3.6rem] h-[3.2rem] bg-gray-950 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 flex items-center justify-center rounded-xl">
                     <IoIosArrowRoundForward
                       color="white"
                       className="w-10 sm:w-14 h-8 sm:h-10"
@@ -128,25 +111,6 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="flex justify-center mt-4">
-        <button
-          className="w-36 sm:w-40 h-12 text-sm sm:text-lg bg-gray-900 hover:bg-gray-600 border-2 border-orange-600 text-white px-4 sm:px-5 flex items-center justify-between rounded-lg shadow-md"
-          onClick={handleLoadMore}
-        >
-          {loadButton ? (
-            <>
-              <FaMinus className="ml-2" />
-              Load Less
-            </>
-          ) : (
-            <>
-              <FaPlus className="ml-2" />
-              Load More
-            </>
-          )}
-        </button>
       </div>
     </div>
   );

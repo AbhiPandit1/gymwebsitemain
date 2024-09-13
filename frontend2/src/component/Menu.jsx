@@ -12,7 +12,6 @@ import { toast } from 'react-toastify';
 
 const Menu = () => {
   const { user } = useSelector((state) => state.user);
-
   const isSignIn = user && user.user && user.token; // Check if user is signed in
 
   const dispatch = useDispatch();
@@ -25,7 +24,6 @@ const Menu = () => {
       link: '/',
       image: <IoHomeOutline color="orange" size={30} />,
     },
-
     {
       id: '3',
       name: 'Explore',
@@ -62,42 +60,46 @@ const Menu = () => {
   }, [user]);
 
   return (
-    <div className="bg-black text-white min-h-[30vh]  min-w-[20vw] absolute p-8 top-[140%] right-0 rounded-[32px] border border-starColor overflow-hidden z-30">
-      <div>
-        <div className="flex justify-center items-center gap-3 border-b border-paraColor pb-2">
-          <div className="font-sans font-semibold">
+    <div className="bg-black text-white min-h-[30vh] min-w-[20vw] absolute p-8 top-[140%] right-0 rounded-xl border border-gray-700 shadow-lg z-50">
+      <div className="flex flex-col mb-5 z-50">
+        <div className="flex justify-between items-center border-b border-gray-600 pb-4 mb-4">
+          <div className="font-sans font-semibold text-lg">
             {isSignIn ? (
-              <Link to="/signin" onClick={handleSignOut}>
+              <Link
+                to="/signin"
+                onClick={handleSignOut}
+                className="flex items-center gap-2"
+              >
+                <LiaSignOutAltSolid color="orange" size={24} />
                 Sign Out
               </Link>
             ) : (
-              <Link to="/signin">Sign In</Link>
+              <Link to="/signin" className="flex items-center gap-2">
+                <PiSignInThin color="orange" size={24} />
+                Sign In
+              </Link>
             )}
           </div>
-          {isSignIn ? (
-            <LiaSignOutAltSolid color="orange" size={30} />
-          ) : (
-            <PiSignInThin color="orange" size={30} />
-          )}
         </div>
-      </div>
-      <div className="gap-10 flex flex-col justify-center mt-5 ">
-        {menuDatas.map((data) => (
-          <>
-            <Link to={data.link}>
-              <div
-                className="flex justify-between items-center gap-8 pb-4 transition-all duration-1000 ease-in-out  hover:bg-secondary hover:rounded-lg hover:p-4 hover:transition-all "
-                key={data.id}
-              >
-                <div className="font-sans font-semibold text-white text-[1.2rem] hover:text-secondary">
+        <div className="flex flex-col gap-4">
+          {menuDatas.map((data) => (
+            <Link
+              to={data.link}
+              key={data.id}
+              className="relative group flex items-center p-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 ease-in-out"
+            >
+              <div className="flex items-center gap-4 w-full">
+                <div className="text-white text-lg group-hover:text-orange-400 transition-colors duration-300 ease-in-out">
                   {data.name}
                 </div>
-
-                <div>{data.image}</div>
+                <div className="ml-auto text-orange-400 group-hover:scale-110 transition-transform duration-300 ease-in-out">
+                  {data.image}
+                </div>
               </div>
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent to-gray-800 opacity-0 group-hover:opacity-20 transition-opacity duration-300 ease-in-out rounded-lg"></span>
             </Link>
-          </>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

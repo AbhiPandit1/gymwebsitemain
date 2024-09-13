@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight, FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
-// Skeleton component for loading placeholders
 const Skeleton = () => (
   <div className="flex gap-4 p-4">
     {Array(5)
@@ -137,7 +136,6 @@ const CreatorHomeComponent = () => {
         Meet Our Creators
       </h1>
 
-      {/* Desktop View: Horizontal Scroll Layout */}
       {!isSmallScreen && (
         <div className="relative">
           <button
@@ -149,26 +147,30 @@ const CreatorHomeComponent = () => {
           </button>
           <div
             ref={scrollContainerRef}
-            className="overflow-x-auto whitespace-nowrap   scrollbar-hide"
+            className="overflow-x-auto whitespace-nowrap scrollbar-hide"
             style={{ scrollBehavior: 'smooth' }}
           >
             {trainerDatas?.map((data) => (
               <div
                 key={data?._id}
-                className="inline-block rounded-xl w-[30vw] bg-gray-800 p-6 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4 hover:shadow-orange-600"
+                className="relative inline-block rounded-xl w-[350px] bg-gray-800 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4 hover:shadow-orange-600"
               >
-                <div className="overflow-hidden rounded-lg">
-                  <img
-                    src={data?.user?.profilePhoto?.url}
-                    alt={data?.user?.name}
-                    className="object-cover w-full h-[250px] rounded-lg"
-                  />
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-2xl font-bold hover:text-orange-300">
-                    {data?.user?.name}
-                  </h3>
-                  <p className="text-gray-400 mt-1">Creator</p>
+                <div className="relative w-full h-[550px]">
+                  {data?.user?.profilePhoto?.url ? (
+                    <img
+                      src={data.user.profilePhoto.url}
+                      alt={data.user.name}
+                      className="object-cover w-full h-full rounded-xl"
+                    />
+                  ) : (
+                    <FaUserCircle className="text-gray-600 w-full h-full" />
+                  )}
+                  <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4">
+                    <h3 className="text-2xl font-bold text-white">
+                      {data?.user?.name}
+                    </h3>
+                    <p className="text-gray-400 mt-1">Creator</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -186,7 +188,6 @@ const CreatorHomeComponent = () => {
         </div>
       )}
 
-      {/* Mobile View: Carousel Layout */}
       {isSmallScreen && (
         <div
           ref={scrollContainerRef}
@@ -196,25 +197,30 @@ const CreatorHomeComponent = () => {
           {trainerDatas?.map((data) => (
             <div
               key={data._id}
-              className="inline-block rounded-xl w-[300px] p-6 m-2 hover:shadow-lg bg-transparent border-2 border-orange-600 transition-shadow duration-300 border-b-4 hover:border-4"
+              className="relative inline-block rounded-xl w-[300px] m-2 hover:shadow-lg bg-transparent border-2 border-orange-600 transition-shadow duration-300 border-b-4 hover:border-4"
             >
-              <div className="overflow-hidden rounded-lg">
-                <img
-                  src={data?.user?.profilePhoto?.url}
-                  alt={data?.user?.name}
-                  className="object-cover w-full h-[250px] rounded-lg"
-                />
-              </div>
-              <div className="mt-4">
-                <h3 className="text-2xl font-bold">{data?.user?.name}</h3>
-                <p className="text-gray-400 mt-1">Creator</p>
+              <div className="relative w-full h-[350px]">
+                {data?.user?.profilePhoto?.url ? (
+                  <img
+                    src={data.user.profilePhoto.url}
+                    alt={data.user.name}
+                    className="object-cover w-full h-full rounded-xl"
+                  />
+                ) : (
+                  <FaUserCircle className="text-gray-600 w-full h-full" />
+                )}
+                <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4">
+                  <h3 className="text-2xl font-bold text-white">
+                    {data?.user?.name}
+                  </h3>
+                  <p className="text-gray-400 mt-1">Creator</p>
+                </div>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* View All Trainers Button */}
       <div className="flex justify-center mt-8">
         <Link
           to="/trainers"

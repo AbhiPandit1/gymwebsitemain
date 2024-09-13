@@ -1,53 +1,35 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import HeroSection from './HeroSection';
 import ProgrammeComponentCard from './ProgrammeComponentCard';
-import ProgrammeComponentCardMobile from './ProgrammeComponentCardMobile';
-import { getProgramme } from '../action/programmeActions';
 import EquipCard from './EquipCard';
 import Footer from './Footer';
+import { getProgramme } from '../action/programmeActions';
 
 const ProgrammeComponent = () => {
   const [programmeData, setProgrammeData] = useState([]);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [searchBox, setSearchBox] = useState('');
   const [filter, setFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState(''); // State for category filter
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false); // State for dropdown visibility
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // Number of items per page
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Fetch programme data on component mount
     const fetchData = async () => {
       try {
         const action = await dispatch(getProgramme());
-
         if (action && action.categories) {
           setProgrammeData(action.categories);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        setProgrammeData([]); // Clear programmeData on error
+        setProgrammeData([]);
       }
     };
 
     fetchData();
   }, [dispatch]);
-  console.log(programmeData);
-
-  useEffect(() => {
-    // Check screen size on component mount and resize
-    const checkScreenSize = () => {
-      setIsSmallScreen(window.innerWidth < 640); // Adjust breakpoint as needed
-    };
-
-    checkScreenSize(); // Check initially
-    window.addEventListener('resize', checkScreenSize); // Add listener for resizing
-
-    return () => {
-      window.removeEventListener('resize', checkScreenSize); // Cleanup listener
-    };
-  }, []);
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -55,14 +37,8 @@ const ProgrammeComponent = () => {
 
   const handleCategoryChange = (e) => {
     setCategoryFilter(e.target.value);
-    setIsCategoryDropdownOpen(false); // Close dropdown after selecting
   };
 
-  const toggleCategoryDropdown = () => {
-    setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-  };
-
-  // Filter programmes based on search box input and selected category
   const filteredProgrammes = programmeData.filter((programme) => {
     const matchesSearch = programme.title
       ?.toLowerCase()
@@ -72,24 +48,43 @@ const ProgrammeComponent = () => {
       : true;
     return matchesSearch && matchesCategory;
   });
-  console.log(filteredProgrammes);
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredProgrammes.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(filteredProgrammes.length / itemsPerPage);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div>
       <HeroSection
         category="Programs"
-        para="Explore our wide range of programs designed to help you achieve your fitness goals. Whether you're looking to build muscle, lose weight, or improve your overall health, we have something for everyone."
-        searchCategory="Browse All Programs"
+        para="Explore our wide range of programs"
+        title="Programs"
       />
-      <div
-        className="w-full flex flex-col items-center text-white pl-5 sm:p-5 min-h-screen max-w-full mx-auto rounded-xl p-10 relative"
-        style={{
-          background:
-            'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-        }}
-      >
+      <div className="w-full flex flex-col bg-gray-950 items-center  text-white p-5 min-h-screen max-w-full mx-auto rounded-xl relative">
         <h1 className="text-2xl font-bold mb-6">Our Programs</h1>
-        <div className="flex flex-col   sm:flex-row items-center gap-2 justify-start mb-6">
-          <div className="mt-3 px-8 py-2   flex flex-col">
+        <div className="flex flex-col sm:flex-row items-center gap-2 justify-start mb-6">
+          <div className="mt-3 px-8 py-2">
             <select
               id="filter"
               value={filter}
@@ -102,7 +97,7 @@ const ProgrammeComponent = () => {
               <option value="bestsellers">Bestsellers</option>
             </select>
           </div>
-          <div className="p-2 flex flex-col">
+          <div className="p-2">
             <input
               type="text"
               id="search"
@@ -111,7 +106,7 @@ const ProgrammeComponent = () => {
               onChange={(e) => setSearchBox(e.target.value)}
             />
           </div>
-          <div className=" p-2 flex flex-col justify-center items-center">
+          <div className="p-2">
             <select
               id="category"
               className="px-8 py-2 border bg-tertiary rounded-lg border-gray-300"
@@ -130,19 +125,55 @@ const ProgrammeComponent = () => {
               <option value="Calisthenics">Calisthenics</option>
             </select>
           </div>
-
-          <div className="absolute inset-x-0 bottom-0 h-[14rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
         </div>
-        <div className="mt-4 r">
+        <div className="mt-4">
           <ProgrammeComponentCard
-            programmeData={filteredProgrammes}
+            programmeData={currentItems}
             filter={filter}
           />
+        </div>
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-6 space-x-4">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 rounded-lg bg-gray-200 text-black disabled:bg-gray-300"
+          >
+            Previous
+          </button>
+          <div className="flex items-center space-x-2">
+            {/* Page Number Buttons */}
+            {currentPage > 1 && (
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-4 py-2 rounded-lg bg-gray-200 text-black"
+              >
+                {currentPage - 1}
+              </button>
+            )}
+            <span className="px-4 py-2 rounded-lg bg-orange-600 text-white">
+              {currentPage}
+            </span>
+            {currentPage < totalPages && (
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-2 rounded-lg bg-gray-200 text-black"
+              >
+                {currentPage + 1}
+              </button>
+            )}
+          </div>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 rounded-lg bg-gray-200 text-black disabled:bg-gray-300"
+          >
+            Next
+          </button>
         </div>
       </div>
       <div className="relative bg-gray-950">
         <EquipCard />
-        <div className="absolute inset-x-0 bottom-0 h-[14rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
       </div>
       <Footer />
     </div>

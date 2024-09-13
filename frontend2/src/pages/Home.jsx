@@ -13,6 +13,7 @@ import Faq from '../component/Faq';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
 import HomeSkeleton from './skeletons/HomeSkeleton';
+import { FaAngleDoubleDown } from 'react-icons/fa';
 
 const Home = () => {
   const { user } = useSelector((state) => state.user);
@@ -33,92 +34,61 @@ const Home = () => {
   return (
     <>
       {/* Starting Section */}
-      <div
-        className="relative h-[60vh] sm:h-[100vh]  w-[100vw] flex flex-col max-w-[100vw] overflow-hidden"
-        style={{
-          backgroundImage: `url("https://res.cloudinary.com/dzy51cqxa/image/upload/v1721622305/profile_photos/q8ma28tbtysrusbc6ysv.jpg")`,
-          backgroundPosition: '50%',
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          opacity: '90%',
-        }}
-      >
-        <div className="absolute inset-x-0 bottom-0 h-[34rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
+      <div className="relative w-full flex flex-col max-w-full  bg-gray-950 ">
         <Header />
         <div className="relative">
           {/* First Page Section */}
-          <div className="flex flex-col justify-start gap-8 z-200 font-[450] font-bebes mt-[20%] sm:mt-[10%] w-full overflow-hidden">
+          <div className="flex flex-col justify-center items-center gap-6 z-200  w-full px-4 sm:px-6 overflow-hidden">
+            {/* Headings */}
             <div className="text-white flex flex-col justify-start items-start">
-              <div className="flex justify-start ml-[4%] text-left text-[2.5rem] leading-none tracking-wide sm:text-[6rem] w-full overflow-hidden">
+              <div className="flex justify-start text-left text-[2rem] sm:text-[2rem] lg:text-[3rem] tracking-wide w-full font-bebes">
                 YOUR
-                <span className="relative ml-[2%] font-bebes text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 underline underline-offset-8">
-                  FITNESS
-                </span>
-              </div>
-
-              <div className="text-[2.5rem] ml-[4%] sm:text-[6rem] leading-none tracking-wide text-white overflow-hidden">
-                <span className="relative ml-[2%] font-bebes text-transparent bg-clip-text text-white hover:underline hover:underline-offset-8">
-                  LIBRARY
+                <span className="relative ml-2 bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 text-transparent underline underline-offset-8">
+                  FITNESS LIBRARY
                 </span>
               </div>
             </div>
 
-            <div className="text-paraColor flex flex-col justify-start w-[100%] overflow-hidden">
-              <p className="text-[1.2rem] w-[90%] sm:w-[85%] sm:text-[1.5rem] text-wrap ml-[4%]">
+            {/* Subtext */}
+            <div className="flex justify-center items-center ">
+              <p className="text-[1rem]  sm:text-[1.2rem] lg:text-[1.5rem] leading-tight sm:w-[100%] font-Arial text-gray-300">
                 Decades of fitness experience at your fingertips.
               </p>
-            </div>
-            <div className="text-white flex items-start justify-start sm:ml-[4%] ml-[2%] overflow-hidden w-full mt-1 sm:mt-8">
-              <Link
-                to={
-                  role === 'user'
-                    ? '/user/programmes'
-                    : `/trainer/programmes/${user.user._id}`
-                }
-              >
-                <button className="w-[12rem] sm:w-[18rem] h-[3rem] sm:h-[4rem] bg-orange-600 flex items-center rounded-sm">
-                  <span className="m-2 text-[0.8rem] sm:text-[1.5rem]">
-                    your own programs
-                  </span>
-                  <IoIosArrowRoundForward color="white" className="w-14 h-10" />
-                </button>
-              </Link>
+
+              {/* Button Section */}
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="h-[1vh] rounded-3xl bg-blue-800 shadow-2xl border-b border-red-500 shadow-blue-700 opacity-10"></div>
-
-      {/* Moving Cards Section */}
-      <div className="flex flex-col p-5 mb-[5%] bg-gray-950">
-        <div className="h-full w-full ml-4">
-          <Card title="Top Programs" backgroundColor="transparent" />
-        </div>
-        <Link to="/programmes">
-          <div className="flex justify-center items-center">
-            <div className="justify-center w-[8rem] sm:w-[10rem] h-[3rem] sm:h-[4rem] bg-orange-600 hover:bg-orange-800 flex items-center rounded-sm">
-              <span className="m-2 text-[1rem] sm:text-[2rem] text-white">
-                More
-              </span>
-
-              <IoIosArrowRoundForward color="white" className="w-14 h-10" />
-            </div>
+        {/* Moving Cards Section */}
+        <div className="flex flex-col p-5 font-bebes bg-gray-950">
+          <div className="h-full w-full ">
+            <Card title="Featured Programs" backgroundColor="transparent" />
           </div>
-        </Link>
-      </div>
+          <Link to="/programmes">
+            <div className="flex justify-center items-center">
+              <div className="justify-center w-[8rem] sm:w-[8rem] h-[2rem] sm:h-[3rem] bg-orange-600 rounded-xl hover:bg-orange-800 flex items-center">
+                <span className="m-2 text-[1rem] sm:text-[1rem] text-white">
+                  More
+                </span>
 
-      <div className="relative bg-gray-900">
-        <CategoriesCard />
-        <div className="absolute inset-x-0 bottom-0 h-[8rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
-      </div>
+                <IoIosArrowRoundForward color="white" className="w-10 h-6" />
+              </div>
+            </div>
+          </Link>
+        </div>
 
-      <div className="relative bg-gray-900">
-        <CreatorHomeComponent />
-        <div className="absolute inset-x-0 bottom-0 h-[2rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
-      </div>
+        <div className="relative bg-gray-950">
+          <CategoriesCard />
+          <div className="absolute inset-x-0 bottom-0 h-[8rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
+        </div>
 
-      {/*  <div
+        <div className="relative bg-gray-950">
+          <CreatorHomeComponent />
+          <div className="absolute inset-x-0 bottom-0 h-[2rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
+        </div>
+
+        {/*  <div
         style={{
           background:
             'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
@@ -127,22 +97,18 @@ const Home = () => {
         <DescriptionComponent />
       </div>*/}
 
-      <div className="bg-tertiary p-10">
-        <Faq />
-        <div className="absolute inset-x-0 bottom-0 h-[8rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
-      </div>
+        <div className=" p-10">
+          <Faq />
+          <div className="absolute inset-x-0 bottom-0 h-[8rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
+        </div>
 
-      {/* Review Card Section */}
-      <div
-        style={{
-          background:
-            'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-        }}
-      >
-        <ReviewCard />
-      </div>
-      <div className="relative">
-        <Footer />
+        {/* Review Card Section */}
+        <div>
+          <ReviewCard />
+        </div>
+        <div className="relative">
+          <Footer />
+        </div>
       </div>
     </>
   );

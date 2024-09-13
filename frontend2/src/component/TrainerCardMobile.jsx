@@ -15,17 +15,20 @@ const TrainerCardMobile = ({ searchQuery }) => {
   const [displayedTrainers, setDisplayedTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [hasMore, setHasMore] = useState(true);
-  const [displayCount, setDisplayCount] = useState(3);
-  const [showLoadMore, setShowLoadMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [itemsPerPage] = useState(3); // Number of items per page
+  const [hasMore, setHasMore] = useState(true); // Track if more pages are available
+  const [totalTrainers, setTotalTrainers] = useState(0); // Total number of trainers
 
   useEffect(() => {
     const fetchTrainerData = async () => {
       try {
         const response = await axios.get(`${backendapi}/api/trainer`);
         setTrainerDatas(response.data.trainers);
-        setDisplayedTrainers(response.data.trainers.slice(0, displayCount));
-        if (response.data.trainers.length <= displayCount) {
+        setTotalTrainers(response.data.trainers.length);
+        // Update displayed trainers based on the current page and items per page
+        setDisplayedTrainers(response.data.trainers.slice(0, itemsPerPage));
+        if (response.data.trainers.length <= itemsPerPage) {
           setHasMore(false);
         }
       } catch (err) {
@@ -37,34 +40,45 @@ const TrainerCardMobile = ({ searchQuery }) => {
     };
 
     fetchTrainerData();
-  }, [displayCount]);
+  }, [itemsPerPage]);
 
   useEffect(() => {
     // Filter trainers based on search query
     const filteredTrainers = trainerDatas.filter((trainer) =>
       trainer?.user?.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    setDisplayedTrainers(filteredTrainers.slice(0, displayCount));
-    if (filteredTrainers.length <= displayCount) {
-      setHasMore(false);
-    } else {
-      setHasMore(true);
-    }
-  }, [searchQuery, trainerDatas, displayCount]);
 
-  const loadMore = () => {
-    setDisplayedTrainers(trainerDatas); // Show all trainers
-    setDisplayCount(trainerDatas.length); // Update displayCount to the total number
-    setShowLoadMore(false); // Hide "Load More" button
-    setHasMore(false); // No more trainers to load
+    // Calculate the start and end index for the current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    setDisplayedTrainers(filteredTrainers.slice(startIndex, endIndex));
+    setHasMore(filteredTrainers.length > endIndex);
+  }, [searchQuery, trainerDatas, currentPage, itemsPerPage]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
-  const loadLess = () => {
-    const initialDisplayCount = 3;
-    setDisplayedTrainers(trainerDatas.slice(0, initialDisplayCount));
-    setDisplayCount(initialDisplayCount);
-    setShowLoadMore(true); // Show "Load More" button
-    setHasMore(true); // Enable "Load More" if more trainers exist
+  const renderPageNumbers = () => {
+    const totalPages = Math.ceil(totalTrainers / itemsPerPage);
+    let pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-4 py-2 rounded-lg ${
+            currentPage === i
+              ? 'bg-orange-600 text-white'
+              : 'bg-gray-300 text-black'
+          } hover:bg-orange-700`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pageNumbers;
   };
 
   if (loading) {
@@ -78,6 +92,8 @@ const TrainerCardMobile = ({ searchQuery }) => {
   if (error) {
     return <div>{error}</div>;
   }
+
+  const totalPages = Math.ceil(totalTrainers / itemsPerPage);
 
   return (
     <div className="grid grid-cols-1 gap-4 mt-4">
@@ -146,21 +162,22 @@ const TrainerCardMobile = ({ searchQuery }) => {
           </div>
         </div>
       ))}
-      <div className="flex justify-center  mt-4 space-x-4">
-        {showLoadMore && (
+      <div className="flex justify-center mt-4 space-x-4">
+        {currentPage > 1 && (
           <button
-            onClick={loadMore}
+            onClick={() => handlePageChange(currentPage - 1)}
             className="px-4 py-2 bg-orange-600 text-center flex justify-center items-center text-white rounded-lg"
           >
-            Load More
+            Previous
           </button>
         )}
-        {!showLoadMore && (
+        {renderPageNumbers()}
+        {currentPage < totalPages && (
           <button
-            onClick={loadLess}
-            className="px-4 py-2 bg-secondary text-white rounded-lg"
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="px-4 py-2 bg-orange-600 text-center flex justify-center items-center text-white rounded-lg"
           >
-            Load Less
+            Next
           </button>
         )}
       </div>

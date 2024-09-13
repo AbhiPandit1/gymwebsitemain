@@ -7,6 +7,8 @@ import {
 } from 'react-icons/io';
 import CardSkeleton from '../pages/skeletons/CardSkeleton';
 import { Link } from 'react-router-dom';
+import { IoArrowDownSharp } from 'react-icons/io5';
+import { FaUserCircle } from 'react-icons/fa';
 
 const Card = ({ title, backgroundColor }) => {
   const backendapi = import.meta.env.VITE_BACKEND_URL;
@@ -15,7 +17,7 @@ const Card = ({ title, backgroundColor }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [loading, setLoading] = useState(true); // State for loading
+  const [loading, setLoading] = useState(true);
 
   const containerRef = useRef(null);
 
@@ -27,10 +29,10 @@ const Card = ({ title, backgroundColor }) => {
           (item) => item.isSelected === true
         );
         setData(filteredData);
-        setLoading(false); // Data fetched, set loading to false
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
-        setLoading(false); // Handle error and stop loading
+        setLoading(false);
       }
     };
 
@@ -109,13 +111,14 @@ const Card = ({ title, backgroundColor }) => {
   }, [isDragging]);
 
   if (loading) {
-    return <CardSkeleton />; // Return skeleton loader while loading
+    return <CardSkeleton />;
   }
 
   return (
-    <div className="relative">
-      <h1 className="text-white font-extrabold text-[40px] sm:text-[48px] mt-10 sm:mt-20 border-b-2 border-orange-500 text-center">
+    <div className="relative rounded-[20px]">
+      <h1 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[32px] sm:mt-20 text-center">
         {title}
+        <IoArrowDownSharp className="hover:bg-orange-600 rounded-3xl " />
       </h1>
 
       <button
@@ -131,32 +134,33 @@ const Card = ({ title, backgroundColor }) => {
       >
         <div className="flex transition-transform duration-300 ease-in-out">
           {data.map((card) => (
-            <div
-              key={card?._id}
-              className={`bg-${backgroundColor} brightness-100 rounded-[2px] max-w-[300px]  m-[4rem] p-4 h-[400px] border-y-2 flex-shrink-0 border-b-4 border-orange-400 hover:border hover:border-orange-600 transition-all`}
-            >
-              <img
-                src={card?.categoryPhoto?.url}
-                alt={card.type}
-                className="h-[300px] w-[250px] object-cover rounded-[12px] brightness-100"
-              />
-              <div className="p-4 flex justify-between  items-center flex-col ">
-                <h2 className="text-xl text-white font-sans font-bold flex justify-center items-center">
-                  {card?.category[0]}
-                </h2>
-                <Link to={`/programme/${card._id}`}>
-                  <h1 className="text-white font-orbitron flex justify-center items-center">
-                    know more
-                    <span>
-                      <IoIosArrowRoundForward
-                        color="orange"
-                        className="w-10 h-8 sm:w-14 sm:h-10"
-                      />
-                    </span>
-                  </h1>
-                </Link>
+            <Link to={`/programme/${card._id}`} key={card._id}>
+              <div
+                className={`relative bg-${backgroundColor} brightness-100 min-w-[300px] max-w-[300px] m-[1rem] sm:m-[2rem] p-0 h-[500px] border-y-2 flex-shrink-0 border-4 rounded-lg border-orange-400 hover:border hover:border-orange-600 transition-all`}
+              >
+                {card.categoryPhoto?.url ? (
+                  <img
+                    src={card.categoryPhoto.url}
+                    alt={card.type}
+                    className="h-full w-full object-cover rounded-[2px] brightness-100"
+                  />
+                ) : (
+                  <div className="h-full w-full flex justify-center items-center">
+                    <FaUserCircle className="text-orange-600 w-full h-full" />
+                  </div>
+                )}
+                <div className="absolute bottom-2 left-2 right-2 flex justify-between items-center bg-opacity-40">
+                  <h2 className="text-2xl text-white font-sans font-bold">
+                    {card.category[0]}
+                  </h2>
+                  <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
+                    <p className="text-2xl font-bold text-yellow-600">
+                      ${card.price}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -135,7 +135,7 @@ const CategoriesCard = () => {
 
       {/* Card Container */}
       <div
-        className="gap-4 sm:gap-8 flex overflow-x-auto mt-4 rounded-lg p-6 w-full scrollbar-hide"
+        className="gap-2 sm:gap-4 flex overflow-x-auto mt-4 rounded-lg p-6 w-full scrollbar-hide"
         ref={scrollContainerRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
