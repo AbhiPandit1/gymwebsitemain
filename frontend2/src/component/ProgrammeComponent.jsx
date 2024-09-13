@@ -81,7 +81,7 @@ const ProgrammeComponent = () => {
         para="Explore our wide range of programs"
         title="Programs"
       />
-      <div className="w-full flex flex-col bg-gray-950 items-center  text-white p-5 min-h-screen max-w-full mx-auto rounded-xl relative">
+      <div className="w-full flex flex-col bg-gray-950 items-center  text-white p-5 min-h-screen max-w-full mx-auto rounded-xl relative z-40">
         <h1 className="text-2xl font-bold mb-6">Our Programs</h1>
         <div className="flex flex-col sm:flex-row items-center gap-2 justify-start mb-6">
           <div className="mt-3 px-8 py-2">

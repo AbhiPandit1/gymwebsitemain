@@ -23,8 +23,8 @@ const Trainers = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center text-white min-h-screen w-[100%] min-w-[100%] mx-auto rounded-xl p-10">
-      <div className="flex flex-col ">
+    <div className="flex flex-col items-center text-white min-h-screen w-[100%] min-w-[100%] mx-auto rounded-xl p-10 ">
+      <div className="flex flex-col z-40">
         <h1 className="text-3xl text-center ">Our Creators</h1>
         <div className="flex flex-col justify-center w-[100%] sm:w-[60%] sm:ml-[20%]">
           <div className="flex justify-center items-start mt-5">
