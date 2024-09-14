@@ -60,7 +60,13 @@ const Menu = () => {
   }, [user]);
 
   return (
-    <div className="bg-black text-white min-h-[30vh] min-w-[20vw] absolute p-8 top-[140%] right-0 rounded-xl border border-gray-700 shadow-lg z-50">
+    <div
+      className=" text-white min-h-[30vh] min-w-[20vw] absolute p-8 top-[140%] right-0 rounded-xl border border-gray-700 shadow-lg z-50"
+      style={{
+        background:
+          'linear-gradient(270deg, #172438 100%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+      }}
+    >
       <div className="flex flex-col mb-5 z-50">
         <div className="flex justify-between items-center border-b border-gray-600 pb-4 mb-4">
           <div className="font-sans font-semibold text-lg">
