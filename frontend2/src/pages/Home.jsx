@@ -34,7 +34,13 @@ const Home = () => {
   return (
     <>
       {/* Starting Section */}
-      <div className="relative w-full flex flex-col max-w-full  bg-gray-950 ">
+      <div
+        className="relative w-full flex flex-col max-w-full  bg-gray-950 "
+        style={{
+          background:
+            'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+        }}
+      >
         <Header />
         <div className="relative">
           {/* First Page Section */}
@@ -61,8 +67,8 @@ const Home = () => {
         </div>
 
         {/* Moving Cards Section */}
-        <div className="flex flex-col p-5 font-bebes bg-gray-950">
-          <div className="h-full w-full ">
+        <div className="flex flex-col p-5 font-bebes ">
+          <div className="h-full w-full ml-4">
             <Card title="Featured Programs" backgroundColor="transparent" />
           </div>
           <Link to="/programmes">
@@ -78,14 +84,24 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="relative bg-gray-950">
+        <div
+          className="relative "
+          style={{
+            background:
+              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          }}
+        >
           <CategoriesCard />
-          <div className="absolute inset-x-0 bottom-0 h-[8rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
         </div>
 
-        <div className="relative bg-gray-950">
+        <div
+          className="relative"
+          style={{
+            background:
+              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          }}
+        >
           <CreatorHomeComponent />
-          <div className="absolute inset-x-0 bottom-0 h-[2rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
         </div>
 
         {/*  <div
@@ -97,13 +113,23 @@ const Home = () => {
         <DescriptionComponent />
       </div>*/}
 
-        <div className=" p-10">
+        <div
+          className="p-10"
+          style={{
+            background:
+              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          }}
+        >
           <Faq />
-          <div className="absolute inset-x-0 bottom-0 h-[8rem] bg-gradient-to-t from-black to-transparent pointer-events-none" />
         </div>
 
         {/* Review Card Section */}
-        <div>
+        <div
+          style={{
+            background:
+              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          }}
+        >
           <ReviewCard />
         </div>
         <div className="relative">

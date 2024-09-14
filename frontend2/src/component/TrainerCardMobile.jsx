@@ -70,7 +70,7 @@ const TrainerCardMobile = ({ searchQuery }) => {
           onClick={() => handlePageChange(i)}
           className={`px-4 py-2 rounded-lg ${
             currentPage === i
-              ? 'bg-orange-600 text-white'
+              ? 'bg-gradient-to-r from-orange-400 to-orange-600  text-white'
               : 'bg-gray-300 text-black'
           } hover:bg-orange-700`}
         >
@@ -166,7 +166,7 @@ const TrainerCardMobile = ({ searchQuery }) => {
         {currentPage > 1 && (
           <button
             onClick={() => handlePageChange(currentPage - 1)}
-            className="px-4 py-2 bg-orange-600 text-center flex justify-center items-center text-white rounded-lg"
+            className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600  text-center flex justify-center items-center text-white rounded-lg"
           >
             Previous
           </button>
@@ -175,7 +175,7 @@ const TrainerCardMobile = ({ searchQuery }) => {
         {currentPage < totalPages && (
           <button
             onClick={() => handlePageChange(currentPage + 1)}
-            className="px-4 py-2 bg-orange-600 text-center flex justify-center items-center text-white rounded-lg"
+            className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600  text-center flex justify-center items-center text-white rounded-lg"
           >
             Next
           </button>

@@ -75,13 +75,24 @@ const ProgrammeComponent = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+      }}
+    >
       <HeroSection
         category="Programs"
         para="Explore our wide range of programs"
         title="Programs"
       />
-      <div className="w-full flex flex-col bg-gray-950 items-center  text-white p-5 min-h-screen max-w-full mx-auto rounded-xl relative z-40">
+      <div
+        className="w-full flex flex-col bg-gray-950 items-center  text-white p-5 min-h-screen max-w-full mx-auto rounded-xl relative z-40"
+        style={{
+          background:
+            'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+        }}
+      >
         <h1 className="text-2xl font-bold mb-6">Our Programs</h1>
         <div className="flex flex-col sm:flex-row items-center gap-2 justify-start mb-6">
           <div className="mt-3 px-8 py-2">
@@ -172,7 +183,13 @@ const ProgrammeComponent = () => {
           </button>
         </div>
       </div>
-      <div className="relative bg-gray-950">
+      <div
+        className="relative"
+        style={{
+          background:
+            'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+        }}
+      >
         <EquipCard />
       </div>
       <Footer />

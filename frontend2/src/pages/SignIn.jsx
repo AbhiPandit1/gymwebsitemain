@@ -148,15 +148,18 @@ const SignIn = () => {
         </div>
       </Modal>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 font-bebes min-h-screen overflow-auto bg-primary py-10 px-4 sm:px-10">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 font-bebes min-h-screen overflow-auto  py-10 px-4 sm:px-10"
+          style={{
+            background:
+              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          }}
+        >
           <div className="flex flex-col pt-8 gap-6 sm:gap-8">
             <LoginLogo header="Sign up" />
 
             <div className="flex flex-col sm:ml-20">
-              <label
-                htmlFor="email"
-                className="text-white text-lg font-bold"
-              >
+              <label htmlFor="email" className="text-white text-lg font-bold">
                 Email
               </label>
               <div className="relative">

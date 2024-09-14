@@ -84,19 +84,19 @@ const Header = () => {
         {!isSignedIn ? (
           <>
             <Link to="/signin">
-              <button className="h-[3rem] w-[8rem] rounded-lg text-white bg-orange-600 hover:bg-orange-800">
+              <button className="h-[3rem] w-[8rem] rounded-lg text-white bg-gradient-to-r from-orange-400 to-orange-600  hover:bg-orange-800">
                 Sign In
               </button>
             </Link>
             <Link to="/login">
-              <button className="h-[3rem] w-[8rem] rounded-lg border-2 border-orange-600 text-white bg-tansparent hover:bg-orange-800">
+              <button className="h-[3rem] w-[8rem] rounded-lg border-2 bg-gradient-to-r from-orange-400 to-orange-600  text-white bg-tansparent hover:bg-orange-800">
                 Log In
               </button>
             </Link>
           </>
         ) : (
           <button
-            className="h-[3rem] w-[8rem] rounded-lg text-white bg-orange-600 hover:bg-orange-800"
+            className="h-[3rem] w-[8rem] rounded-lg text-white bg-gradient-to-r from-orange-400 to-orange-600  hover:bg-orange-800"
             onClick={handleSignOut}
           >
             Sign Out
