@@ -12,7 +12,7 @@ const ProgrammeComponent = () => {
   const [filter, setFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [itemsPerPage] = useState(3); // Number of items per page
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -39,6 +39,7 @@ const ProgrammeComponent = () => {
     setCategoryFilter(e.target.value);
   };
 
+  // Filter Programmes
   const filteredProgrammes = programmeData.filter((programme) => {
     const matchesSearch = programme.title
       ?.toLowerCase()
@@ -49,14 +50,32 @@ const ProgrammeComponent = () => {
     return matchesSearch && matchesCategory;
   });
 
+  console.log('Filtered Programmes Length:', filteredProgrammes.length); // Debugging
+
+  // Sort Programmes
+  const sortedProgrammes = [...filteredProgrammes].sort((a, b) => {
+    if (filter === 'priceLowToHigh') {
+      return a.price - b.price;
+    }
+    if (filter === 'priceHighToLow') {
+      return b.price - a.price;
+    }
+    if (filter === 'bestsellers') {
+      return b.sales - a.sales; // Assuming `sales` or a similar field for bestseller logic
+    }
+    return 0;
+  });
+
   // Pagination Logic
+  const totalPages = Math.ceil(filteredProgrammes.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredProgrammes.slice(
+  const currentItems = sortedProgrammes.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(filteredProgrammes.length / itemsPerPage);
+
+  console.log('Current Items:', currentItems); // Debugging
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
@@ -74,6 +93,43 @@ const ProgrammeComponent = () => {
     setCurrentPage(pageNumber);
   };
 
+  // Render page numbers with a limit
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const pageLimit = 5; // Limit visible page numbers
+
+    let startPage = Math.max(currentPage - Math.floor(pageLimit / 2), 1);
+    let endPage = Math.min(startPage + pageLimit - 1, totalPages);
+
+    if (endPage - startPage < pageLimit) {
+      startPage = Math.max(endPage - pageLimit + 1, 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-4 py-2 rounded-lg ${
+            currentPage === i
+              ? 'bg-orange-600 text-white'
+              : 'bg-gray-200 text-black'
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return (
+      <div className="flex items-center space-x-2">
+        {startPage > 1 && <span className="px-3">...</span>}
+        {pageNumbers}
+        {endPage < totalPages && <span className="px-3">...</span>}
+      </div>
+    );
+  };
+
   return (
     <div
       style={{
@@ -87,7 +143,7 @@ const ProgrammeComponent = () => {
         title="Programs"
       />
       <div
-        className="w-full flex flex-col bg-gray-950 items-center  text-white p-5 min-h-screen max-w-full mx-auto rounded-xl relative z-40"
+        className="w-full flex flex-col bg-gray-950 items-center text-white p-5 min-h-screen max-w-full mx-auto rounded-xl relative z-40"
         style={{
           background:
             'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
@@ -139,7 +195,7 @@ const ProgrammeComponent = () => {
         </div>
         <div className="mt-4">
           <ProgrammeComponentCard
-            programmeData={currentItems}
+            programmeData={currentItems} // Pass paginated data
             filter={filter}
           />
         </div>
@@ -152,28 +208,9 @@ const ProgrammeComponent = () => {
           >
             Previous
           </button>
-          <div className="flex items-center space-x-2">
-            {/* Page Number Buttons */}
-            {currentPage > 1 && (
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                className="px-4 py-2 rounded-lg bg-gray-200 text-black"
-              >
-                {currentPage - 1}
-              </button>
-            )}
-            <span className="px-4 py-2 rounded-lg bg-orange-600 text-white">
-              {currentPage}
-            </span>
-            {currentPage < totalPages && (
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                className="px-4 py-2 rounded-lg bg-gray-200 text-black"
-              >
-                {currentPage + 1}
-              </button>
-            )}
-          </div>
+
+          {renderPageNumbers()}
+
           <button
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
@@ -182,16 +219,11 @@ const ProgrammeComponent = () => {
             Next
           </button>
         </div>
+        <div className="text-center mt-2">
+          Page {currentPage} of {totalPages}
+        </div>
       </div>
-      <div
-        className="relative"
-        style={{
-          background:
-            'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-        }}
-      >
-        <EquipCard />
-      </div>
+      <EquipCard />
       <Footer />
     </div>
   );

@@ -83,15 +83,15 @@ const TrainerProfile = () => {
           <div className="relative flex items-center z-10">
             <div className="w-32 h-32 flex-shrink-0">
               <img
-                src={trainer.imageUrl}
+                src={trainer?.imageUrl}
                 alt="Trainer"
                 className="w-full h-full rounded-full border-4 border-white shadow-lg object-cover"
               />
             </div>
             <div className="ml-6">
-              <h2 className="text-4xl font-extrabold mb-2">{trainer.name}</h2>
+              <h2 className="text-4xl font-extrabold mb-2">{trainer?.name}</h2>
               <p className="text-xl text-gray-300 mb-4">
-                {trainer.totalReviews} Reviews
+                {trainer?.totalReviews} Reviews
               </p>
               <button className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-500 transition duration-200">
                 Follow Trainer
@@ -105,27 +105,27 @@ const TrainerProfile = () => {
           <h3 className="text-2xl font-bold mb-4">Trainer's Programmes</h3>
           <ul>
             {trainerDatas.length > 0 ? (
-              trainerDatas.map((programme) => (
+              trainerDatas?.map((programme) => (
                 <li
-                  key={programme._id}
+                  key={programme?._id}
                   className="p-4 mb-4 bg-gray-800 rounded-lg shadow-lg"
                 >
                   <div className="flex items-center space-x-4 mb-4">
                     <div className="w-20 h-20 flex-shrink-0">
                       <img
-                        src={programme.categoryPhoto.url}
-                        alt={programme.category.join(', ')}
+                        src={programme?.categoryPhoto?.url}
+                        alt={programme?.category.join(', ')}
                         className="w-full h-full rounded-lg object-cover"
                       />
                     </div>
                     <div>
                       <h4 className="text-xl font-semibold">
-                        {programme.category.join(', ')}
+                        {programme?.category.join(', ')}
                       </h4>
-                      <p>{programme.desc}</p>
+                      <p>{programme?.desc}</p>
                       {programme._id !== id && (
                         <p className="text-sans text-[2rem] font-sans font-extrabold">
-                          ${programme.price}
+                          ${programme?.price}
                         </p>
                       )}
                     </div>
@@ -150,7 +150,7 @@ const TrainerProfile = () => {
         </div>
 
         {/* Conditionally render the ReviewForm */}
-        {user && user.user.role === 'user' && (
+        {user && user?.user?.role === 'user' && (
           <div className="mt-8 mx-5">
             <ReviewForm />
           </div>

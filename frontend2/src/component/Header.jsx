@@ -75,7 +75,7 @@ const Header = () => {
             <Link
               key={item.id}
               to={item.link}
-              className="flex flex-col items-center text-[1.5rem] text-white no-underline transition-colors duration-300 hover:underline-offset-4 hover:underline hover:text-orange-600"
+              className="flex flex-col items-center text-[1.5rem] text-white no-underline transition-colors duration-300 hover:underline-offset-4  hover:text-orange-400"
             >
               <span className="text-md font-extrabold">{item.name}</span>
             </Link>

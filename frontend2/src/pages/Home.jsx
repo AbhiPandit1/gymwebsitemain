@@ -44,7 +44,7 @@ const Home = () => {
         <Header />
         <div className="relative">
           {/* First Page Section */}
-          <div className="flex flex-col justify-center items-center gap-6 z-200  w-full px-4 sm:px-6 overflow-hidden">
+          <div className="flex flex-col justify-center items-center gap-6 w-full px-4 sm:px-6 overflow-hidden">
             {/* Headings */}
             <div className="text-white flex flex-col justify-start items-start">
               <div className="flex justify-start text-left text-[2rem] sm:text-[2rem] lg:text-[3rem] tracking-wide w-full font-bebes">

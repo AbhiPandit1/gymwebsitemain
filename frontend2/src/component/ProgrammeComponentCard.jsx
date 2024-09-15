@@ -100,7 +100,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                 </div>
 
                 <Link to={`/programme/${card._id}`} className="relative z-10">
-                  <button className="w-[3.6rem] h-[3.2rem] bg-gray-950 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 flex items-center justify-center rounded-xl">
+                  <button className="w-[3.6rem] h-10 sm:h-[3.2rem] bg-gray-950 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 flex items-center justify-center rounded-xl">
                     <IoIosArrowRoundForward
                       color="white"
                       className="w-10 sm:w-14 h-8 sm:h-10"

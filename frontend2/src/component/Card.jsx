@@ -5,10 +5,9 @@ import {
   IoIosArrowBack,
   IoIosArrowForward,
 } from 'react-icons/io';
-import CardSkeleton from '../pages/skeletons/CardSkeleton';
 import { Link } from 'react-router-dom';
-import { IoArrowDownSharp } from 'react-icons/io5';
 import { FaUserCircle } from 'react-icons/fa';
+import CardSkeleton from '../pages/skeletons/CardSkeleton';
 
 const Card = ({ title, backgroundColor }) => {
   const backendapi = import.meta.env.VITE_BACKEND_URL;
@@ -115,17 +114,16 @@ const Card = ({ title, backgroundColor }) => {
   }
 
   return (
-    <div className="relative rounded-[20px]">
-      <h1 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[32px] sm:mt-20 text-center">
+    <div className="relative rounded-lg shadow-lg">
+      <h1 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[32px] text-center mb-4">
         {title}
-        <IoArrowDownSharp className="hover:bg-orange-600 rounded-3xl " />
       </h1>
 
       <button
         onClick={scrollLeftFunc}
-        className="hidden sm:block absolute left-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-10"
+        className="hidden sm:block absolute left-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-3 rounded-full hover:bg-orange-600 transition-colors z-10 shadow-lg"
       >
-        <IoIosArrowBack color="white" className="w-6 h-6 sm:w-10 sm:h-10" />
+        <IoIosArrowBack color="white" className="w-8 h-8" />
       </button>
 
       <div
@@ -136,25 +134,28 @@ const Card = ({ title, backgroundColor }) => {
           {data.map((card) => (
             <Link to={`/programme/${card._id}`} key={card._id}>
               <div
-                className={`relative bg-${backgroundColor} brightness-100 min-w-[300px] max-w-[300px] m-[1rem] sm:m-[2rem] p-0 h-[500px] border-y-2 flex-shrink-0 border-4 rounded-lg border-orange-400 hover:border hover:border-orange-600 transition-all`}
+                className={`relative bg-${backgroundColor} brightness-100 min-w-[250px] max-w-[200px] m-[1rem] sm:m-[2rem] p-0 h-[350px] border-y-2 flex-shrink-0 border-4 rounded-lg border-orange-400 hover:border-orange-600 transition-all transform hover:scale-105 hover:shadow-lg`}
               >
                 {card.categoryPhoto?.url ? (
                   <img
                     src={card.categoryPhoto.url}
-                    alt={card.type}
-                    className="h-full w-full object-cover rounded-[2px] brightness-100"
+                    alt={card.title}
+                    className="h-full w-full object-cover rounded-lg"
                   />
                 ) : (
                   <div className="h-full w-full flex justify-center items-center">
                     <FaUserCircle className="text-orange-600 w-full h-full" />
                   </div>
                 )}
-                <div className="absolute bottom-2 left-2 right-2 flex justify-between items-center bg-opacity-40">
-                  <h2 className="text-2xl text-white font-sans font-bold">
-                    {card.category[0]}
+                <div className="absolute bottom-2 left-2 right-2 flex flex-col justify-between p-2 rounded-lg">
+                  <h2 className="text-xl text-white font-sans font-bold mb-1">
+                    {card.title}
                   </h2>
+                  <p className="text-sm text-gray-100 font-sans mb-2 font-extrabold">
+                    {card.trainer?.name}
+                  </p>
                   <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
-                    <p className="text-2xl font-bold text-yellow-600">
+                    <p className="text-xl font-bold text-yellow-600">
                       ${card.price}
                     </p>
                   </div>
@@ -167,9 +168,9 @@ const Card = ({ title, backgroundColor }) => {
 
       <button
         onClick={scrollRightFunc}
-        className="hidden sm:block absolute right-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-10"
+        className="hidden sm:block absolute right-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-3 rounded-full hover:bg-orange-600 transition-colors z-10 shadow-lg"
       >
-        <IoIosArrowForward color="white" className="w-6 h-6 sm:w-10 sm:h-10" />
+        <IoIosArrowForward color="white" className="w-8 h-8" />
       </button>
     </div>
   );
