@@ -12,12 +12,10 @@ import TrainerProfileSkeleton from '../../skeletons/TrainerProfileSkeleton';
 const PersonalTrainer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { trainerId } = useParams();
-  const { user } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state?.user);
   const navigate = useNavigate();
 
   const personalId = user?.user?._id;
-
-  console.log(user.user.profilePhoto.url);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);

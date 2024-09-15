@@ -5,11 +5,11 @@ import useDashboardLinks from '../../../../../hook/CreateDahsboardLinks';
 import DashboardHeader from '../../../../component/DashboardHeader';
 import PlanTable from './PlanTable';
 import DashboardComponent from '../../../../component/DashboardComponent';
-import { FaArrowRight } from 'react-icons/fa';
+import { BiSolidRightArrow } from 'react-icons/bi';
 import usePostDayPlan from '../../../../../hook/usePostDayPlan';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { BiSolidRightArrow } from 'react-icons/bi';
+import newLogo from '../../../../assets/NewLogo.png'; // Importing the logo
 
 const DynamicDayPlanComponent = () => {
   const { programmeId, id } = useParams();
@@ -24,28 +24,12 @@ const DynamicDayPlanComponent = () => {
   const [textSize, setTextSize] = useState(
     localStorage.getItem('textSize') || '18px'
   );
-  const [bgColor, setBgColor] = useState(
-    localStorage.getItem('bgColor') || '#000000'
-  );
 
-  // New state variables for table styling
-  const [tableHeadingColor, setTableHeadingColor] = useState(
-    localStorage.getItem('tableHeadingColor') || '#FFFFFF'
-  );
-  const [tableRowColor, setTableRowColor] = useState(
-    localStorage.getItem('tableRowColor') || '#000000'
-  );
-  const [tableColumnColor, setTableColumnColor] = useState(
-    localStorage.getItem('tableColumnColor') || '#000000'
-  );
-
-  const [planType, setPlanType] = useState('four');
   const [planData, setPlanData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const { user } = useSelector((state) => state.user);
-
   const { getDayPlan, updateDayPlan } = usePostDayPlan();
 
   useEffect(() => {
@@ -68,7 +52,7 @@ const DynamicDayPlanComponent = () => {
     const updatedPlanData = [...planData];
     updatedPlanData[dayIndex].exercises[exerciseIndex][field] = value;
 
-    const dayPlanId = updatedPlanData[dayIndex].id; // Ensure that `id` exists
+    const dayPlanId = updatedPlanData[dayIndex].id;
     try {
       await updateDayPlan(
         programmeId,
@@ -88,19 +72,7 @@ const DynamicDayPlanComponent = () => {
     localStorage.setItem('headingColor', headingColor);
     localStorage.setItem('textColor', textColor);
     localStorage.setItem('textSize', textSize);
-    localStorage.setItem('bgColor', bgColor);
-    localStorage.setItem('tableHeadingColor', tableHeadingColor);
-    localStorage.setItem('tableRowColor', tableRowColor);
-    localStorage.setItem('tableColumnColor', tableColumnColor);
-  }, [
-    headingColor,
-    textColor,
-    textSize,
-    bgColor,
-    tableHeadingColor,
-    tableRowColor,
-    tableColumnColor,
-  ]);
+  }, [headingColor, textColor, textSize]);
 
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
@@ -108,28 +80,52 @@ const DynamicDayPlanComponent = () => {
 
   const handleDownload = () => {
     const doc = new jsPDF();
+    doc.setTextColor(headingColor);
+    doc.rect(
+      0,
+      0,
+      doc.internal.pageSize.getWidth(),
+      doc.internal.pageSize.getHeight(),
+      'F'
+    ); // 'F' means fill
+
+    // Adding the logo at the top
+    const logoWidth = 50; // Define desired logo width
+    const logoHeight = 20; // Define desired logo height
+    const logoXPosition = 80; // Centering the logo horizontally
+    const logoYPosition = 10; // Y position at the top
+
+    doc.addImage(
+      newLogo,
+      'PNG',
+      logoXPosition,
+      logoYPosition,
+      logoWidth,
+      logoHeight
+    ); // Add logo
     doc.setFontSize(20);
     doc.setTextColor(headingColor);
-    doc.text('Training Plan', 14, 22);
+    doc.text('Training Plan', 14, 40);
 
-    let startY = 32;
+    let startY = 50;
 
     planData.forEach((dayPlan) => {
       doc.setFontSize(18);
-      doc.setTextColor(headingColor);
+
+      doc.setFillColor(240, 240, 240);
       doc.text(dayPlan.day, 14, startY);
 
       const tableStartY = startY + 10;
 
       doc.setFontSize(14);
-      doc.setTextColor(tableHeadingColor);
+      doc.setTextColor(textColor);
       doc.autoTable({
         startY: tableStartY,
         head: [['Exercise', 'Sets', 'Reps']],
         body: dayPlan.exercises.map((exercise) => [
-          { content: exercise.name, styles: { textColor: tableColumnColor } },
-          { content: exercise.sets, styles: { textColor: tableRowColor } },
-          { content: exercise.reps, styles: { textColor: tableRowColor } },
+          exercise.name,
+          exercise.sets,
+          exercise.reps,
         ]),
         theme: 'striped',
         styles: { fontSize: 12 },
@@ -142,33 +138,23 @@ const DynamicDayPlanComponent = () => {
   };
 
   const handleReset = () => {
-    setHeadingColor('#ffffff');
-    setTextColor('#ffffff');
+    setHeadingColor('#000000');
+    setTextColor('#000000');
     setTextSize('18px');
-    setBgColor('#1a202c');
-    setTableHeadingColor('#000000');
-    setTableRowColor('#000000');
-    setTableColumnColor('#000000');
-    setPlanType('four');
-
     localStorage.removeItem('headingColor');
     localStorage.removeItem('textColor');
     localStorage.removeItem('textSize');
-    localStorage.removeItem('bgColor');
-    localStorage.removeItem('tableHeadingColor');
-    localStorage.removeItem('tableRowColor');
-    localStorage.removeItem('tableColumnColor');
   };
 
   return (
     <div className="grid grid-cols-9 h-screen max-w-[100vw]  text-white font-sans bg-gray-900">
       <div
-        className={`transition-transform duration-300 bg-gray-900   ${
+        className={`transition-transform duration-300 bg-gray-900 ${
           hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
         }`}
       >
         <DashboardComponent
-          dashBoardLink={dashBoardLink} // Fixed variable name
+          dashBoardLink={dashBoardLink}
           hoverDashboard={hoverDashboard}
           setHoverDashboard={setHoverDashboard}
         />
@@ -197,93 +183,47 @@ const DynamicDayPlanComponent = () => {
           )}
           {!loading && !error && planData?.length > 0 && (
             <>
-              <div className="mb-4 flex flex-col space-y-4 gap-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                <div className="flex mb-4">
-                  <label>Heading Color:</label>
-                  <input
-                    type="color"
-                    value={headingColor}
-                    onChange={(e) => setHeadingColor(e.target.value)}
-                    className="ml-2 w-16"
-                  />
-                </div>
-                <div className="flex mb-4">
-                  <label>Text Color:</label>
-                  <input
-                    type="color"
-                    value={textColor}
-                    onChange={(e) => setTextColor(e.target.value)}
-                    className="ml-2 w-16"
-                  />
-                </div>
-
-                <div className="flex mb-4">
-                  <label className="flex items-center space-x-2">
-                    <span className="text-lg">Text Size:</span>
-                    <input
-                      type="number"
-                      value={parseInt(textSize)}
-                      onChange={(e) => setTextSize(`${e.target.value}px`)}
-                      className="w-24 p-2 border border-gray-400 rounded bg-gray-100 text-gray-800"
-                      placeholder="Enter size"
-                    />
-                  </label>
-                </div>
-                <div className="flex mb-4">
-                  <label className="flex items-center space-x-2">
-                    <span className="text-lg">Background Color:</span>
+              {/* Only allow customization if the user is a trainer */}
+              {user.user.role === 'trainer' && (
+                <div className="mb-4 flex flex-col space-y-4 gap-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+                  <div className="flex mb-4">
+                    <label>Heading Color:</label>
                     <input
                       type="color"
-                      value={bgColor}
-                      onChange={(e) => setBgColor(e.target.value)}
+                      value={headingColor}
+                      onChange={(e) => setHeadingColor(e.target.value)}
                       className="ml-2 w-16"
                     />
-                  </label>
-                </div>
-                <div className="flex mb-4">
-                  <label className="flex items-center space-x-2">
-                    <span className="text-lg">Table Heading Color:</span>
+                  </div>
+                  <div className="flex mb-4">
+                    <label>Text Color:</label>
                     <input
                       type="color"
-                      value={tableHeadingColor}
-                      onChange={(e) => setTableHeadingColor(e.target.value)}
+                      value={textColor}
+                      onChange={(e) => setTextColor(e.target.value)}
                       className="ml-2 w-16"
                     />
-                  </label>
+                  </div>
+                  <div className="flex mb-4">
+                    <label className="flex items-center space-x-2">
+                      <span className="text-lg">Text Size:</span>
+                      <input
+                        type="number"
+                        value={parseInt(textSize)}
+                        onChange={(e) => setTextSize(`${e.target.value}px`)}
+                        className="w-24 p-2 border border-gray-400 rounded bg-gray-100 text-gray-800"
+                        placeholder="Enter size"
+                      />
+                    </label>
+                  </div>
                 </div>
-                <div className="flex mb-4">
-                  <label className="flex items-center space-x-2">
-                    <span className="text-lg">Table Row Color:</span>
-                    <input
-                      type="color"
-                      value={tableRowColor}
-                      onChange={(e) => setTableRowColor(e.target.value)}
-                      className="ml-2 w-16"
-                    />
-                  </label>
-                </div>
-                <div className="flex mb-4">
-                  <label className="flex items-center space-x-2">
-                    <span className="text-lg">Table Column Color:</span>
-                    <input
-                      type="color"
-                      value={tableColumnColor}
-                      onChange={(e) => setTableColumnColor(e.target.value)}
-                      className="ml-2 w-16"
-                    />
-                  </label>
-                </div>
-              </div>
+              )}
               <PlanTable
                 planData={planData}
                 headingColor={headingColor}
                 textColor={textColor}
                 textSize={textSize}
-                bgColor={bgColor}
-                tableHeadingColor={tableHeadingColor}
-                tableRowColor={tableRowColor}
-                tableColumnColor={tableColumnColor}
-                isEditable={user.user._id === id} // Set to true if you want the table to be editable
+                isEditable={user.user._id === id}
                 onEditClick={(dayIndex, exerciseIndex, field, value) => {
                   console.log(
                     `Editing Day ${dayIndex}, Exercise ${exerciseIndex}: ${field} = ${value}`
@@ -294,16 +234,18 @@ const DynamicDayPlanComponent = () => {
           )}
           <button
             onClick={handleDownload}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+            className="mt-4 px-4 py-2 bg-orange-500 text-white rounded"
           >
             Download PDF
           </button>
-          <button
-            onClick={handleReset}
-            className="mt-4 ml-4 px-4 py-2 bg-gray-500 text-white rounded"
-          >
-            Reset
-          </button>
+          {user.user.role === 'trainer' && (
+            <button
+              onClick={handleReset}
+              className="mt-4 ml-4 px-4 py-2 bg-gray-500 text-white rounded"
+            >
+              Reset
+            </button>
+          )}
         </div>
       </div>
     </div>

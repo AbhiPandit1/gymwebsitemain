@@ -45,12 +45,12 @@ const VideoModal = ({ isOpen, videoUrl, onClose }) => {
 // PlanTable Component
 const PlanTable = ({
   planData = [],
-  headingColor = 'black',
-  textColor = 'white',
+  headingColor = 'indigo-600',
+  textColor = 'gray-800',
   textSize = '1rem',
-  tableHeadingColor = 'orange',
-  tableRowColor = 'white',
-  tableColumnColor = 'gray',
+  tableHeadingColor = 'purple-600',
+  tableRowColor = 'gray-50',
+  tableColumnColor = 'gray-100',
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
@@ -69,7 +69,7 @@ const PlanTable = ({
     heading: {
       color: tableHeadingColor || headingColor,
       fontSize: textSize,
-      backgroundColor: tableRowColor || 'transparent',
+      backgroundColor: tableRowColor || 'purple',
       borderColor: tableHeadingColor || headingColor,
     },
     cell: {
@@ -99,41 +99,16 @@ const PlanTable = ({
         <table className="w-full text-left border-collapse">
           <thead>
             <tr>
-              <th
-                scope="col"
-                className="border-b-2 py-2"
-                style={defaultStyles.heading}
-              >
-                Day
-              </th>
-              <th
-                scope="col"
-                className="border-b-2 py-2"
-                style={defaultStyles.heading}
-              >
-                Exercise
-              </th>
-              <th
-                scope="col"
-                className="border-b-2 py-2"
-                style={defaultStyles.heading}
-              >
-                Sets
-              </th>
-              <th
-                scope="col"
-                className="border-b-2 py-2"
-                style={defaultStyles.heading}
-              >
-                Reps
-              </th>
-              <th
-                scope="col"
-                className="border-b-2 py-2"
-                style={defaultStyles.heading}
-              >
-                Videos
-              </th>
+              {['Day', 'Exercise', 'Sets', 'Reps', 'Videos'].map((heading) => (
+                <th
+                  key={heading}
+                  scope="col"
+                  className="border-b-2 py-2"
+                  style={defaultStyles.heading}
+                >
+                  {heading}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -171,6 +146,7 @@ const PlanTable = ({
                       <button
                         onClick={() => handleVideoClick(exercise.videoUrl)}
                         className="text-blue-400 hover:underline"
+                        aria-label="Watch video"
                       >
                         Watch Video
                       </button>

@@ -29,7 +29,7 @@ const TrainerAboutSection = () => {
   const handleTrainerDetailSubmit = async (e) => {
     e.preventDefault();
 
-    if (!user || !user.token) {
+    if (!user || !user?.token) {
       toast.error('User authentication required.');
       return;
     }
@@ -46,12 +46,12 @@ const TrainerAboutSection = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `${backendapi}/api/trainer/about/${user.user._id}`,
+        `${backendapi}/api/trainer/about/${user?.user?._id}`,
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
         }
       );
@@ -61,8 +61,8 @@ const TrainerAboutSection = () => {
         navigate('/home');
       } else {
         toast.error('Failed to update trainer details');
-        if (response.data.message) {
-          toast.error(response.data.message);
+        if (response?.data?.message) {
+          toast.error(response?.data?.message);
         }
       }
     } catch (error) {
@@ -92,7 +92,7 @@ const TrainerAboutSection = () => {
           >
             Bio
           </label>
-          {paragraphs.map((paragraph, index) => (
+          {paragraphs?.map((paragraph, index) => (
             <div key={index} className="flex flex-col mb-4">
               <textarea
                 id={`paragraph-${index}`}
