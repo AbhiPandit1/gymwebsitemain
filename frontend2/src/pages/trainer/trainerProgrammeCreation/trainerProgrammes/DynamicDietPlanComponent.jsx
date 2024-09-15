@@ -6,16 +6,14 @@ import DashboardHeader from '../../../../component/DashboardHeader.jsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { useParams } from 'react-router-dom';
+import newLogo from '../../../../assets/NewLogo.png'; // Importing the logo
 
-const DynamicDietPlanComponent = () => {
+const DynamicDietPlanComponent = ({ user }) => {
   const dashBoardLink = useDashboardLinks();
   const [hoverDashboard, setHoverDashboard] = useState(false);
   const [headingColor, setHeadingColor] = useState('#FFA500'); // Orange in hex
   const [textColor, setTextColor] = useState('#FFFFFF'); // White in hex
   const [textSize, setTextSize] = useState('1.5rem'); // Size remains as '1.5rem'
-  const [rowColor, setRowColor] = useState('#1F1F1F'); // Gray-900 in hex
-  const [columnColor, setColumnColor] = useState('#4B4B4B'); // Gray-600 in hex
-  const [tableHeadingColor, setTableHeadingColor] = useState('#333333');
   const [dietPlanData, setDietPlanData] = useState([]);
   const { programmeId } = useParams();
 
@@ -23,13 +21,8 @@ const DynamicDietPlanComponent = () => {
   useEffect(() => {
     const loadSettings = () => {
       setHeadingColor(localStorage.getItem('headingColor') || '#FFA500');
-      setTextColor(localStorage.getItem('textColor') || '##FFFFFF');
+      setTextColor(localStorage.getItem('textColor') || '#FFFFFF');
       setTextSize(localStorage.getItem('textSize') || '1.5rem');
-      setRowColor(localStorage.getItem('rowColor') || '#1F1F1F');
-      setColumnColor(localStorage.getItem('columnColor') || '#4B4B4B');
-      setTableHeadingColor(
-        localStorage.getItem('tableHeadingColor') || '#333333'
-      );
     };
 
     loadSettings();
@@ -39,18 +32,10 @@ const DynamicDietPlanComponent = () => {
     localStorage.setItem('headingColor', headingColor);
     localStorage.setItem('textColor', textColor);
     localStorage.setItem('textSize', textSize);
-    localStorage.setItem('rowColor', rowColor);
-    localStorage.setItem('columnColor', columnColor);
-    localStorage.setItem('tableHeadingColor', tableHeadingColor);
-  }, [
-    headingColor,
-    textColor,
-    textSize,
-    rowColor,
-    columnColor,
-    tableHeadingColor,
-  ]);
+  }, [headingColor, textColor, textSize]);
+
   const backendapi = import.meta.env.VITE_BACKEND_URL;
+
   // Fetch diet plan data from API
   useEffect(() => {
     const fetchDietPlanData = async () => {
@@ -74,41 +59,84 @@ const DynamicDietPlanComponent = () => {
 
   const handleDownload = () => {
     const doc = new jsPDF();
+    doc.setFillColor(240, 240, 240); // Light grey background
+    doc.rect(
+      0,
+      0,
+      doc.internal.pageSize.getWidth(),
+      doc.internal.pageSize.getHeight(),
+      'F'
+    );
+    const logoWidth = 50; // Define desired logo width
+    const logoHeight = 20; // Define desired logo height
+    const logoXPosition = 80; // Centering the logo horizontally
+    const logoYPosition = 10; // Y position at the top
+
+    doc.addImage(
+      newLogo,
+      'PNG',
+      logoXPosition,
+      logoYPosition,
+      logoWidth,
+      logoHeight
+    ); // Add logo
+
+    // Set title
     doc.setFontSize(18);
     doc.text('Weekly Diet Plan', 14, 22);
 
+    // Define starting Y position for content
+    let yPosition = 32;
+
     dietPlanData.forEach((plan, index) => {
       doc.setFontSize(16);
-      doc.text(`Plan ${index + 1}`, 14, 32 + index * 40);
+      doc.text(`Plan ${index + 1}`, 14, yPosition);
+      yPosition += 10; // Add space after the plan title
+
       plan.days.forEach((day, dayIndex) => {
         doc.setFontSize(14);
-        doc.text(
-          day.day || `Day ${dayIndex + 1}`,
-          14,
-          42 + index * 40 + dayIndex * 30
-        );
+        doc.text(day.day || `Day ${dayIndex + 1}`, 14, yPosition);
+        yPosition += 10; // Add space before the table
+
         doc.setFontSize(12);
         const mealData = day.meals.map((meal) => [meal.time, meal.meal]);
+
+        // Draw table
         doc.autoTable({
-          startY: 46 + index * 40 + dayIndex * 30,
+          startY: yPosition,
           head: [['Time', 'Meal']],
           body: mealData.length > 0 ? mealData : [['No Data', 'No Data']],
           theme: 'striped',
-          headStyles: { fillColor: tableHeadingColor },
-          bodyStyles: { fillColor: rowColor, textColor: columnColor },
+          styles: { cellPadding: 2, fontSize: 12 },
+          columnStyles: { 0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto' } },
+          margin: { left: 14 },
         });
+
+        // Update yPosition to be after the table
+        yPosition = doc.autoTable.previous.finalY + 10; // Add space after the table
+
+        // Add extra space between days
+        yPosition += 16; // 2rem of space (16px)
       });
+
+      // Add extra space between plans
+      yPosition += 32; // 2rem of space (32px) between plans
+
+      // Check if we need to add a new page
+      if (yPosition > 250) {
+        // Assuming page height is around 270mm
+        doc.addPage();
+        yPosition = 20; // Reset yPosition to the top of the new page
+      }
     });
+
     doc.save('diet-plan.pdf');
   };
 
   const handleReset = () => {
-    setHeadingColor('#ffffff');
-    setTextColor('#ffffff');
-    setTextSize('16px');
-    setRowColor('#ffffff');
-    setColumnColor('#ffffff');
-    setTableHeadingColor('#333333');
+    setHeadingColor('#FFA500');
+    setTextColor('#FFFFFF');
+    setTextSize('1.5rem');
   };
 
   return (
@@ -140,83 +168,57 @@ const DynamicDietPlanComponent = () => {
 
         <div className="overflow-scroll w-[240vw] sm:w-[90vw] m-auto scrollbar-hide">
           {/* Settings Panel */}
-          <div className=" bg-gray-800 p-4 rounded-md shadow-md ">
-            <h3 className="text-lg font-semibold">Settings</h3>
-            <div className="flex justify-around items-center ">
-              <div>
-                <label className="block mb-1">Heading Color:</label>
-                <input
-                  type="color"
-                  value={headingColor}
-                  onChange={(e) => setHeadingColor(e.target.value)}
-                  className="w-24 h-8 border rounded"
-                />
-              </div>
-              <div>
-                <label className="block mb-1">Text Color:</label>
-                <input
-                  type="color"
-                  value={textColor}
-                  onChange={(e) => setTextColor(e.target.value)}
-                  className="w-24 h-8 border rounded"
-                />
-              </div>
-
-              <div>
-                <label className="flex flex-col mb-1  items-center space-x-2">
-                  <span>Text Size:</span>
+          {user?.role === 'trainer' && (
+            <div className="bg-gray-800 p-4 rounded-md shadow-md">
+              <h3 className="text-lg font-semibold">Settings</h3>
+              <div className="flex justify-around items-center">
+                <div>
+                  <label className="block mb-1">Heading Color:</label>
                   <input
-                    type="number"
-                    value={parseInt(textSize)}
-                    onChange={(e) => setTextSize(`${e.target.value}px`)}
-                    className="w-24 p-2 border border-gray-400 rounded bg-gray-100 text-gray-800"
-                    placeholder="Enter size"
+                    type="color"
+                    value={headingColor}
+                    onChange={(e) => setHeadingColor(e.target.value)}
+                    className="w-24 h-8 border rounded"
                   />
-                </label>
+                </div>
+                <div>
+                  <label className="block mb-1">Text Color:</label>
+                  <input
+                    type="color"
+                    value={textColor}
+                    onChange={(e) => setTextColor(e.target.value)}
+                    className="w-24 h-8 border rounded"
+                  />
+                </div>
+                <div>
+                  <label className="flex flex-col mb-1 items-center space-x-2">
+                    <span>Text Size:</span>
+                    <input
+                      type="number"
+                      value={parseInt(textSize)}
+                      onChange={(e) => setTextSize(`${e.target.value}px`)}
+                      className="w-24 p-2 border border-gray-400 rounded bg-gray-100 text-gray-800"
+                      placeholder="Enter size"
+                    />
+                  </label>
+                </div>
               </div>
-              <div>
-                <label className="block mb-1">Row Color:</label>
-                <input
-                  type="color"
-                  value={rowColor}
-                  onChange={(e) => setRowColor(e.target.value)}
-                  className="w-24 h-8 border rounded"
-                />
-              </div>
-              <div>
-                <label className="block mb-1">Column Text Color:</label>
-                <input
-                  type="color"
-                  value={columnColor}
-                  onChange={(e) => setColumnColor(e.target.value)}
-                  className="w-24 h-8 border rounded"
-                />
-              </div>
-              <div>
-                <label className="block mb-1">Table Heading Color:</label>
-                <input
-                  type="color"
-                  value={tableHeadingColor}
-                  onChange={(e) => setTableHeadingColor(e.target.value)}
-                  className="w-24 h-8 border rounded"
-                />
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleReset}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md shadow-md hover:bg-red-700 transition duration-300"
+                >
+                  Reset
+                </button>
               </div>
             </div>
-            <div className="flex space-x-2">
-              <button
-                onClick={handleReset}
-                className="px-4 py-2 bg-red-600 text-white rounded-md shadow-md hover:bg-red-700 transition duration-300"
-              >
-                Reset
-              </button>
-              <button
-                onClick={handleDownload}
-                className="px-4 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition duration-300"
-              >
-                Download PDF
-              </button>
-            </div>
-          </div>
+          )}
+          <button
+            onClick={handleDownload}
+            className="px-4 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition duration-300"
+          >
+            Download PDF
+          </button>
 
           {/* Diet Plan */}
           <h2
@@ -248,16 +250,16 @@ const DynamicDietPlanComponent = () => {
                       </h4>
                       <table className="w-full border-collapse">
                         <thead>
-                          <tr style={{ backgroundColor: tableHeadingColor }}>
+                          <tr style={{ backgroundColor: '#333333' }}>
                             <th
                               className="border px-4 py-2"
-                              style={{ color: headingColor }}
+                              style={{ color: textColor }}
                             >
                               Time
                             </th>
                             <th
                               className="border px-4 py-2"
-                              style={{ color: headingColor }}
+                              style={{ color: textColor }}
                             >
                               Meal
                             </th>
@@ -266,10 +268,7 @@ const DynamicDietPlanComponent = () => {
                         <tbody>
                           {day.meals.length > 0 ? (
                             day.meals.map((meal, mealIndex) => (
-                              <tr
-                                key={mealIndex}
-                                style={{ backgroundColor: rowColor }}
-                              >
+                              <tr key={mealIndex}>
                                 <td className="border px-4 py-2">
                                   {meal.time}
                                 </td>
@@ -281,11 +280,11 @@ const DynamicDietPlanComponent = () => {
                           ) : (
                             <tr>
                               <td
+                                className="border px-4 py-2"
                                 colSpan="2"
-                                className="border px-4 py-2 text-center"
-                                style={{ color: columnColor }}
+                                style={{ color: textColor }}
                               >
-                                No Meals
+                                No Meals Available
                               </td>
                             </tr>
                           )}
@@ -297,9 +296,7 @@ const DynamicDietPlanComponent = () => {
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-400">
-              No diet plans available.
-            </p>
+            <p className="text-center text-white">No Diet Plans Available</p>
           )}
         </div>
       </div>
