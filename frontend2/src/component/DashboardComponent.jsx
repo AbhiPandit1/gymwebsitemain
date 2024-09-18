@@ -1,71 +1,42 @@
 import { useState } from 'react';
-import Logo from './Logo';
 import { Link } from 'react-router-dom';
 import { ImCross } from 'react-icons/im';
 import { RxHamburgerMenu } from 'react-icons/rx';
 
 const DashboardComponent = ({
   dashBoardLink,
-  hoverDashboard,
+  hoverDashboard=false,
   setHoverDashboard,
 }) => {
-  const [showNames, setShowNames] = useState(false);
-
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
-  };
-
-  const handleToggleNames = () => {
-    setShowNames(!showNames);
   };
 
   return (
     <div
       className="text-white min-w-full shadow-lg shadow-orange-500 max-h-screen min-h-[100vh] rounded-r-[10px] flex flex-col relative"
-      style={{ backgroundColor: '#090813' }}
+      style={{
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+      }}
     >
       {/* Dashboard Links */}
-      <div className={`h-full w-full py-[80%] ${!showNames ? 'px-8' : 'px-2'}`}>
+      <div className="h-full w-full py-[40%] px-8  ">
         {dashBoardLink?.map((dashboard) => (
           <div
             key={dashboard.id}
-            className="mt-[1rem] overflow-hidden w-full flex items-center justify-center hover:bg-orange-900 hover:rounded-full transition duration-300 ease-in-out py-2 px-4"
+            className="mt-[1rem] overflow-hidden w-full flex items-start justify-center hover:bg-orange-900 hover:rounded-full transition duration-300 ease-in-out py-2 px-4"
           >
-            <Link to={dashboard.link} className="flex items-center w-full">
-              {showNames ? (
-                <span className="text-lg font-sans font-bold">
-                  {dashboard.name}
-                </span>
-              ) : (
-                <p
-                  className={`text-xl font-sans font-bold transition-transform duration-300 ${
-                    showNames ? 'text-xl' : ''
-                  }`}
-                >
-                  {dashboard.icon}
-                </p>
-              )}
+            <Link to={dashboard.link} className="flex items-start w-full">
+              <p className="text-xl font-sans font-bold mr-4">{dashboard.icon}</p>
+              <span className="text-lg font-sans font-bold">{dashboard.name}</span>
             </Link>
           </div>
         ))}
       </div>
 
-      {/* Toggle Button for Icon Names */}
-      <div className="absolute sm:bottom-4 bottom-[30%] right-4">
-        <button
-          className="bg-gray-800 text-white py-2 px-6 rounded-lg shadow-md hover:bg-gray-600 transition duration-300 ease-in-out text-sm sm:text-lg"
-          onClick={handleToggleNames}
-        >
-          {showNames ? 'Hide Names' : 'Show Names'}
-        </button>
-      </div>
-
       {/* Hamburger or Cross Icon for Toggling Sidebar */}
-      <div
-        className={`absolute ${
-          !showNames ? 'px-12' : 'px-12'
-        } top-8 cursor-pointer`}
-      >
+      <div className="absolute px-12 top-8 cursor-pointer">
         {hoverDashboard ? (
           <RxHamburgerMenu size={30} onClick={handleClick} />
         ) : (

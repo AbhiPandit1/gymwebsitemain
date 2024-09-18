@@ -18,7 +18,7 @@ const PersonalTrainerProgramme = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [hoverDashboard, setHoverDashboard] = useState(false);
   const [showCategory, setShowCategory] = useState({});
-  const dashBoardLink = useDashboardLinks();
+  const dashboardLink = useDashboardLinks();
 
   useEffect(() => {
     const getProgramme = async () => {
@@ -75,35 +75,38 @@ const PersonalTrainerProgramme = () => {
 
   return (
     <div
-      className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans "
+      className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
       style={{
-        backgroundImage: `url('https://s3-alpha-sig.figma.com/img/fb55/b466/b05afb0a4774775c1b269cd0567431cd?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=k2kKnQWDVaXS2KNjmIuXcspoOwqvjRU0TVK232dlgoBtFMW0Ofrw4lcJKMzLCZNYmG3WL~O6lbOkgJzhPfhEWq3fhj4giSAjOsC4w4ycNxInm7NrJEznDq9-xsy1sN2BcBqvUSFEYaVkRIzdHEh1qJOGsInAuSXcpwBSXHGnESfEUrrdaR0uP4zQmqmGqwgZ7z9Uijpbudfyyivqo7e8jvKRhYhm2UGFQg-qXcJax2LJxETUPE6gAHjt3GhiNK39D~Lw1AEUS~bCIbWdOSVYAA6wNhBTlKh3JwoXPVGtlvjs9PS0QLXvLIBgL9ASEfiv3fJ9l3icHusqaZFCHNzAFg__')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
       }}
     >
       <div
-        className={`transition-transform duration-300 bg-gray-900 ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
+        className={`transition-transform duration-300  ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-9 sm:col-span-2'
         }`}
       >
         <DashboardComponent
-          dashBoardLink={dashBoardLink}
+          dashBoardLink={dashboardLink}
           hoverDashboard={hoverDashboard}
           setHoverDashboard={setHoverDashboard}
         />
       </div>
+
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard
-            ? 'col-span-9 sm:col-span-9'
-            : 'col-span-6 sm:col-span-8'
-        } overflow-scroll`}
+          hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
+        } overflow-hidden`}
       >
         <DashboardHeader />
+
+        {/* Toggle Dashboard Visibility on Small Screens */}
         {hoverDashboard && (
-          <div className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
-            <BiSolidRightArrow size={40} color="orange" onClick={handleClick} />
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={handleClick}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
           </div>
         )}
 

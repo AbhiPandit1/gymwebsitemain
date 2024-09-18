@@ -147,11 +147,17 @@ const DynamicDayPlanComponent = () => {
   };
 
   return (
-    <div className="grid grid-cols-9 h-screen max-w-[100vw]  text-white font-sans bg-gray-900">
+    <div
+      className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
+      style={{
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+      }}
+    >
       <div
-        className={`transition-transform duration-300 bg-gray-900 ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
-        }`}
+        className={`transition-transform duration-300 ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-9 sm:col-span-2'
+        } overflow-hidden `}
       >
         <DashboardComponent
           dashBoardLink={dashBoardLink}
@@ -159,20 +165,25 @@ const DynamicDayPlanComponent = () => {
           setHoverDashboard={setHoverDashboard}
         />
       </div>
+
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard
-            ? 'col-span-9 sm:col-span-9'
-            : 'col-span-6 sm:col-span-8'
-        } overflow-scroll`}
+          hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
+        } overflow-hidden min-h-[100vh] scrollbar-hide`}
       >
         <DashboardHeader />
+
+        {/* Toggle Dashboard Visibility on Small Screens */}
         {hoverDashboard && (
-          <div className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
-            <BiSolidRightArrow size={40} color="orange" onClick={handleClick} />
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={() => setHoverDashboard(false)}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
           </div>
         )}
-        <div className="p-4">
+
+        <div className="p-4 overflow-scroll">
           <h1 className="text-2xl mb-4" style={{ color: headingColor }}>
             Dynamic Day Plan
           </h1>
@@ -185,7 +196,7 @@ const DynamicDayPlanComponent = () => {
             <>
               {/* Only allow customization if the user is a trainer */}
               {user.user.role === 'trainer' && (
-                <div className="mb-4 flex flex-col space-y-4 gap-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+                <div className="mb-4 flex flex-col space-y-4 gap-4 sm:flex-row sm:space-x-4 sm:space-y-0 overflow-scroll scrollbar-hide">
                   <div className="flex mb-4">
                     <label>Heading Color:</label>
                     <input

@@ -47,6 +47,16 @@ const programmeSchema = new mongoose.Schema({
     type: Boolean,
     default: false, // Default to false if not set
   },
+  discount: {
+    type: Number,
+    default: 0, // Default discount is 0
+    min: 0, // Ensuring discount is non-negative
+  },
+});
+
+// Virtual field to calculate the discounted price
+programmeSchema.virtual('discountedPrice').get(function () {
+  return this.price - this.price * (this.discount / 100);
 });
 
 // Indexing for improved performance

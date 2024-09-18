@@ -19,26 +19,26 @@ const useDashboardLinks = () => {
       name: 'Home',
       link: '/',
       role: 'user',
-      icon: <BiHome size={40} color="orange" />,
+      icon: <BiHome size={30} color="orange" />,
     },
     {
       id: '2',
       name: 'Programs',
       link: programLink,
       role: '',
-      icon: <CgGym size={40} color="orange" />,
+      icon: <CgGym size={30} color="orange" />,
     },
     {
       id: '3',
       name: 'Settings',
       link: '/settings',
-      icon: <IoSettingsOutline size={40} color="orange" />,
+      icon: <IoSettingsOutline size={30} color="orange" />,
     },
     {
       id: '4',
       name: 'Edit',
       link: `/user/detail/${user.user._id}`,
-      icon: <CiEdit size={40} color="orange" />,
+      icon: <CiEdit size={30} color="orange" />,
     },
   ];
 
@@ -48,7 +48,7 @@ const useDashboardLinks = () => {
       id: '5',
       name: 'Revenue',
       link: `/payment/invoices/${user.user._id}`,
-      icon: <TbInvoice size={40} color="orange" />,
+      icon: <TbInvoice size={30} color="orange" />,
     },
   ];
 
@@ -58,37 +58,37 @@ const useDashboardLinks = () => {
       name: 'Home',
       link: '/',
       role: 'admin',
-      icon: <BiHome size={40} color="orange" />,
+      icon: <BiHome size={30} color="orange" />,
     },
     {
       id: '2',
       name: 'Programmes',
       link: '/admin/programmes',
-      icon: <CgGym size={40} color="orange" />,
+      icon: <CgGym size={30} color="orange" />,
     },
     {
       id: '3',
       name: 'Users',
       link: '/admin/user',
-      icon: <TbUserSquareRounded size={40} color="orange" />,
+      icon: <TbUserSquareRounded size={30} color="orange" />,
     },
     {
       id: '4',
       name: 'Invoices',
       link: '/admin/invoices',
-      icon: <TbInvoice size={40} color="orange" />,
+      icon: <TbInvoice size={30} color="orange" />,
     },
     {
       id: '5',
       name: 'Settings',
       link: '/settings',
-      icon: <IoSettingsOutline size={40} color="orange" />,
+      icon: <IoSettingsOutline size={30} color="orange" />,
     },
     {
       id: '6',
       name: 'Advertisement',
       link: `/admin/ads/mail`,
-      icon: <CiEdit size={40} color="orange" />,
+      icon: <CiEdit size={30} color="orange" />,
     },
   ];
 

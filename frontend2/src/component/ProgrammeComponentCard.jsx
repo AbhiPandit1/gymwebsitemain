@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { IoIosArrowRoundForward } from 'react-icons/io';
-import { AiOutlineArrowUp } from 'react-icons/ai';
-import { Link } from 'react-router-dom';
+import ProgrammeDetail from '../pages/user/ProgrammeDetail'; // Ensure this path is correct
 
 const ProgrammeComponentCard = ({ programmeData, filter }) => {
   const [loadButton, setLoadButton] = useState(false);
-  const [expandedCard, setExpandedCard] = useState(null); // Track the expanded card
-  const [showCategory, setShowCategory] = useState({}); // Track category visibility
+  const [expandedCard, setExpandedCard] = useState(null);
+  const [showCategory, setShowCategory] = useState({});
+  const [selectedProgramme, setSelectedProgramme] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const applyFilter = (data) => {
     switch (filter) {
@@ -35,6 +36,16 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
     setShowCategory((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const openModal = (programme) => {
+    setSelectedProgramme(programme);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProgramme(null);
+  };
+
   return (
     <div className="mt-10">
       {/* Grid layout with responsive columns */}
@@ -42,7 +53,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
         {visibleProgrammes.map((card) => (
           <div
             key={card._id}
-            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[450px] p-4 l w-[300px] mx-auto my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:shadow-orange-600 hover:shadow-2xl"
+            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[450px] p-4 w-[300px] mx-auto my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:shadow-orange-600 hover:shadow-2xl"
             style={{ backgroundImage: `url(${card.categoryPhoto?.url})` }}
           >
             {/* Dark overlay specific to hovered card */}
@@ -85,33 +96,43 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                     ? 'translate-y-0 opacity-90'
                     : 'translate-y-full opacity-0'
                 }`}
-                style={{ bottom: '3.5rem' }} // Ensure description stays above arrow
+                style={{ bottom: '3.5rem' }}
               >
                 <div className="text-sm sm:text-lg mt-2">{card.desc}</div>
               </div>
 
               {/* Arrow icon to toggle description visibility */}
-
-              <div className="flex justify-between mt-4 z-99">
-                <div className="h-[3rem] w-[6rem] bg-gray-950 rounded-3x flex justify-center items-center border-4 border-orange-600 rounded-3xl">
+              <div className="flex justify-between mt-4 z-10">
+                <div className="h-[3rem] w-[6rem] bg-gray-950 rounded-3xl flex justify-center items-center border-4 border-orange-600">
                   <div className="text-lg sm:text-xl text-white font-sans font-bold flex items-center">
                     ${card.price}
                   </div>
                 </div>
 
-                <Link to={`/programme/${card._id}`} className="relative z-10">
-                  <button className="w-[3.6rem] h-10 sm:h-[3.2rem] bg-gray-950 border-2 hover:border-2 hover:bg-gray-800 hover:border-orange-900 border-orange-600 flex items-center justify-center rounded-xl">
-                    <IoIosArrowRoundForward
-                      color="white"
-                      className="w-10 sm:w-14 h-8 sm:h-10"
-                    />
-                  </button>
-                </Link>
+                <button
+                  onClick={() => openModal(card)}
+                  className="w-[3.6rem] h-10 sm:h-[3.2rem] bg-gray-950 border-2 border-orange-600 hover:bg-gray-800 hover:border-orange-900 flex items-center justify-center rounded-xl"
+                >
+                  <IoIosArrowRoundForward
+                    color="white"
+                    className="w-10 sm:w-14 h-8 sm:h-10"
+                  />
+                </button>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal for ProgrammeDetail */}
+      {isModalOpen && selectedProgramme && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <ProgrammeDetail
+            programmeId={selectedProgramme._id}
+            closeModal={closeModal}
+          />
+        </div>
+      )}
     </div>
   );
 };

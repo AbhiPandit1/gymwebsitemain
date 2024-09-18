@@ -157,32 +157,42 @@ const DayPlan = () => {
   };
 
   return (
-    <div className="grid grid-cols-9 h-screen max-w-[100vw]  text-white font-sans bg-gray-900">
+    <div
+      className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
+      style={{
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+      }}
+    >
       <div
-        className={`transition-transform duration-300 bg-gray-900   ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
+        className={`transition-transform duration-300 ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-9 sm:col-span-2'
         }`}
-        onClick={handleClick}
       >
         <DashboardComponent
-          dashBoardLink={dashBoardLink} // Fixed variable name
+          dashBoardLink={dashBoardLink}
           hoverDashboard={hoverDashboard}
           setHoverDashboard={setHoverDashboard}
         />
       </div>
+
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard
-            ? 'col-span-9 sm:col-span-9'
-            : 'col-span-6 sm:col-span-8'
+          hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
         } overflow-scroll`}
       >
         <DashboardHeader />
+
+        {/* Toggle Dashboard Visibility on Small Screens */}
         {hoverDashboard && (
-          <div className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
-            <BiSolidRightArrow size={40} color="orange" onClick={handleClick} />
+          <div
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={() => setHoverDashboard(false)}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
           </div>
         )}
+
         {trainingPlan.length > 0 && (
           <div
             className="absolute top-4 left-4 cursor-pointer z-10"
@@ -210,7 +220,7 @@ const DayPlan = () => {
             No plan available. Please set the number of days in ProgrammeKind.
           </div>
         ) : (
-          <div className="p-4">
+          <div className="p-4 overflow-scroll">
             {trainingPlan.map((day, dayIndex) => (
               <div
                 key={dayIndex}

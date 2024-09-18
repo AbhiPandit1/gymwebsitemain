@@ -19,7 +19,6 @@ const AdminPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [roleFilter, setRoleFilter] = useState('all');
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [revenueDetails, setRevenueDetails] = useState(null);
   const { id } = useParams();
   const [hoverDashboard, setHoverDashboard] = useState(false);
 
@@ -43,7 +42,6 @@ const AdminPage = () => {
             },
           }
         );
-        console.log(response);
 
         const filteredUsers = response.data.users.filter(
           (currentUser) => currentUser._id !== user._id
@@ -160,170 +158,142 @@ const AdminPage = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-9 h-screen max-w-[100vw] gap-[2rem] text-white font-sans bg-gray-900">
-      <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
-        }`}
-        onClick={handleClick}
-      >
-        <DashboardComponent
-          dashBoardLink={dashboardLink}
-          hoverDashboard={hoverDashboard}
-        />
-      </div>
-      <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard
-            ? 'col-span-9 sm:col-span-9'
-            : 'col-span-7 sm:col-span-8'
-        } overflow-y-scroll`}
-      >
-        <DashboardHeader />
-        {hoverDashboard && (
-          <div
-            className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-            onClick={handleClick}
+    <div>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+        <div className="flex items-center gap-3 mb-4 md:mb-0">
+          <LuUsers color="white" size={25} />
+          <h1 className="text-2xl font-bold">Users</h1>
+        </div>
+        <div className="flex flex-col md:flex-row items-center gap-4">
+          <button
+            onClick={handleDeleteClick}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
           >
-            <BiSolidRightArrow size={40} color="white" />
+            Delete Selected
+          </button>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="selectAllCheckbox"
+              checked={selectAll}
+              onChange={handleSelectAll}
+              className="form-checkbox h-5 w-5 text-white"
+            />
+            <label htmlFor="selectAllCheckbox" className="text-sm">
+              Select All
+            </label>
           </div>
-        )}
-
-        <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-          <div className="flex items-center gap-3 mb-4 md:mb-0">
-            <LuUsers color="white" size={25} />
-            <h1 className="text-2xl font-bold">Users</h1>
-          </div>
-          <div className="flex flex-col md:flex-row items-center gap-4">
+          <div className="relative">
             <button
-              onClick={handleDeleteClick}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
+              onClick={() => setDropdownOpen((prev) => !prev)}
+              className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 focus:outline-none flex items-center"
             >
-              Delete Selected
-            </button>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="selectAllCheckbox"
-                checked={selectAll}
-                onChange={handleSelectAll}
-                className="form-checkbox h-5 w-5 text-white"
-              />
-              <label htmlFor="selectAllCheckbox" className="text-sm">
-                Select All
-              </label>
-            </div>
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen((prev) => !prev)}
-                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 focus:outline-none flex items-center"
+              Filter by Role
+              <svg
+                className="w-5 h-5 ml-2"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                Filter by Role
-                <svg
-                  className="w-5 h-5 ml-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            {dropdownOpen && (
+              <div
+                ref={dropdownRef}
+                className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-10"
+              >
+                <button
+                  onClick={() => handleRoleFilterChange('all')}
+                  className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              {dropdownOpen && (
-                <div
-                  ref={dropdownRef}
-                  className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-10"
+                  All
+                </button>
+                <button
+                  onClick={() => handleRoleFilterChange('admin')}
+                  className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
                 >
-                  <button
-                    onClick={() => handleRoleFilterChange('all')}
-                    className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
-                  >
-                    All
-                  </button>
-                  <button
-                    onClick={() => handleRoleFilterChange('admin')}
-                    className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
-                  >
-                    Admin
-                  </button>
-                  <button
-                    onClick={() => handleRoleFilterChange('user')}
-                    className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
-                  >
-                    User
-                  </button>
-                  <button
-                    onClick={() => handleRoleFilterChange('trainer')}
-                    className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
-                  >
-                    Trainer
-                  </button>
-                </div>
+                  Admin
+                </button>
+                <button
+                  onClick={() => handleRoleFilterChange('user')}
+                  className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
+                >
+                  User
+                </button>
+                <button
+                  onClick={() => handleRoleFilterChange('trainer')}
+                  className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
+                >
+                  Trainer
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredUsers.map((user) => (
+          <div
+            key={user._id}
+            className={`p-4 bg-gray-800 rounded-lg ${
+              selectedUserIds.has(user._id) ? 'border-2 border-blue-500' : ''
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">{user.name}</h2>
+              {user.role === 'trainer' && (
+                <button
+                  onClick={() => handleShowRevenue(user._id)}
+                  className="text-blue-400 hover:underline"
+                >
+                  Show Revenue
+                </button>
               )}
             </div>
+            <p className="text-sm text-gray-400">{user.email}</p>
+            <p className="text-sm text-gray-400">Role: {user.role}</p>
+            <input
+              type="checkbox"
+              checked={selectedUserIds.has(user._id)}
+              onChange={() => handleSelectUser(user._id)}
+              className="form-checkbox h-5 w-5 mt-2 text-white"
+            />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredUsers.map((user) => (
-            <div
-              key={user._id}
-              className={`p-4 bg-gray-800 rounded-lg ${
-                selectedUserIds.has(user._id) ? 'border-2 border-blue-500' : ''
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">{user.name}</h2>
-                {user.role === 'trainer' && (
-                  <button
-                    onClick={() => handleShowRevenue(user._id)}
-                    className="text-blue-400 hover:underline"
-                  >
-                    Show Revenue
-                  </button>
-                )}
-              </div>
-              <p className="text-sm">{user.email}</p>
-              <p className="text-sm">{user.role}</p>
-              <input
-                type="checkbox"
-                checked={selectedUserIds.has(user._id)}
-                onChange={() => handleSelectUser(user._id)}
-                className="form-checkbox h-5 w-5 text-blue-500 mt-2"
-              />
-            </div>
-          ))}
-        </div>
-
-        {showDeleteModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75">
-            <div className="bg-white text-black rounded-lg p-6 max-w-sm w-full">
-              <h3 className="text-lg font-semibold mb-4">
-                Are you sure you want to delete the selected users?
-              </h3>
-              <div className="flex justify-end gap-4">
-                <button
-                  onClick={handleCancelDelete}
-                  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={deleteUser}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        ))}
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Confirm Deletion</h2>
+            <p className="mb-4">
+              Are you sure you want to delete the selected users?
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={deleteUser}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={handleCancelDelete}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

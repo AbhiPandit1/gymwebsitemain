@@ -57,10 +57,16 @@ const PersonalUserProgramme = () => {
   return (
     <>
       {trainerDatas?.length > 0 ? (
-        <div className="grid grid-cols-9 h-screen max-w-[100vw] gap-[2rem] text-white font-sans bg-gray-900">
+        <div
+          className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
+          style={{
+            background:
+              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          }}
+        >
           <div
-            className={`transition-transform duration-300 ${
-              hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
+            className={`transition-transform duration-300  ${
+              hoverDashboard ? 'hidden sm:hidden' : 'col-span-9 sm:col-span-2'
             }`}
           >
             <DashboardComponent
@@ -69,23 +75,24 @@ const PersonalUserProgramme = () => {
               setHoverDashboard={setHoverDashboard}
             />
           </div>
+
           <div
             className={`transition-transform duration-300 ${
-              hoverDashboard
-                ? 'col-span-9 sm:col-span-9'
-                : 'col-span-6 sm:col-span-8'
-            } overflow-auto`}
+              hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
+            } overflow-hidden`}
           >
             <DashboardHeader />
+
+            {/* Toggle Dashboard Visibility on Small Screens */}
             {hoverDashboard && (
-              <div className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
-                <BiSolidRightArrow
-                  size={40}
-                  color="white"
-                  onClick={handleClick}
-                />
+              <div
+                className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+                onClick={handleClick}
+              >
+                <BiSolidRightArrow size={40} color="orange" />
               </div>
             )}
+
             <div className="grid grid-cols-3 sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-auto">
               <div className="col-span-3 items-start justify-center overflow-auto">
                 <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-4">

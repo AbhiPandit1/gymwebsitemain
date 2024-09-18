@@ -88,26 +88,42 @@ const TrainerInvoiceInfo = () => {
   }
 
   return (
-    <div className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans bg-gray-950">
+    <div
+      className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
+      style={{
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+      }}
+    >
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden' : 'col-span-3 sm:col-span-1'
-        }`}
+          hoverDashboard ? 'hidden' : 'col-span-9 sm:col-span-2'
+        } overflow-hidden`}
       >
         <DashboardComponent
+          dashBoardLink={dashBoardLink}
           hoverDashboard={hoverDashboard}
           setHoverDashboard={setHoverDashboard}
-          dashBoardLink={dashBoardLink}
         />
       </div>
+
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard
-            ? 'col-span-9 sm:col-span-9'
-            : 'col-span-6 sm:col-span-8'
-        } overflow-scroll`}
+          hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
+        } overflow-scroll relative`}
       >
         <DashboardHeader />
+
+        {/* Toggle Dashboard Visibility on Small Screens */}
+        {hoverDashboard && (
+          <div
+            className="absolute left-0 z-10 top-1/4 transform -translate-y-1/2 animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={() => setHoverDashboard(false)}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
+          </div>
+        )}
+
         <div className="p-8">
           <div className="bg-gradient-to-r from-orange-650 to-yellow-500 text-white p-4 rounded-lg shadow-lg mb-6">
             <h2 className="text-2xl font-bold">Total Revenue Till Date</h2>

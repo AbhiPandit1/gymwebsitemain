@@ -60,43 +60,43 @@ const Header = () => {
   };
 
   return (
-    <div className="flex justify-between items-center p-4 w-full  rounded-l-[1.2rem] rounded-r-[1.2rem] shadow-lg bg-transparent">
+    <div className="flex justify-between items-center p-4 w-full  rounded-l-[1.2rem] rounded-r-[1.2rem] shadow-lg bg-transparent font-bebes">
       {/* Logo */}
-      <div>
+      <div className="ml-[5%]">
         <Link to="/">
           <Logo backgroundImage={logoHeader} />
         </Link>
       </div>
 
       {/* Navigation Menu for larger screens */}
-      <div className="hidden sm:flex justify-center items-center gap-2 w-full">
-        <div className="flex justify-around items-center font-extrabold opacity-95 gap-2 w-[90%] h-[3rem] z-40 mx-auto rounded-lg shadow-lg">
+      <div className="hidden sm:flex justify-center items-center gap-3 w-full z-40  ">
+        <div className="flex justify-around items-center font-extrabold opacity-95 ml-[15%] mr-[15%] w-[90%] h-[3rem] z-40 mx-auto rounded-lg shadow-lg">
           {menuItems.map((item) => (
             <Link
               key={item.id}
               to={item.link}
-              className="flex flex-col items-center text-[1.5rem] text-white no-underline transition-colors duration-300 hover:underline-offset-4  hover:text-orange-400"
+              className="flex flex-col items-center text-[1rem] text-white no-underline transition-colors duration-300 hover:underline-offset-4 hover:underline hover:text-orange-400"
             >
-              <span className="text-md font-extrabold">{item.name}</span>
+              <span className="text-lg font-extrabold">{item.name}</span>
             </Link>
           ))}
         </div>
         {!isSignedIn ? (
           <>
             <Link to="/signin">
-              <button className="h-[3rem] w-[8rem] rounded-lg text-white bg-gradient-to-r from-orange-400 to-orange-600  hover:bg-orange-800">
-                Sign In
+              <button className="h-[3rem] w-[6rem]  text-white bg-transparent border-2 border-orange-600  hover:bg-orange-800 z-40">
+                Sign Up
               </button>
             </Link>
             <Link to="/login">
-              <button className="h-[3rem] w-[8rem] rounded-lg border-2 bg-gradient-to-r from-orange-400 to-orange-600  text-white bg-tansparent hover:bg-orange-800">
+              <button className="h-[3rem] w-[6rem]  border-2 bg-gradient-to-r from-orange-400 to-orange-600  text-white bg-tansparent hover:bg-orange-800 z-40">
                 Log In
               </button>
             </Link>
           </>
         ) : (
           <button
-            className="h-[3rem] w-[8rem] rounded-lg text-white bg-gradient-to-r from-orange-400 to-orange-600  hover:bg-orange-800"
+            className="h-[3rem] w-[10rem] text-white bg-gradient-to-r from-orange-400 to-orange-600  hover:bg-orange-800 z-40"
             onClick={handleSignOut}
           >
             Sign Out

@@ -9,7 +9,8 @@ import fs from 'fs';
 import { deleteCloudinaryImage } from '../middleware/deleteCloudinaryImage.js';
 
 export const createProgramme = async (req, res) => {
-  const { category, title, price, desc, trainerEmail, planType } = req.body;
+  const { category, title, price, desc, trainerEmail, planType, discount } =
+    req.body;
   const userId = req.params.id;
 
   // Parse category and description
@@ -36,13 +37,21 @@ export const createProgramme = async (req, res) => {
     });
   }
 
-  // Validate price and planType
+  // Validate price, discount, and planType
   if (!price || !planType) {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
   if (isNaN(price) || price <= 10) {
     return res.status(400).json({ error: 'Price should be greater than 10.' });
+  }
+
+  if (discount !== undefined) {
+    if (isNaN(discount) || discount < 0 || discount > 100) {
+      return res
+        .status(400)
+        .json({ error: 'Discount should be a number between 0 and 100.' });
+    }
   }
 
   if (!['Diet', 'Day', 'Both'].includes(planType)) {
@@ -101,15 +110,22 @@ export const createProgramme = async (req, res) => {
       }
     }
 
+    // Calculate final price after applying discount
+    let finalPrice = price;
+    if (discount && !isNaN(discount) && discount > 0) {
+      finalPrice = price - (price * discount) / 100;
+    }
+
     // Create new programme
     const newProgramme = new Programme({
       category: parsedCategory, // Use parsedCategory
       categoryPhoto, // Include category photo if available
       desc: parsedDesc, // Use parsedDesc
       title,
-      price: Number(price),
+      price: Number(finalPrice), // Apply the final calculated price
       trainer: trainerId,
       planType, // Include planType
+      discount: Number(discount) || 0, // Use discount, default to 0 if not provided
     });
 
     const savedProgramme = await newProgramme.save();
@@ -194,7 +210,7 @@ export const updateProgramme = async (req, res) => {
   }
 
   // Extract fields from request body
-  const { category, price, trainerMail, desc, title } = req.body;
+  const { category, price, trainerEmail, desc, title, discount } = req.body;
 
   try {
     // Find the programme by ID
@@ -266,10 +282,27 @@ export const updateProgramme = async (req, res) => {
       }
     }
 
+    // Validate and update the discount if provided
+    if (discount !== undefined) {
+      if (isNaN(discount) || discount < 0 || discount > 100) {
+        return res
+          .status(400)
+          .json({ error: 'Discount should be a number between 0 and 100.' });
+      }
+      programme.discount = Number(discount);
+    }
+
+    // Calculate the discounted price if price and discount are provided
+    if (price) {
+      const discountedPrice = discount
+        ? price - (price * discount) / 100
+        : price;
+      programme.price = Number(discountedPrice);
+    }
+
     // Update programme fields if provided, otherwise retain current values
     programme.category = parsedCategory;
-    programme.price = price ? Number(price) : programme.price;
-    programme.trainerMail = trainerMail || programme.trainerMail;
+    programme.trainerEmail = trainerEmail || programme.trainerEmail;
     programme.desc = parsedDesc;
     programme.title = title || programme.title;
     programme.categoryPhoto = updatedCategoryPhoto;
@@ -393,7 +426,7 @@ export const deleteDietPlan = async (req, res) => {
 // Create Day Plan
 export const createDayPlan = async (req, res) => {
   const { title, description, exercises, userId, date } = req.body;
-  console.log(req.body)
+  console.log(req.body);
 
   if (!title || !description || !exercises || !userId || !date) {
     return res.status(400).json({ error: 'Missing required fields' });

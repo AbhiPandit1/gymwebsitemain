@@ -57,34 +57,42 @@ const AdminSendMail = () => {
   };
 
   return (
-    <div className="grid grid-cols-9 h-screen max-w-[100vw] gap-[2rem] text-white font-sans bg-gray-900">
+    <div
+      className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
+      style={{
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+      }}
+    >
       <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-2 sm:col-span-1'
+        className={`transition-transform duration-300  ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-9 sm:col-span-2'
         }`}
-        onClick={handleClick}
       >
         <DashboardComponent
           dashBoardLink={dashboardLink}
           hoverDashboard={hoverDashboard}
+          setHoverDashboard={setHoverDashboard}
         />
       </div>
+
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard
-            ? 'col-span-9 sm:col-span-9'
-            : 'col-span-7 sm:col-span-8'
-        } overflow-y-scroll`}
+          hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
+        } overflow-hidden`}
       >
         <DashboardHeader />
+
+        {/* Toggle Dashboard Visibility on Small Screens */}
         {hoverDashboard && (
           <div
-            className="absolute left-0 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
             onClick={handleClick}
           >
-            <BiSolidRightArrow size={40} color="white" />
+            <BiSolidRightArrow size={40} color="orange" />
           </div>
         )}
+
         {/* Dashboard Header */}
 
         <h2 className="text-3xl font-semibold mb-6 text-white text-center">

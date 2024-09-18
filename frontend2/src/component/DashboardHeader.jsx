@@ -35,9 +35,10 @@ const DashboardHeader = () => {
 
   return (
     <div
-      className="min-w-[100vw] sm:min-w-full max-w-[100vw] bg-gray-900 shadow-lg shadow-orange-500 "
+      className="min-w-[100vw] sm:min-w-full max-w-[100vw]  shadow-lg shadow-orange-500 "
       style={{
-        backgroundColor: '#090813',
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
       }}
     >
       <div className="flex justify-between items-center sm:m-2 sm:p-4 p-4">
@@ -45,14 +46,14 @@ const DashboardHeader = () => {
           <Logo backgroundImage={logoDahsboard} />
         </div>
         <Link to={`/user/dashboard/${user._id}`}>
-          <div className="text-xl sm:text-3xl text-white font-sans sm:flex hidden font-bold">
+          <div className="text-xl sm:text-2xl text-white font-sans sm:flex hidden font-bold">
             Dashboard
           </div>
         </Link>
         <div className="flex items-center justify-between gap-2">
           <div className="relative">
             <IoMdNotifications
-              size={40}
+              size={30}
               color="white"
               aria-label="Notifications"
             />
@@ -73,7 +74,7 @@ const DashboardHeader = () => {
             ) : (
               user && (
                 <>
-                  <p className="text-xl sm:text-3xl font-sans text-white font-bold">
+                  <p className="text-xl sm:text-2xl font-sans text-white font-bold">
                     {user.name}
                   </p>
                   <div

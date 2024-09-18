@@ -86,7 +86,7 @@ const PlanTable = ({
   };
 
   return (
-    <div className="p-6 bg-gray-800 rounded-lg shadow-lg overflow-x-auto">
+    <div className="p-6 bg-gray-800 rounded-lg shadow-lg overflow-x-auto scrollbar-hide">
       <h3
         className="text-xl font-semibold mb-4 text-center"
         style={{ color: headingColor }}

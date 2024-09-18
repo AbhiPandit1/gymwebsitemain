@@ -7,8 +7,9 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { useParams } from 'react-router-dom';
 import newLogo from '../../../../assets/NewLogo.png'; // Importing the logo
+import { useSelector } from 'react-redux';
 
-const DynamicDietPlanComponent = ({ user }) => {
+const DynamicDietPlanComponent = () => {
   const dashBoardLink = useDashboardLinks();
   const [hoverDashboard, setHoverDashboard] = useState(false);
   const [headingColor, setHeadingColor] = useState('#FFA500'); // Orange in hex
@@ -16,6 +17,7 @@ const DynamicDietPlanComponent = ({ user }) => {
   const [textSize, setTextSize] = useState('1.5rem'); // Size remains as '1.5rem'
   const [dietPlanData, setDietPlanData] = useState([]);
   const { programmeId } = useParams();
+  const { user } = useSelector((state) => state.user);
 
   // Load and save settings to local storage
   useEffect(() => {
@@ -124,7 +126,6 @@ const DynamicDietPlanComponent = ({ user }) => {
 
       // Check if we need to add a new page
       if (yPosition > 250) {
-        // Assuming page height is around 270mm
         doc.addPage();
         yPosition = 20; // Reset yPosition to the top of the new page
       }
@@ -140,11 +141,17 @@ const DynamicDietPlanComponent = ({ user }) => {
   };
 
   return (
-    <div className="grid grid-cols-9 h-screen max-w-[100vw] text-white font-sans bg-gray-900">
+    <div
+      className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
+      style={{
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+      }}
+    >
       <div
-        className={`transition-transform duration-300 bg-gray-900 ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
-        }`}
+        className={`transition-transform duration-300 ${
+          hoverDashboard ? 'hidden' : 'col-span-9 sm:col-span-2'
+        } overflow-hidden`}
       >
         <DashboardComponent
           dashBoardLink={dashBoardLink}
@@ -152,26 +159,30 @@ const DynamicDietPlanComponent = ({ user }) => {
           setHoverDashboard={setHoverDashboard}
         />
       </div>
+
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard
-            ? 'col-span-9 sm:col-span-9'
-            : 'col-span-6 sm:col-span-8'
-        } overflow-scroll`}
+          hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
+        } overflow-scroll relative`}
       >
         <DashboardHeader />
+
+        {/* Toggle Dashboard Visibility on Small Screens */}
         {hoverDashboard && (
-          <div className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300">
-            <BiSolidRightArrow size={40} color="orange" onClick={handleClick} />
+          <div
+            className="absolute left-0 z-10 top-1/4 transform -translate-y-1/2 animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
+            onClick={() => setHoverDashboard(false)}
+          >
+            <BiSolidRightArrow size={40} color="orange" />
           </div>
         )}
 
         <div className="overflow-scroll w-[240vw] sm:w-[90vw] m-auto scrollbar-hide">
           {/* Settings Panel */}
-          {user?.role === 'trainer' && (
-            <div className="bg-gray-800 p-4 rounded-md shadow-md">
-              <h3 className="text-lg font-semibold">Settings</h3>
-              <div className="flex justify-around items-center">
+          {user.user.role === 'trainer' && (
+            <div className="bg-gray-800 p-6 rounded-md shadow-md mb-6 overflow-scroll ">
+              <h3 className="text-lg font-semibold mb-4">Settings</h3>
+              <div className="flex flex-col sm:flex-row justify-start items-start gap-4">
                 <div>
                   <label className="block mb-1">Heading Color:</label>
                   <input
@@ -191,11 +202,11 @@ const DynamicDietPlanComponent = ({ user }) => {
                   />
                 </div>
                 <div>
-                  <label className="flex flex-col mb-1 items-center space-x-2">
+                  <label className="flex flex-col items-center space-y-2">
                     <span>Text Size:</span>
                     <input
                       type="number"
-                      value={parseInt(textSize)}
+                      value={parseInt(textSize, 10)}
                       onChange={(e) => setTextSize(`${e.target.value}px`)}
                       className="w-24 p-2 border border-gray-400 rounded bg-gray-100 text-gray-800"
                       placeholder="Enter size"
@@ -203,89 +214,68 @@ const DynamicDietPlanComponent = ({ user }) => {
                   </label>
                 </div>
               </div>
-              <div className="flex space-x-2">
+              <div className="mt-4 flex gap-4">
                 <button
                   onClick={handleReset}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md shadow-md hover:bg-red-700 transition duration-300"
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                 >
                   Reset
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                  Download PDF
                 </button>
               </div>
             </div>
           )}
-          <button
-            onClick={handleDownload}
-            className="px-4 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition duration-300"
-          >
-            Download PDF
-          </button>
 
-          {/* Diet Plan */}
-          <h2
-            className="text-4xl font-bold mb-6 text-center"
-            style={{ color: headingColor, fontSize: textSize }}
-          >
-            Weekly Diet Plan
-          </h2>
-          {dietPlanData.length > 0 ? (
-            <div className="space-y-4">
-              {dietPlanData.map((plan, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-800 p-4 rounded-md shadow-md"
-                >
-                  <h3
-                    className="text-2xl font-semibold mb-4"
+          <div className="bg-gray-900 p-6 rounded-md shadow-md ">
+            <h1
+              className="text-center text-4xl font-bold mb-4"
+              style={{ color: headingColor, fontSize: textSize }}
+            >
+              Weekly Diet Plan
+            </h1>
+            {dietPlanData.length === 0 ? (
+              <p className="text-center">No diet plans available.</p>
+            ) : (
+              dietPlanData.map((plan, index) => (
+                <div key={index} className="mb-6">
+                  <h2
+                    className="text-2xl font-semibold"
                     style={{ color: headingColor }}
                   >
                     Plan {index + 1}
-                  </h3>
+                  </h2>
                   {plan.days.map((day, dayIndex) => (
-                    <div key={dayIndex} className="mb-4">
-                      <h4
-                        className="text-xl font-semibold mb-2"
+                    <div key={dayIndex} className="mt-4">
+                      <h3
+                        className="text-xl font-semibold"
                         style={{ color: headingColor }}
                       >
                         {day.day || `Day ${dayIndex + 1}`}
-                      </h4>
-                      <table className="w-full border-collapse">
+                      </h3>
+                      <table className="min-w-full divide-y divide-gray-700 mt-2">
                         <thead>
-                          <tr style={{ backgroundColor: '#333333' }}>
-                            <th
-                              className="border px-4 py-2"
-                              style={{ color: textColor }}
-                            >
-                              Time
-                            </th>
-                            <th
-                              className="border px-4 py-2"
-                              style={{ color: textColor }}
-                            >
-                              Meal
-                            </th>
+                          <tr>
+                            <th className="px-4 py-2 text-left">Time</th>
+                            <th className="px-4 py-2 text-left">Meal</th>
                           </tr>
                         </thead>
                         <tbody>
                           {day.meals.length > 0 ? (
                             day.meals.map((meal, mealIndex) => (
                               <tr key={mealIndex}>
-                                <td className="border px-4 py-2">
-                                  {meal.time}
-                                </td>
-                                <td className="border px-4 py-2">
-                                  {meal.meal}
-                                </td>
+                                <td className="px-4 py-2">{meal.time}</td>
+                                <td className="px-4 py-2">{meal.meal}</td>
                               </tr>
                             ))
                           ) : (
                             <tr>
-                              <td
-                                className="border px-4 py-2"
-                                colSpan="2"
-                                style={{ color: textColor }}
-                              >
-                                No Meals Available
-                              </td>
+                              <td className="px-4 py-2">No Data</td>
+                              <td className="px-4 py-2">No Data</td>
                             </tr>
                           )}
                         </tbody>
@@ -293,11 +283,9 @@ const DynamicDietPlanComponent = ({ user }) => {
                     </div>
                   ))}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-white">No Diet Plans Available</p>
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

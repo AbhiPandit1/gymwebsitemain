@@ -1,12 +1,11 @@
 import DashboardComponent from '../../component/DashboardComponent';
 import DashboardHeader from '../../component/DashboardHeader';
-import homeGirl from '../../assets/homeGirl.jpeg';
-import { IoIosArrowRoundForward } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 import { useState } from 'react';
 import { BiSolidRightArrow } from 'react-icons/bi';
+import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
 
 const UserDashboard = () => {
   const [hoverDashboard, setHoverDashboard] = useState(false);
@@ -17,34 +16,36 @@ const UserDashboard = () => {
 
   const { user } = useSelector((state) => state.user);
   const role = user.user.role;
-  const dashboardLink = useDashboardLinks(); // Fixed variable name
+  const dashboardLink = useDashboardLinks();
 
   return (
     <div
-      className="grid grid-cols-9 h-screen max-w-[100vw]  text-white font-sans "
+      className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
       style={{
-        backgroundColor: '#343639',
+        background:
+          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
       }}
     >
       <div
-        className={`transition-transform duration-300 bg-gray-900   ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-3 sm:col-span-1'
+        className={`transition-transform duration-300  ${
+          hoverDashboard ? 'hidden sm:hidden' : 'col-span-9 sm:col-span-2'
         }`}
       >
         <DashboardComponent
-          dashBoardLink={dashboardLink} // Fixed variable name
+          dashBoardLink={dashboardLink}
           hoverDashboard={hoverDashboard}
           setHoverDashboard={setHoverDashboard}
         />
       </div>
+
       <div
         className={`transition-transform duration-300 ${
-          hoverDashboard
-            ? 'col-span-9 sm:col-span-9'
-            : 'col-span-6 sm:col-span-8'
+          hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
         } overflow-hidden`}
       >
         <DashboardHeader />
+
+        {/* Toggle Dashboard Visibility on Small Screens */}
         {hoverDashboard && (
           <div
             className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
@@ -53,41 +54,44 @@ const UserDashboard = () => {
             <BiSolidRightArrow size={40} color="orange" />
           </div>
         )}
-        <div className="p-2">
-          <div className="bg-gray-800 h-full w-full flex flex-col mb-1">
-            <div className="relative">
-              <img
-                src="https://res.cloudinary.com/dzy51cqxa/image/upload/v1724174237/profile_photos/oxnhsb37p3ilw26zropi.jpg"
-                alt="homeGirl"
-                className="h-[100vh] w-full object-right sm:object-cover "
-              />
-              <div className="absolute flex flex-col justify-center top-1/3 w-full font-bebes">
-                <div className="text-gray-100 flex flex-col justify-center items-center">
-                  <div className="text-3xl font-extrabold tracking-wider   sm:text-[3rem] md:text-4xl">
-                    YOUR FITNESS
-                  </div>
-                  <div className="text-3xl font-bold tracking-wider md:text-4xl sm:text-[3rem] mt-2">
-                    LIBRARY
-                  </div>
-                </div>
-                <div className="text-gray-100 flex items-start justify-center w-full mt-8">
-                  <Link
-                    to={
-                      role === 'user'
-                        ? '/user/programmes'
-                        : `/trainer/programmes/${user.user._id}`
-                    }
-                    className="text-gray-300 hover:text-gray-100 focus:outline-none"
-                  >
-                    <button className="w-[17rem] sm:w-[18rem] h-[4rem] bg-orange-500 flex justify-between items-center ml-4 mr-2 pr-4 rounded-xl">
-                      <span className="ml-4 text-xl">
-                        {role === 'trainer'
-                          ? 'Create New Program'
-                          : 'Your Programs'}
-                      </span>
-                    </button>
-                  </Link>
-                </div>
+
+        <div
+          className="p-2 h-[88vh] overflow-hidden"
+          style={{
+            background:
+              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          }}
+        >
+          {/* Welcome Text Instead of Image */}
+          <div className="h-full w-full flex flex-col justify-center items-center text-center mb-1">
+            <div className="text-gray-100 flex flex-col items-center">
+              {/* User's Name */}
+              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-wide">
+                Welcome, {user.user.name}!
+              </h1>
+
+              {/* Beautiful Line of Text */}
+              <p className="mt-4 text-xl sm:text-2xl text-orange-400 font-medium tracking-widest">
+                Start your journey towards fitness excellence today.
+              </p>
+
+              {/* Program Button */}
+              <div className="flex items-start justify-center w-full mt-8">
+                <Link
+                  to={
+                    role === 'user'
+                      ? '/user/programmes'
+                      : `/trainer/programmes/${user.user._id}`
+                  }
+                  className="text-gray-300 hover:text-gray-100 focus:outline-none"
+                >
+                  <button className="w-[17rem] sm:w-[15rem] h-[4rem] bg-orange-500 flex justify-between items-center px-4">
+                    <span className="text-xl flex justify-center items-center gap-2">
+                      Your Programs
+                      <HiOutlineArrowNarrowRight size={30} />
+                    </span>
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

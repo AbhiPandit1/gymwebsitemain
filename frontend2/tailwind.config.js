@@ -30,6 +30,10 @@ export default {
       letterSpacing: {
         custom: '-0.8%', // -0.8%
       },
+      backgroundImage: {
+        'custom-gradient':
+          'linear-gradient(90deg, #001447 0%, #000A23 28.37%, #00091F 65.15%, #222D46 105.08%)',
+      },
       keyframes: {
         shake: {
           '0%': { transform: 'translateX(-10px)' },

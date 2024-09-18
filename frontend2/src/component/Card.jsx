@@ -5,9 +5,13 @@ import {
   IoIosArrowBack,
   IoIosArrowForward,
 } from 'react-icons/io';
-import { Link } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa';
 import CardSkeleton from '../pages/skeletons/CardSkeleton';
+import ProgrammeDetail from '../pages/user/ProgrammeDetail';
+import Modal from 'react-modal';
+import { FaUserCircle } from 'react-icons/fa';
+
+// Ensure that the app element is set for accessibility
+Modal.setAppElement('#root');
 
 const Card = ({ title, backgroundColor }) => {
   const backendapi = import.meta.env.VITE_BACKEND_URL;
@@ -17,6 +21,22 @@ const Card = ({ title, backgroundColor }) => {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedProgrammeId, setSelectedProgrammeId] = useState(null); // State for selected programme ID
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 640);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const containerRef = useRef(null);
 
@@ -24,10 +44,12 @@ const Card = ({ title, backgroundColor }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${backendapi}/api/admin/programme`);
+        console.log('API Response:', response.data);
         const filteredData = response.data.filter(
           (item) => item.isSelected === true
         );
         setData(filteredData);
+        console.log('Filtered Data:', filteredData);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -89,25 +111,17 @@ const Card = ({ title, backgroundColor }) => {
       behavior: 'smooth',
     });
   };
+  
+  const openModal = (programmeId) => {
+    console.log('Opening modal for programme:', programmeId);
+    setSelectedProgrammeId(programmeId); // Set the selected programme ID
+    setModalIsOpen(true);
+  };
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('mousedown', handleMouseDown);
-      container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('mouseup', handleMouseUpOrLeave);
-      container.addEventListener('mouseleave', handleMouseUpOrLeave);
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener('mousedown', handleMouseDown);
-        container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('mouseup', handleMouseUpOrLeave);
-        container.removeEventListener('mouseleave', handleMouseUpOrLeave);
-      }
-    };
-  }, [isDragging]);
+  const closeModal = () => {
+    console.log('Closing modal');
+    setModalIsOpen(false);
+  };
 
   if (loading) {
     return <CardSkeleton />;
@@ -132,7 +146,7 @@ const Card = ({ title, backgroundColor }) => {
       >
         <div className="flex transition-transform duration-300 ease-in-out">
           {data.map((card) => (
-            <Link to={`/programme/${card._id}`} key={card._id}>
+            <div key={card._id} onClick={() => openModal(card._id)}>
               <div
                 className={`relative bg-${backgroundColor} brightness-100 min-w-[250px] max-w-[200px] m-[1rem] sm:m-[2rem] p-0 h-[350px] border-y-2 flex-shrink-0 border-4 rounded-lg border-orange-400 hover:border-orange-600 transition-all transform hover:scale-105 hover:shadow-lg`}
               >
@@ -161,7 +175,7 @@ const Card = ({ title, backgroundColor }) => {
                   </div>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
@@ -172,6 +186,41 @@ const Card = ({ title, backgroundColor }) => {
       >
         <IoIosArrowForward color="white" className="w-8 h-8" />
       </button>
+
+      {/* Modal for ProgrammeDetail */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Programme Details"
+        style={{
+          overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0)', // Transparent background
+          },
+          content: {
+            top: isMobile ? '35%' : '50%', // Adjust top based on screen size
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            width: '90%', // Set content width to 90% of the viewport
+            maxWidth: '1200px', // Optional: Set a max width to prevent excessive stretching on large screens
+            height: 'auto', // Auto height to adjust to content
+            padding: '0', // No padding
+            background: 'transparent', // Transparent background for the modal content
+            border: 'none', // Remove border
+            overflow: 'auto', // Allow scrolling if content overflows
+          },
+        }}
+      >
+        <div className="relative">
+          <ProgrammeDetail
+            programmeId={selectedProgrammeId} // Pass the selected programme ID
+            showHeader={false} // Adjust this prop based on your ProgrammeDetail component
+            closeModal={closeModal} // Pass the closeModal function
+          />
+        </div>
+      </Modal>
     </div>
   );
 };
