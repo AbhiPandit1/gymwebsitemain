@@ -21,7 +21,8 @@ export const createProgramme =
       formData.append('price', programmeData.price);
       formData.append('desc', JSON.stringify(programmeData.desc)); // Convert desc array to JSON string
       formData.append('title', programmeData.title);
-      formData.append('planType', programmeData.planType); // Add planType to formData
+      formData.append('planType', programmeData.planType);
+      formData.append('discount', programmeData.discount); // Add planType to formData
 
       if (programmeData.categoryPhoto) {
         formData.append('categoryPhoto', programmeData.categoryPhoto);

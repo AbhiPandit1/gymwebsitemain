@@ -9,7 +9,7 @@ const Trainers = () => {
       className=" "
       style={{
         background:
-          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
       }}
     >
       <TrainerComponent />

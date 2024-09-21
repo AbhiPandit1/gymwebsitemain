@@ -50,13 +50,7 @@ const Footer = () => {
   };
 
   return (
-    <footer
-      className="flex flex-col min-h-[85vh] p-6 sm:p-10 w-full  text-white"
-      style={{
-        background:
-          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-      }}
-    >
+    <footer className="flex flex-col min-h-[85vh] p-6 sm:p-10 w-full  text-white">
       {loading ? (
         <FooterSkeleton />
       ) : (

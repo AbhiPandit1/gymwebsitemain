@@ -48,7 +48,7 @@ const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
         {displayedData.map((card) => (
           <div
             key={card._id}
-            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[500px] p-4 w-[300px] my-4 bg-cover bg-center group border-2 border-orange-600 hover:shadow-lg"
+            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[500px] p-4 w-[300px] my-4 bg-cover bg-center group border-2 border-orange-600 "
             style={{ backgroundImage: `url(${card.categoryPhoto?.url})` }}
           >
             <div
@@ -96,9 +96,21 @@ const ProgrammeComponentCardMobile = ({ programmeData, filter }) => {
               </div>
 
               <div className="flex justify-between mt-4 z-99">
-                <div className="h-[3rem] w-[6rem] bg-gray-950 rounded-3x flex justify-center items-center border-4 border-orange-600 rounded-3xl">
-                  <div className="text-lg sm:text-xl text-white font-sans font-bold flex items-center">
-                    ${card.price}
+                <div className="flex flex-col">
+                  {card?.discount > 0 && (
+                    <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
+                      <span className="text-gray-400 line-through text-lg mr-2">
+                        $
+                        {Math.ceil(
+                          card.price + card.price.toFixed(2) / card.discount
+                        ).toFixed(2)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
+                    <p className="text-xl font-bold text-yellow-600">
+                      ${card?.price.toFixed(2)}
+                    </p>
                   </div>
                 </div>
 

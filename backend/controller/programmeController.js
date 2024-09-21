@@ -12,6 +12,8 @@ export const createProgramme = async (req, res) => {
   const { category, title, price, desc, trainerEmail, planType, discount } =
     req.body;
   const userId = req.params.id;
+  console.log(price, discount);
+  
 
   // Parse category and description
   let parsedCategory, parsedDesc;
@@ -42,8 +44,10 @@ export const createProgramme = async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
-  if (isNaN(price) || price <= 10) {
-    return res.status(400).json({ error: 'Price should be greater than 10.' });
+  if (isNaN(price) || price < 10) {
+    return res
+      .status(400)
+      .json({ error: 'Price should be greater than or equal to 10.' });
   }
 
   if (discount !== undefined) {
@@ -111,10 +115,7 @@ export const createProgramme = async (req, res) => {
     }
 
     // Calculate final price after applying discount
-    let finalPrice = price;
-    if (discount && !isNaN(discount) && discount > 0) {
-      finalPrice = price - (price * discount) / 100;
-    }
+    const finalPrice = discount ? price - (price * discount) / 100 : price;
 
     // Create new programme
     const newProgramme = new Programme({
@@ -122,7 +123,7 @@ export const createProgramme = async (req, res) => {
       categoryPhoto, // Include category photo if available
       desc: parsedDesc, // Use parsedDesc
       title,
-      price: Number(finalPrice), // Apply the final calculated price
+      price: Number(finalPrice.toFixed(2)), // Apply the final calculated price, rounded to 2 decimal places
       trainer: trainerId,
       planType, // Include planType
       discount: Number(discount) || 0, // Use discount, default to 0 if not provided

@@ -134,7 +134,7 @@ const ProgrammeComponent = () => {
     <div
       style={{
         background:
-          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
       }}
     >
       <HeroSection
@@ -142,13 +142,7 @@ const ProgrammeComponent = () => {
         para="Explore our wide range of programs"
         title="Programs"
       />
-      <div
-        className="w-full flex flex-col bg-gray-950 items-center text-white p-5 min-h-screen max-w-full mx-auto rounded-xl relative z-40"
-        style={{
-          background:
-            'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-        }}
-      >
+      <div className="w-full flex flex-col  items-center text-white p-5 min-h-screen max-w-full mx-auto  relative z-40">
         <h1 className="text-2xl font-bold mb-6">Our Programs</h1>
         <div className="flex flex-col sm:flex-row items-center gap-2 justify-start mb-6">
           <div className="mt-3 px-8 py-2">
@@ -223,7 +217,9 @@ const ProgrammeComponent = () => {
           Page {currentPage} of {totalPages}
         </div>
       </div>
-      <EquipCard />
+      <div>
+        <EquipCard />
+      </div>
       <Footer />
     </div>
   );

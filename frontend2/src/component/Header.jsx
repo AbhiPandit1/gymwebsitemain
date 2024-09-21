@@ -70,12 +70,12 @@ const Header = () => {
 
       {/* Navigation Menu for larger screens */}
       <div className="hidden sm:flex justify-center items-center gap-3 w-full z-40  ">
-        <div className="flex justify-around items-center font-extrabold opacity-95 ml-[15%] mr-[15%] w-[90%] h-[3rem] z-40 mx-auto rounded-lg shadow-lg">
+        <div className="flex justify-around items-center font-extrabold opacity-95 ml-[15%] mr-[15%] w-[90%] h-[3rem] z-40 mx-auto rounded-lg ">
           {menuItems.map((item) => (
             <Link
               key={item.id}
               to={item.link}
-              className="flex flex-col items-center text-[1rem] text-white no-underline transition-colors duration-300 hover:underline-offset-4 hover:underline hover:text-orange-400"
+              className="flex flex-col items-center text-[1rem] text-white no-underline transition-colors duration-300  hover:text-orange-400"
             >
               <span className="text-lg font-extrabold">{item.name}</span>
             </Link>

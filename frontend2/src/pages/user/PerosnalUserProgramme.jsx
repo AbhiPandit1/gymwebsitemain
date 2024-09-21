@@ -1,15 +1,10 @@
-import { IoIosArrowRoundForward } from 'react-icons/io';
-import DashboardComponent from '../../component/DashboardComponent';
-import DashboardHeader from '../../component/DashboardHeader';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { ImCheckboxChecked } from 'react-icons/im';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
-import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
-import { BiSolidRightArrow } from 'react-icons/bi';
-import SkeletonLoader from '../skeletons/SkeletonLoader';
+import ReactModal from 'react-modal';
+import DashboardHeader from '../../component/DashboardHeader';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 
@@ -17,10 +12,11 @@ const PersonalUserProgramme = () => {
   const { user } = useSelector((state) => state.user);
   const token = user.token;
 
-  const dashboardLink = useDashboardLinks();
   const [trainerDatas, setTrainerDatas] = useState([]);
-  const [hoverDashboard, setHoverDashboard] = useState(false);
-  const [showCategory, setShowCategory] = useState({});
+  const [selectedDescription, setSelectedDescription] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const descriptionRefs = useRef([]);
 
   useEffect(() => {
     const getPersonalProgramme = async () => {
@@ -34,7 +30,6 @@ const PersonalUserProgramme = () => {
           }
         );
         setTrainerDatas(response?.data?.availableProgrammes);
-        console.log(response?.data);
       } catch (error) {
         console.error(error);
         toast.error(error.response?.data?.error || 'Something went wrong');
@@ -44,14 +39,14 @@ const PersonalUserProgramme = () => {
     getPersonalProgramme();
   }, [user?.user?._id, token]);
 
-  const handleClick = () => {
-    setHoverDashboard((prevState) => !prevState);
+  const openModal = (desc) => {
+    setSelectedDescription(desc);
+    setIsModalOpen(true);
   };
-  const handleCategoryToggle = (id) => {
-    setShowCategory((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedDescription(null);
   };
 
   return (
@@ -61,90 +56,81 @@ const PersonalUserProgramme = () => {
           className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
           style={{
             background:
-              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+              'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
           }}
         >
-          <div
-            className={`transition-transform duration-300  ${
-              hoverDashboard ? 'hidden sm:hidden' : 'col-span-9 sm:col-span-2'
-            }`}
-          >
-            <DashboardComponent
-              dashBoardLink={dashboardLink}
-              hoverDashboard={hoverDashboard}
-              setHoverDashboard={setHoverDashboard}
-            />
+          <div className="col-span-9 sticky top-0 z-50">
+            <DashboardHeader />
           </div>
 
-          <div
-            className={`transition-transform duration-300 ${
-              hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
-            } overflow-hidden`}
-          >
-            <DashboardHeader />
-
-            {/* Toggle Dashboard Visibility on Small Screens */}
-            {hoverDashboard && (
-              <div
-                className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-                onClick={handleClick}
-              >
-                <BiSolidRightArrow size={40} color="orange" />
-              </div>
-            )}
-
-            <div className="grid grid-cols-3 sm:pl-5 w-full max-h-full sm:max-h-[80vh] overflow-auto">
-              <div className="col-span-3 items-start justify-center overflow-auto">
-                <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-4">
-                  {trainerDatas?.map((card) => (
-                    <div
-                      key={card?._id}
-                      className="bg-gray-800 rounded-[10px] m-auto min-h-[400px] p-4  w-[300px] shadow-lg border-4 border-orange-600 "
-                    >
+          <div className="grid grid-cols-3 sm:pl-5 w-full max-h-full min-h-[88vh] sm:max-h-[100vh] overflow-auto col-span-9">
+            <div className="col-span-3 items-start justify-center overflow-auto">
+              <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-10">
+                {trainerDatas?.map((card, index) => (
+                  <div
+                    key={card?._id}
+                    className="bg-gray-800 m-auto min-h-[68vh] max-h-[100vh] w-full border-b-4 border-orange-600 shadow-lg relative overflow-hidden"
+                  >
+                    <div className="relative">
                       <img
                         src={card?.categoryPhoto?.url}
                         alt={card?.type}
-                        className="h-[249px]  w-[320px] object-cover rounded-[10px] mb-4"
+                        className="h-[250px] w-full object-cover"
                       />
-                      <div className="h-[2rem] max-w-[5rem] m-[5%] text-[0.8rem] rounded-[10px] bg-orange-700 font-sans flex justify-center items-center text-white">
-                        Category
-                      </div>
-                      <button
-                        onClick={() => handleCategoryToggle(card._id)}
-                        className="text-sm font-semibold h-[2rem] w-[8rem] py-1 px-4 rounded-lg bg-orange-600 text-white shadow-md hover:bg-orange-500 transition-colors duration-300"
+                      <Link
+                        to={`/trainer/${card.trainer?._id}`}
+                        className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 z-10"
                       >
-                        {showCategory[card._id] ? 'Hide' : 'Show'}
-                      </button>
-                      {showCategory[card?._id] && (
-                        <div className="mt-2">
-                          <p className="text-sm text-white">
-                            {card.category.join(', ')}
-                          </p>
-                        </div>
-                      )}
-                      <div className="font-sans text-1xl text-orange-300 w-[90%] m-[5%] line-clamp-3">
-                        {card?.desc}
+                        <img
+                          src={card?.trainer?.profilePhoto?.url}
+                          alt="Trainer Profile"
+                          className="w-20 h-20 rounded-full object-cover border-4 border-gray-800"
+                        />
+                      </Link>
+                    </div>
+
+                    <div className="p-4 pt-12 h-full">
+                      <h2 className="text-white text-xl font-semibold mb-2 border-b-2 border-gray-700 pb-2">
+                        {card.title}
+                      </h2>
+                      <div className="relative mb-4 border-b-2 border-gray-700 pb-2 h-[5vh] overflow-hidden">
+                        <p
+                          ref={(el) => (descriptionRefs.current[index] = el)}
+                          className="text-white text-sm cursor-pointer overflow-hidden"
+                          style={{ maxHeight: '5vh' }}
+                          onClick={() => openModal(card.desc)}
+                        >
+                          {card.desc}
+                        </p>
+                        {descriptionRefs.current[index]?.clientHeight > 50 && (
+                          <button
+                            className="text-orange-400 ml-2"
+                            onClick={() => openModal(card.desc)}
+                          >
+                            See More
+                          </button>
+                        )}
                       </div>
-                      <div className="flex justify-between items-center mt-4">
-                        <div className="text-xl text-white font-sans font-bold flex justify-center items-center m-2">
-                          <ImCheckboxChecked color="green" size={40} />
-                        </div>
-                        <button className="w-[3.6rem] h-[3.2rem] bg-orange-600 flex items-center justify-center ml-4 mr-2 rounded-xl">
-                          <Link to={`/user/payment/invoice`}>
-                            <IoIosArrowRoundForward
-                              color="white"
-                              className="w-14 h-10"
-                            />
-                          </Link>
-                        </button>
+                      <h3 className="text-white text-lg font-bold mb-2">
+                        Categories
+                      </h3>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {card.category.map((category, index) => (
+                          <button
+                            key={index}
+                            className="bg-gray-700 text-white px-3 py-1 rounded-lg text-sm hover:bg-orange-500 transition-colors duration-300"
+                          >
+                            {category}
+                          </button>
+                        ))}
                       </div>
-                      {/* Conditional Rendering for Plan Type */}
-                      <div className="mt-4 flex gap-4">
+                      <div className="mt-4 flex justify-between gap-4">
                         {card.planType === 'Diet' && (
                           <Link
                             to={`/trainer/programme/diet/plan/${user.user._id}/${card._id}`}
+                            className="w-full"
                           >
-                            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-400 transition-colors duration-300">
+                            <button className="bg-orange-500 w-full text-white py-2 rounded-lg hover:bg-orange-400 transition-colors duration-300">
                               Diet Plan
                             </button>
                           </Link>
@@ -152,8 +138,9 @@ const PersonalUserProgramme = () => {
                         {card.planType === 'Day' && (
                           <Link
                             to={`/trainer/programme/day/plan/${card.trainerId}/${card._id}`}
+                            className="w-full"
                           >
-                            <button className="bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-300 transition-colors duration-300">
+                            <button className="bg-orange-400 w-full text-white py-2 rounded-lg hover:bg-orange-300 transition-colors duration-300">
                               Day Plan
                             </button>
                           </Link>
@@ -162,30 +149,26 @@ const PersonalUserProgramme = () => {
                           <>
                             <Link
                               to={`/trainer/programme/diet/plan/${user.user._id}/${card._id}`}
+                              className="w-1/2"
                             >
-                              <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-400 transition-colors duration-300">
+                              <button className="bg-orange-500 w-full text-white py-2 hover:bg-orange-400 transition-colors duration-300">
                                 Diet Plan
                               </button>
                             </Link>
                             <Link
                               to={`/trainer/programme/day/plan/${user.user._id}/${card._id}`}
+                              className="w-1/2"
                             >
-                              <button className="bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-300 transition-colors duration-300">
+                              <button className="bg-orange-400 w-full text-white py-2 hover:bg-orange-300 transition-colors duration-300">
                                 Day Plan
                               </button>
                             </Link>
                           </>
                         )}
                       </div>
-
-                      <div className="h-[3rem] w-[6rem] mt-[4%] flex justify-center items-center text-sans font-extrabold bg-orange-500 text-white hover:bg-orange-400 cursor-pointer text-center rounded-lg">
-                        <Link to={`/trainer/${card.trainer?._id}`}>
-                          Trainer
-                        </Link>
-                      </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -200,6 +183,42 @@ const PersonalUserProgramme = () => {
           </div>
         </div>
       )}
+
+      {/* Modal for Full Description */}
+      <ReactModal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Full Description"
+        className="Modal"
+        overlayClassName="Overlay"
+        style={{
+          content: {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            transform: 'translate(-50%, -50%)',
+            background: '#2D2D2D',
+            borderRadius: '10px',
+            padding: '20px',
+          },
+          overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          },
+        }}
+      >
+        <div className="text-white">
+          <h2 className="text-2xl font-bold mb-4">Full Description</h2>
+          <p>{selectedDescription}</p>
+          <button
+            onClick={closeModal}
+            className="mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-400"
+          >
+            Close
+          </button>
+        </div>
+      </ReactModal>
     </>
   );
 };

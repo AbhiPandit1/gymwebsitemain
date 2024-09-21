@@ -102,10 +102,24 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
               </div>
 
               {/* Arrow icon to toggle description visibility */}
-              <div className="flex justify-between mt-4 z-10">
-                <div className="h-[3rem] w-[6rem] bg-gray-950 rounded-3xl flex justify-center items-center border-4 border-orange-600">
-                  <div className="text-lg sm:text-xl text-white font-sans font-bold flex items-center">
-                    ${card.price}
+              <div className="flex  justify-between mt-4 z-10">
+                <div className="flex justify-between mt-4 z-10">
+                  <div className="flex flex-col">
+                    {card?.discount > 0 && (
+                      <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
+                        <span className="text-gray-400 line-through text-lg mr-2">
+                          $
+                          {Math.ceil(
+                            card.price + card.price.toFixed(2) / card.discount
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
+                      <p className="text-xl font-bold text-yellow-600">
+                        ${card?.price.toFixed(2)}
+                      </p>
+                    </div>
                   </div>
                 </div>
 

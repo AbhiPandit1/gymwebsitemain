@@ -36,6 +36,12 @@ const useDashboardLinks = () => {
     },
     {
       id: '4',
+      name: 'Invoices',
+      link: '/user/payment/invoice',
+      icon: <TbInvoice size={30} color="orange" />,
+    },
+    {
+      id: '4',
       name: 'Edit',
       link: `/user/detail/${user.user._id}`,
       icon: <CiEdit size={30} color="orange" />,
@@ -43,7 +49,33 @@ const useDashboardLinks = () => {
   ];
 
   const trainerLinks = [
-    ...userLinks, // Include all user links
+    {
+      id: '1',
+      name: 'Home',
+      link: '/',
+      role: 'user',
+      icon: <BiHome size={30} color="orange" />,
+    },
+    {
+      id: '2',
+      name: 'Programs',
+      link: programLink,
+      role: '',
+      icon: <CgGym size={30} color="orange" />,
+    },
+    {
+      id: '3',
+      name: 'Settings',
+      link: '/settings',
+      icon: <IoSettingsOutline size={30} color="orange" />,
+    },
+
+    {
+      id: '4',
+      name: 'Edit',
+      link: `/user/detail/${user.user._id}`,
+      icon: <CiEdit size={30} color="orange" />,
+    }, // Include all user links
     {
       id: '5',
       name: 'Revenue',

@@ -35,10 +35,10 @@ const Home = () => {
     <>
       {/* Starting Section */}
       <div
-        className="relative w-full flex flex-col max-w-full  bg-gray-950 "
+        className="relative w-full flex flex-col max-w-full  "
         style={{
           background:
-            'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+            'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
         }}
       >
         <Header />
@@ -84,23 +84,11 @@ const Home = () => {
           </Link>
         </div>
 
-        <div
-          className="relative "
-          style={{
-            background:
-              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-          }}
-        >
+        <div className="relative ">
           <CategoriesCard />
         </div>
 
-        <div
-          className="relative"
-          style={{
-            background:
-              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-          }}
-        >
+        <div className="relative">
           <CreatorHomeComponent />
         </div>
 
@@ -113,23 +101,12 @@ const Home = () => {
         <DescriptionComponent />
       </div>*/}
 
-        <div
-          className="p-10"
-          style={{
-            background:
-              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-          }}
-        >
+        <div className="p-10">
           <Faq />
         </div>
 
         {/* Review Card Section */}
-        <div
-          style={{
-            background:
-              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-          }}
-        >
+        <div>
           <ReviewCard />
         </div>
         <div className="relative">

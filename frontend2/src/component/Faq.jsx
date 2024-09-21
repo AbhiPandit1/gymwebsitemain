@@ -38,7 +38,7 @@ const Faq = () => {
   };
 
   return (
-    <div className="p-6 rounded-lg shadow-md min-h-[60vh]">
+    <div className="p-6 rounded-lg min-h-[60vh]">
       <h2 className="text-2xl font-bold text-center text-gray-300 mb-6">
         Frequently Asked Questions
       </h2>
@@ -57,7 +57,7 @@ const Faq = () => {
           </div>
           {openIndex === index && (
             <div
-              className="p-12 bg-gray-800 mt-2  text-white border-4 border-orange-600 rounded-r-lg rounded-l-lg"
+              className="p-12 bg-transparent mt-2  text-white border-2 border-orange-600 rounded-r-lg rounded-l-lg"
               style={{
                 width: '100%',
                 height: '100%',

@@ -23,7 +23,6 @@ const Card = ({ title, backgroundColor }) => {
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedProgrammeId, setSelectedProgrammeId] = useState(null); // State for selected programme ID
-
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
 
   useEffect(() => {
@@ -44,12 +43,10 @@ const Card = ({ title, backgroundColor }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${backendapi}/api/admin/programme`);
-        console.log('API Response:', response.data);
         const filteredData = response.data.filter(
           (item) => item.isSelected === true
         );
         setData(filteredData);
-        console.log('Filtered Data:', filteredData);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -111,15 +108,13 @@ const Card = ({ title, backgroundColor }) => {
       behavior: 'smooth',
     });
   };
-  
+
   const openModal = (programmeId) => {
-    console.log('Opening modal for programme:', programmeId);
     setSelectedProgrammeId(programmeId); // Set the selected programme ID
     setModalIsOpen(true);
   };
 
   const closeModal = () => {
-    console.log('Closing modal');
     setModalIsOpen(false);
   };
 
@@ -128,7 +123,7 @@ const Card = ({ title, backgroundColor }) => {
   }
 
   return (
-    <div className="relative rounded-lg shadow-lg">
+    <div className="relative rounded-lg ">
       <h1 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[32px] text-center mb-4">
         {title}
       </h1>
@@ -143,12 +138,17 @@ const Card = ({ title, backgroundColor }) => {
       <div
         ref={containerRef}
         className="overflow-x-auto w-full max-w-[100%] mx-auto mt-4 cursor-grab scrollbar-hide"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
       >
         <div className="flex transition-transform duration-300 ease-in-out">
           {data.map((card) => (
             <div key={card._id} onClick={() => openModal(card._id)}>
               <div
-                className={`relative bg-${backgroundColor} brightness-100 min-w-[250px] max-w-[200px] m-[1rem] sm:m-[2rem] p-0 h-[350px] border-y-2 flex-shrink-0 border-4 rounded-lg border-orange-400 hover:border-orange-600 transition-all transform hover:scale-105 hover:shadow-lg`}
+                className={`relative min-w-[250px] max-w-[200px] m-[1rem] sm:m-[2rem] p-0 h-[350px] border-y-2 flex-shrink-0 border-4 rounded-lg border-orange-400 hover:border-orange-600 transition-all transform hover:scale-105 hover:shadow-lg`}
+                style={{ backgroundColor }} // Use inline style for dynamic background color
               >
                 {card.categoryPhoto?.url ? (
                   <img
@@ -168,10 +168,22 @@ const Card = ({ title, backgroundColor }) => {
                   <p className="text-sm text-gray-100 font-sans mb-2 font-extrabold">
                     {card.trainer?.name}
                   </p>
-                  <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
-                    <p className="text-xl font-bold text-yellow-600">
-                      ${card.price}
-                    </p>
+                  <div className="flex flex-col">
+                    {card?.discount > 0 && (
+                      <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
+                        <span className="text-gray-400 line-through text-lg mr-2">
+                          $
+                          {Math.ceil(
+                            card.price + card.price.toFixed(2) / card.discount
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
+                      <p className="text-xl font-bold text-yellow-600">
+                        ${card?.price.toFixed(2)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -203,23 +215,19 @@ const Card = ({ title, backgroundColor }) => {
             bottom: 'auto',
             marginRight: '-50%',
             transform: 'translate(-50%, -50%)',
-            width: '90%', // Set content width to 90% of the viewport
-            maxWidth: '1200px', // Optional: Set a max width to prevent excessive stretching on large screens
-            height: 'auto', // Auto height to adjust to content
-            padding: '0', // No padding
-            background: 'transparent', // Transparent background for the modal content
-            border: 'none', // Remove border
-            overflow: 'auto', // Allow scrolling if content overflows
+            width: '90%',
+            maxWidth: '1200px',
+            height: 'auto',
+            padding: '0',
+            background: 'transparent',
+            border: 'none',
           },
         }}
       >
-        <div className="relative">
-          <ProgrammeDetail
-            programmeId={selectedProgrammeId} // Pass the selected programme ID
-            showHeader={false} // Adjust this prop based on your ProgrammeDetail component
-            closeModal={closeModal} // Pass the closeModal function
-          />
-        </div>
+        <ProgrammeDetail
+          programmeId={selectedProgrammeId}
+          closeModal={closeModal}
+        />
       </Modal>
     </div>
   );

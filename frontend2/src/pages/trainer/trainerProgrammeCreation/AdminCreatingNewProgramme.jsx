@@ -54,7 +54,7 @@ const AdminCreatingNewProgramme = () => {
       desc,
       planType,
     };
-
+ console.log(formData)
     try {
       setLoadings(true);
       const response = await dispatch(createProgramme(formData, id, token));
@@ -152,39 +152,14 @@ const AdminCreatingNewProgramme = () => {
     <div
       className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
       style={{
-        background:
-          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+        background: 'linear-gradient(180deg, #050c1e 0%, #050c1e 100%)',
       }}
     >
-      <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-9 sm:col-span-2'
-        }`}
-      >
-        <DashboardComponent
-          dashBoardLink={dashBoardLink}
-          hoverDashboard={hoverDashboard}
-          setHoverDashboard={setHoverDashboard}
-        />
+      <div className="col-span-9 sticky top-0 z-50">
+        <DashboardHeader />
       </div>
 
-      <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
-        } overflow-hidden`}
-      >
-        <DashboardHeader />
-
-        {/* Toggle Dashboard Visibility on Small Screens */}
-        {hoverDashboard && (
-          <div
-            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-            onClick={() => setHoverDashboard(false)}
-          >
-            <BiSolidRightArrow size={40} color="orange" />
-          </div>
-        )}
-
+      <div className="min-h-screen min-w-[100vw]">
         <h1 className="text-3xl font-extrabold text-center py-4">
           Create Program
         </h1>
@@ -225,7 +200,7 @@ const AdminCreatingNewProgramme = () => {
             </div>
 
             {/* Selected Categories */}
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap   gap-2 mb-4">
               {category.map((cat, index) => (
                 <div
                   key={index}
@@ -244,9 +219,9 @@ const AdminCreatingNewProgramme = () => {
             </div>
 
             {/* Category Checkboxes */}
-            <div className="flex flex-wrap gap-4 mb-4">
+            <div className="flex  sm:pl-[8rem] flex-wrap gap-4 mb-4">
               {categoryOptions.map((option, idx) => (
-                <div key={idx} className="flex items-center">
+                <div key={idx} className="flex  items-center">
                   <input
                     type="checkbox"
                     id={`category-${idx}`}
@@ -266,7 +241,7 @@ const AdminCreatingNewProgramme = () => {
             </div>
 
             {/* Plan Type Selection */}
-            <div className="flex flex-col mb-4">
+            <div className="flex flex-col sm:pl-[8rem] mb-4">
               <label className="text-white mb-2">Plan Type</label>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center">
@@ -314,7 +289,7 @@ const AdminCreatingNewProgramme = () => {
               </div>
             </div>
             {/* Title and Description */}
-            <div className="flex flex-col mb-4">
+            <div className="flex sm:px-[8rem] flex-col mb-4">
               <label className="text-white mb-2">Title</label>
               <input
                 type="text"
@@ -325,7 +300,7 @@ const AdminCreatingNewProgramme = () => {
               />
             </div>
 
-            <div className="flex flex-col mb-4">
+            <div className="flex flex-col sm:px-[8rem] mb-4">
               <label className="text-white mb-2">Description</label>
               {desc.map((description, index) => (
                 <div key={index} className="flex items-center mb-2">
@@ -355,7 +330,7 @@ const AdminCreatingNewProgramme = () => {
             </div>
 
             {/* Price and Discount */}
-            <div className="flex flex-col mb-4">
+            <div className="flex sm:px-[8rem] flex-col mb-4">
               <label className="text-white mb-2">Price</label>
               <input
                 type="number"
@@ -366,13 +341,13 @@ const AdminCreatingNewProgramme = () => {
               />
             </div>
 
-            <div className="flex flex-col mb-4">
+            <div className="flex sm:px-[8rem] flex-col mb-4">
               <label className="text-white mb-2">Discount</label>
               <input
                 type="number"
                 value={discount}
                 onChange={(e) => setDiscount(e.target.value)}
-                placeholder="Enter discount"
+                placeholder="Discount (e.g., 20%)"
                 className="p-2 rounded bg-gray-800 text-white"
               />
             </div>
@@ -380,7 +355,7 @@ const AdminCreatingNewProgramme = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className={`p-4 rounded bg-blue-600 text-white ${
+              className={`p-4 rounded sm:px-[8rem]  bg-blue-600 text-white ${
                 loadings ? 'opacity-50 cursor-not-allowed' : ''
               }`}
               disabled={loadings}

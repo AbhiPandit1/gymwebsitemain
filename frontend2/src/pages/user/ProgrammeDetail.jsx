@@ -111,8 +111,10 @@ const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
   return (
     <div className="flex flex-col h-screen font-sans">
       {showHeader && <Header />}
-      <div className="flex-grow flex items-center justify-center p-6 overflow-auto scrollbar-hide">
-        <div className="w-full max-w-6xl bg-white shadow-lg rounded-lg mt-20 sm:mt-16 flex flex-col overflow-scroll scrollbar-hide max-h-[60vh] sm:max-h-screen min-h-[60vh]">
+      <div className="flex-grow flex items-center justify-center p-6  overflow-auto scrollbar-hide max-h-[80vh]">
+        <div className="w-full max-w-6xl bg-white shadow-lg rounded-lg mt-20 sm:mt-16 flex flex-col max-h-[60vh] min-w-[80vw] overflow-scroll scrollbar-hide sm:max-h-screen min-h-[60vh]">
+          {' '}
+          {/* Added min-height and min-width */}
           <Elements stripe={stripePromise}>
             <div className="relative md:flex flex-grow">
               <RxCross2
@@ -135,11 +137,11 @@ const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
                       <img
                         src={singleProgramme?.categoryPhoto?.url}
                         alt={singleProgramme?.category}
-                        className="w-full h-[100%] max-h-[30vh] sm:max-h-[300vh] object-cover shadow-md"
+                        className="w-full min-w-full sm:min-w-[40vw] max-h-[60vh] h-[100%]  min-h-[60vh] sm:max-h-[80vh] object-cover shadow-md"
                       />
                     </div>
                   ) : (
-                    <div className="flex-shrink-0 md:w-1/2 flex justify-center items-center bg-orange-600 rounded-lg shadow-md">
+                    <div className="flex-shrink-0 md:w-1/2 min-w-[40vw] flex justify-center items-center bg-orange-600 rounded-lg shadow-md">
                       <FaImage className="text-gray-500 text-6xl h-[100%]" />
                     </div>
                   )}
