@@ -8,11 +8,13 @@ import ReviewCard from '../../../component/ReviewCard';
 import Footer from '../../../component/Footer';
 import useTrainerDetailHook from '../../../../hook/useTrainerDetailHook';
 import TrainerProfileSkeleton from '../../skeletons/TrainerProfileSkeleton';
+import TrainerReviewCard from '../../../component/TrainerReviewCard';
 
 const PersonalTrainer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { trainerId } = useParams();
   const { user } = useSelector((state) => state?.user);
+  const { tarinerId } = useParams();
   const navigate = useNavigate();
 
   const personalId = user?.user?._id;
@@ -43,7 +45,7 @@ const PersonalTrainer = () => {
         <div
           style={{
             background:
-              'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+              'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
           }}
         >
           <ProgrammeInfo
@@ -67,7 +69,7 @@ const PersonalTrainer = () => {
           <PersonalInfoTrainer />
         </div>
         <div>
-          <ReviewCard />
+          <ReviewCard currentUser={user.user} />
         </div>
         <div>
           <Footer />

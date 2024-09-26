@@ -16,7 +16,7 @@ const TrainerCardMobile = ({ searchQuery }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1); // Current page state
-  const [itemsPerPage] = useState(3); // Number of items per page
+  const [itemsPerPage] = useState(6); // Number of items per page
   const [hasMore, setHasMore] = useState(true); // Track if more pages are available
   const [totalTrainers, setTotalTrainers] = useState(0); // Total number of trainers
 

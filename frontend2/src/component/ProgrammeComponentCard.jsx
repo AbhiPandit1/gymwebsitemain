@@ -26,7 +26,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
   const filteredProgrammes = applyFilter(programmeData);
   const visibleProgrammes = loadButton
     ? filteredProgrammes
-    : filteredProgrammes.slice(0, 3);
+    : filteredProgrammes.slice(0, 9);
 
   const handleExpandToggle = (id) => {
     setExpandedCard(expandedCard === id ? null : id);

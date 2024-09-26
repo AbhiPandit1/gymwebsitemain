@@ -2,22 +2,23 @@ import { useEffect, useState } from 'react';
 import { PiSignInThin } from 'react-icons/pi';
 import { LiaSignOutAltSolid } from 'react-icons/lia';
 import { MdSportsGymnastics } from 'react-icons/md';
-import { BiCategoryAlt } from 'react-icons/bi';
 import { IoHomeOutline } from 'react-icons/io5';
 import { GiClassicalKnowledge } from 'react-icons/gi';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signOut } from '../reducers/userReducer';
 import { toast } from 'react-toastify';
+import { BiCategoryAlt } from 'react-icons/bi';
 
 const Menu = () => {
   const { user } = useSelector((state) => state.user);
   const isSignIn = user && user.user && user.token; // Check if user is signed in
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  console.log(user.user.role);
 
-  const menuData = [
+  // Initial menu items
+  let menuData = [
     {
       id: '1',
       name: 'Home',
@@ -38,9 +39,19 @@ const Menu = () => {
     },
   ];
 
-  if (isSignIn) {
+  // Add additional menu items based on user role
+  if (user && user.user.role === 'trainer') {
     menuData.push({
       id: '5',
+      name: 'Billing',
+      link: `/account/link/${user.user._id}`,
+      image: <BiCategoryAlt color="orange" size={30} />,
+    });
+  }
+
+  if (isSignIn) {
+    menuData.push({
+      id: '6',
       name: 'Dashboard',
       link: `/user/dashboard/${user.user._id}`,
       image: <GiClassicalKnowledge color="orange" size={30} />,
@@ -49,12 +60,14 @@ const Menu = () => {
 
   const [menuDatas, setMenuDatas] = useState(menuData);
 
+  // Sign out handler
   const handleSignOut = () => {
     dispatch(signOut());
     navigate('/login');
     toast.success('Signed out successfully');
   };
 
+  // Update the menu when the user changes
   useEffect(() => {
     setMenuDatas(menuData);
   }, [user]);

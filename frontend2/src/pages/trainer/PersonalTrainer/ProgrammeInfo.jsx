@@ -60,13 +60,19 @@ const ProgrammeInfo = ({
 
   return (
     <>
-      <h1 className="text-3xl font-bold mb-6 text-center text-white p-2">
+      <h1
+        className="text-3xl font-bold mb-6 text-center text-white p-2"
+        style={{
+          background:
+            'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
+        }}
+      >
         {topHeading}
       </h1>
       <div className="my-8 text-white bg-custom-gradient ">
         <div className="grid grid-cols-1 sm:grid-cols-3 h-[50vh] w-[80vw] m-auto overflow-hidden">
           <div
-            className={`text-gray-950 h-full overflow-auto col-span-2 scrollbar-hide p-4 leading-loose order-${orderPara} bg-white `}
+            className={`h-full overflow-auto col-span-2 scrollbar-hide p-4 leading-loose order-${orderPara} bg-white `}
           >
             <h1 className="text-3xl font-bold mb-6 text-start text-gray-950">
               {trainerName}

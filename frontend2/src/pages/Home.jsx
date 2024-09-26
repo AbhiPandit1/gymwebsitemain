@@ -14,6 +14,8 @@ import Header from '../component/Header';
 import Footer from '../component/Footer';
 import HomeSkeleton from './skeletons/HomeSkeleton';
 import { FaAngleDoubleDown } from 'react-icons/fa';
+import ReviewForm from './Setting/Component/ReviewForm';
+import StripeAccount from './payment/StripeAccount';
 
 const Home = () => {
   const { user } = useSelector((state) => state.user);
@@ -107,7 +109,7 @@ const Home = () => {
 
         {/* Review Card Section */}
         <div>
-          <ReviewCard />
+          <ReviewCard currentUser={user?.user} />
         </div>
         <div className="relative">
           <Footer />

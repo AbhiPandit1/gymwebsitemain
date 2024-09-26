@@ -7,6 +7,7 @@ import {
   getTrainerDetail,
   getTrainerDetails,
   getTrainerTotalRevenue,
+  reviewTrainer,
   updateTrainer,
 } from '../controller/trainerController.js';
 import checkRole from '../middleware/authorization.js';
@@ -36,6 +37,10 @@ router
 // Future edit route for about section (not yet implemented)
 
 router.route('/about/get/detail/:trainerId').get(getTrainerDetails);
+
+router
+  .route('/review/trainer/:id')
+  .post(protectRoute, checkRole('user'), reviewTrainer);
 
 router
   .route('/payment/:trainerId')

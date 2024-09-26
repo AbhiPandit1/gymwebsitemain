@@ -17,7 +17,7 @@ const TrainerCard = ({ searchQuery }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const trainersPerPage = 3; // Number of trainers per page
+  const trainersPerPage = 6; // Number of trainers per page
 
   useEffect(() => {
     // Fetch trainer data from the backend API

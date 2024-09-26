@@ -67,7 +67,6 @@ const trainerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Description',
   },
-
   programmes: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -75,6 +74,17 @@ const trainerSchema = new mongoose.Schema({
     },
   ],
   trainerReviews: [reviewSchema],
+
+  // Required fields for Stripe account registration
+  stripeAccountId: {
+    type: String,
+    required: true,
+  },
+  stripeAccountLinked: {
+    type: Boolean,
+    default: false,
+  },
+  // Additional fields for Stripe onboarding can be added here
 });
 
 // Create and export the Trainer model

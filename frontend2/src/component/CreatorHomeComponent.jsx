@@ -151,7 +151,8 @@ const CreatorHomeComponent = () => {
             style={{ scrollBehavior: 'smooth' }}
           >
             {trainerDatas?.map((data) => (
-              <div
+              <Link
+                to={`/trainer/${data?.user?._id}`}
                 key={data?._id}
                 className="relative inline-block rounded-xl w-[350px] bg-gray-800 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4 hover:shadow-orange-600"
               >
@@ -172,7 +173,7 @@ const CreatorHomeComponent = () => {
                     <p className="text-gray-400 mt-1">Creator</p>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           <button
@@ -195,7 +196,8 @@ const CreatorHomeComponent = () => {
           style={{ scrollBehavior: 'smooth' }}
         >
           {trainerDatas?.map((data) => (
-            <div
+            <Link
+              to={`/trainer/${data?._id}`}
               key={data._id}
               className="relative inline-block rounded-xl w-[300px] m-2 hover:shadow-lg bg-transparent border-2 border-orange-600 transition-shadow duration-300 border-b-4 hover:border-4"
             >
@@ -216,7 +218,7 @@ const CreatorHomeComponent = () => {
                   <p className="text-gray-400 mt-1">Creator</p>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

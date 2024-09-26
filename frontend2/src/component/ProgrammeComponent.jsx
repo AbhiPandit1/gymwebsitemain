@@ -12,7 +12,7 @@ const ProgrammeComponent = () => {
   const [filter, setFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(3); // Number of items per page
+  const [itemsPerPage] = useState(9); // Fixed 9 items per page
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,6 +22,7 @@ const ProgrammeComponent = () => {
         if (action && action.categories) {
           setProgrammeData(action.categories);
         }
+        console.log(action.categories);
       } catch (error) {
         console.error('Error fetching data:', error);
         setProgrammeData([]);
@@ -39,6 +40,11 @@ const ProgrammeComponent = () => {
     setCategoryFilter(e.target.value);
   };
 
+  // Reset page to 1 when filtering or searching
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchBox, categoryFilter]);
+
   // Filter Programmes
   const filteredProgrammes = programmeData.filter((programme) => {
     const matchesSearch = programme.title
@@ -49,8 +55,6 @@ const ProgrammeComponent = () => {
       : true;
     return matchesSearch && matchesCategory;
   });
-
-  console.log('Filtered Programmes Length:', filteredProgrammes.length); // Debugging
 
   // Sort Programmes
   const sortedProgrammes = [...filteredProgrammes].sort((a, b) => {
@@ -67,15 +71,13 @@ const ProgrammeComponent = () => {
   });
 
   // Pagination Logic
-  const totalPages = Math.ceil(filteredProgrammes.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedProgrammes.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = sortedProgrammes.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-
-  console.log('Current Items:', currentItems); // Debugging
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
@@ -92,6 +94,7 @@ const ProgrammeComponent = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+  console.log(currentItems)
 
   // Render page numbers with a limit
   const renderPageNumbers = () => {
@@ -142,7 +145,7 @@ const ProgrammeComponent = () => {
         para="Explore our wide range of programs"
         title="Programs"
       />
-      <div className="w-full flex flex-col  items-center text-white p-5 min-h-screen max-w-full mx-auto  relative z-40">
+      <div className="w-full flex flex-col items-center text-white p-5 min-h-screen max-w-full mx-auto relative z-40">
         <h1 className="text-2xl font-bold mb-6">Our Programs</h1>
         <div className="flex flex-col sm:flex-row items-center gap-2 justify-start mb-6">
           <div className="mt-3 px-8 py-2">
@@ -217,9 +220,7 @@ const ProgrammeComponent = () => {
           Page {currentPage} of {totalPages}
         </div>
       </div>
-      <div>
-        <EquipCard />
-      </div>
+
       <Footer />
     </div>
   );

@@ -55,7 +55,7 @@ const ComplaintForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start bg-black text-white p-4 font-sans">
+    <div className="flex flex-col items-center justify-start  text-white p-4 font-sans">
       {!isComplain ? (
         <button
           onClick={handleComplainButtonClick}

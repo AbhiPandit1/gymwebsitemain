@@ -25,7 +25,7 @@ const reviewSchema = new Schema({
     // Reference to the trainer being reviewed
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Trainer',
-    required: true,
+    required: false,
   },
   createdAt: {
     type: Date,

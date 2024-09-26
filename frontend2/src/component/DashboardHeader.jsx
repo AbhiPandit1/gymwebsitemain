@@ -60,7 +60,7 @@ const DashboardHeader = () => {
           }}
         >
           <div className="h-full w-full bg-gray-800 ">
-            <div className="flex justify-start items-start px-[35%] py-[7%]  ">
+            <div className="flex justify-end items-end right-[5rem] mr-[5%]  py-[7%]  ">
               <RxCross2
                 size={50}
                 className="cursor-pointer transform  hover:scale-110 hover:rotate-90 transition duration-300 ease-in-out"
@@ -68,7 +68,7 @@ const DashboardHeader = () => {
               />
             </div>
 
-            <div className="py-[40%] flex flex-col px-[15%] ">
+            <div className="py-[40%] flex flex-col px-[3%] ">
               {dashBoardLink?.map((dashboard, index) => (
                 <div
                   key={dashboard.id}
@@ -77,13 +77,13 @@ const DashboardHeader = () => {
                       index * 0.1
                     }s both`,
                   }}
-                  className="mt-[1rem] overflow-hidden w-full hover:bg-orange-900 hover:rounded-full transition duration-300 ease-in-out py-2 px-4"
+                  className="mt-[1rem] mr-[15%] overflow-hidden w-full hover:bg-orange-900 hover:rounded-full transition duration-300 ease-in-out py-2 px-4"
                 >
                   <Link to={dashboard.link} className="flex items-start w-full">
-                    <p className="text-xl font-sans font-bold mr-4">
+                    <p className="text-2xl font-sans font-bold mr-4">
                       {dashboard.icon}
                     </p>
-                    <span className="text-lg font-sans font-bold">
+                    <span className="text-3xl font-sans font-bold">
                       {dashboard.name}
                     </span>
                   </Link>

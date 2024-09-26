@@ -36,9 +36,7 @@ const TrainerComponent = () => {
         </div>
 
         {/* EquipCard */}
-        <div className="h-auto top-[20%]">
-          <EquipCard />
-        </div>
+
         <Footer />
       </div>
       {/* Trainers */}

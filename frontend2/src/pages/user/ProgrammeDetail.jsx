@@ -11,9 +11,7 @@ import { FaImage } from 'react-icons/fa'; // Importing an icon for placeholder
 import { RxCross2 } from 'react-icons/rx';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
-const stripePromise = loadStripe(
-  'pk_test_51Pa814I7lJRhp8GEBpmlT7u9bssCwu3MtiZALmBXBIsYkeqZboK3CT8JgOpMfwLdMXyyKrFXuUAc28crTu0DmJG300zMtqLK58'
-);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
   const [singleProgramme, setSingleProgramme] = useState(null);

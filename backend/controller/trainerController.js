@@ -268,3 +268,52 @@ export const getTrainerTotalRevenue = async (req, res) => {
     });
   }
 };
+
+// Controller for reviewing a trainer
+export const reviewTrainer = async (req, res) => {
+  const { userId } = req.params; // Extract the userId from the request params
+
+  try {
+    const { trainerId, rating, reviewText } = req.body; // Destructure the body parameters
+
+    // Check if the trainer exists
+    const trainer = await Trainer.findById(trainerId);
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Check if the user has already reviewed the trainer (optional logic)
+    const alreadyReviewed = trainer.trainerReviews.find(
+      (review) => review.user.toString() === userId
+    );
+
+    if (alreadyReviewed) {
+      return res
+        .status(400)
+        .json({ error: 'User has already reviewed this trainer' });
+    }
+
+    // Create a new review object
+    const newReview = {
+      rating,
+      reviewText,
+      user: userId,
+    };
+
+    // Add the new review to the trainerReviews array
+    trainer.trainerReviews.push(newReview);
+
+    // Save the updated trainer document
+    await trainer.save();
+
+    return res.status(201).json({
+      message: 'Review added successfully',
+      review: newReview,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: 'Internal server error, please try again later',
+    });
+  }
+};

@@ -26,6 +26,9 @@ import DashboardPanel from './pages/DashboardPanel/DashboardPanel';
 import PersonalTrainer from './pages/trainer/PersonalTrainer/PersonalTrainer';
 import TrainerAboutSection from './pages/trainer/TrainerAboutSection';
 import TrainerInvoiceInfo from './pages/trainer/TrainerInvoiceInfo';
+import AccountLinkFailure from './pages/payment/AccountLinkFailure';
+import AccountLinkSuccess from './pages/payment/AccountLinkSuccess';
+import StripeAccount from './pages/payment/StripeAccount';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -233,6 +236,18 @@ function App() {
             element={
               token ? <StripePaymentFailure /> : <Navigate to="/login" />
             }
+          />
+          <Route
+            path="/account/link/:id"
+            element={token ? <StripeAccount /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/account/link/failure"
+            element={token ? <AccountLinkFailure /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/account/link/success"
+            element={token ? <AccountLinkSuccess /> : <Navigate to="/login" />}
           />
           <Route
             path="/payment/invoices/:trainerId"
