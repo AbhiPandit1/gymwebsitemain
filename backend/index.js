@@ -23,7 +23,10 @@ import settingRouter from './route/settingRoute.js';
 import programmeDietPlanRouter from './route/programmeDietPlanRoute.js';
 import programmeDayPlanRouter from './route/programmeDayPlanRoute.js';
 import reviewPlanRouter from './route/reviewRoute.js';
-import { stripeWebhook } from './controller/paymentController.js';
+import {
+  stripeWebhook,
+  stripeWebhookPayment,
+} from './controller/paymentController.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -68,7 +71,8 @@ app.use('/api/trainer', programmeDietPlanRouter);
 app.use('/api/trainer', programmeDayPlanRouter);
 app.use('/api', reviewPlanRouter);
 
-app.post('/webhook', stripeWebhook);
+app.post('/webhook', stripeWebhookPayment);
+app.post('/account/webhook', stripeWebhook);
 
 // Serve static files (if any)
 // Uncomment and adjust the path if you have static files to serve
