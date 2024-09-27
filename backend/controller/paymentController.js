@@ -118,7 +118,7 @@ export const stripeWebhookPayment = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET_2
+      process.env.STRIPE_WEBHOOK_SECRET_1
     );
   } catch (err) {
     console.error('Webhook signature verification failed.', err.message);
@@ -415,7 +415,7 @@ export const stripeWebhook = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET_1
+      process.env.STRIPE_WEBHOOK_SECRET_2
     );
   } catch (err) {
     console.error('⚠️  Webhook signature verification failed:', err.message);
