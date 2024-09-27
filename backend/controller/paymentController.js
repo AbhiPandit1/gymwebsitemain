@@ -394,6 +394,7 @@ export const stripeWebhook = async (req, res) => {
 
   let event;
   console.log(event);
+  res.send({ message: 'Hello logo' });
 
   try {
     // Verify the webhook signature and extract the event

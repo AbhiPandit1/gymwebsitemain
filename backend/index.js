@@ -35,7 +35,6 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.raw({ type: 'application/json' }));
 
 // Configure CORS
 const corsOptions = {
@@ -73,13 +72,14 @@ app.use('/api', reviewPlanRouter);
 
 app.post(
   '/webhook',
-  express.raw({ type: 'application/json' }),
-  stripeWebhookPayment
+  express.raw({ type: 'application/json' }), // Raw body for Stripe
+  stripeWebhookPayment // Your webhook handling function
 );
+
 app.post(
   '/account/webhook',
-  express.raw({ type: 'application/json' }),
-  stripeWebhook
+  express.raw({ type: 'application/json' }), // Raw body for Stripe
+  stripeWebhook // Your webhook handling function
 );
 
 // Serve static files (if any)
