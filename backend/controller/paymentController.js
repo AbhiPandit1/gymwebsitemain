@@ -184,11 +184,11 @@ export const stripeWebhookPayment = async (req, res) => {
         console.log('Confirmation email sent:', emailData);
 
         console.log('Payment successful, actions completed.');
+        return res.status(200).json({ success: true });
       } catch (error) {
         console.error('Error processing payment success:', error);
+        return res.status(500).json({ error: 'Internal server error' });
       }
-
-      break;
     }
 
     case 'payment_intent.canceled': {
@@ -218,11 +218,11 @@ export const stripeWebhookPayment = async (req, res) => {
         }
 
         console.log('Payment canceled, email sent.');
+        return res.status(200).json({ success: true });
       } catch (error) {
         console.error('Error processing payment cancellation:', error);
+        return res.status(500).json({ error: 'Internal server error' });
       }
-
-      break;
     }
 
     default:
