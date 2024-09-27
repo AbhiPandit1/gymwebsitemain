@@ -16,7 +16,7 @@ export const paymentCheckout = async (req, res) => {
   const { amount } = req.body; // Total amount from the request body
   const userId = req.user._id; // User ID from the request
   const id = req.params.id; // Programme ID
-
+  console.log(process.env.STRIPE_WEBHOOK_SECRET_1);
   try {
     // Check if the programme exists
     const programme = await Programme.findById(id);
@@ -87,8 +87,6 @@ export const paymentCheckout = async (req, res) => {
       },
     });
 
-    console.log(session);
-
     // Retrieve the payment intent to check metadata
     if (session.payment_intent) {
       const paymentIntent = await stripe.paymentIntents.retrieve(
@@ -112,7 +110,7 @@ export const stripeWebhookPayment = async (req, res) => {
   let event;
 
   // Log the raw event body and signature for debugging purposes
-  console.log('Raw event body:', req.body.toString()); // Convert Buffer to string
+
   console.log('Stripe signature:', sig);
 
   try {
@@ -120,14 +118,12 @@ export const stripeWebhookPayment = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET
+      process.env.STRIPE_WEBHOOK_SECRET_2
     );
   } catch (err) {
     console.error('Webhook signature verification failed.', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
-
-  // Log event type
 
   // Handle the event based on its type
   switch (event.type) {
@@ -148,8 +144,8 @@ export const stripeWebhookPayment = async (req, res) => {
       }
 
       // Convert valid IDs to ObjectIds
-      const userObjectId = new Types.ObjectId(userId); // No need for 'new ObjectId'
-      const programmeObjectId = new Types.ObjectId(programmeId); // No need for 'new ObjectId'
+      const userObjectId = new Types.ObjectId(userId);
+      const programmeObjectId = new Types.ObjectId(programmeId);
 
       console.log('Converted userId:', userObjectId);
       console.log('Converted programmeId:', programmeObjectId);
@@ -219,8 +215,8 @@ export const stripeWebhookPayment = async (req, res) => {
         return res.status(400).json({ error: 'Invalid user or programme ID' });
       }
 
-      const userObjectId = new ObjectId(userId);
-      const programmeObjectId = new ObjectId(programmeId);
+      const userObjectId = new Types.ObjectId(userId);
+      const programmeObjectId = new Types.ObjectId(programmeId);
 
       console.log('Converted userId:', userObjectId);
       console.log('Converted programmeId:', programmeObjectId);
@@ -250,10 +246,8 @@ export const stripeWebhookPayment = async (req, res) => {
 
     default:
       console.log(`Unhandled event type ${event.type}`);
+      return res.status(200).json({ received: true }); // Acknowledge receipt of the event
   }
-
-  // Return a response to acknowledge receipt of the event
-  res.json({ received: true });
 };
 
 // Refund Method
@@ -413,7 +407,7 @@ export const createAccount = async (req, res) => {
 //Create Account
 
 export const stripeWebhook = async (req, res) => {
-  const sig = req.headers['stripe-signature'];
+  const sig = request.headers.get('stripe-signature');
   let event;
 
   try {
@@ -421,7 +415,7 @@ export const stripeWebhook = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET
+      process.env.STRIPE_WEBHOOK_SECRET_1
     );
   } catch (err) {
     console.error('⚠️  Webhook signature verification failed:', err.message);
