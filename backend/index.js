@@ -71,8 +71,16 @@ app.use('/api/trainer', programmeDietPlanRouter);
 app.use('/api/trainer', programmeDayPlanRouter);
 app.use('/api', reviewPlanRouter);
 
-app.post('/webhook', stripeWebhookPayment);
-app.post('/account/webhook', stripeWebhook);
+app.post(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  stripeWebhookPayment
+);
+app.post(
+  '/account/webhook',
+  express.raw({ type: 'application/json' }),
+  stripeWebhook
+);
 
 // Serve static files (if any)
 // Uncomment and adjust the path if you have static files to serve

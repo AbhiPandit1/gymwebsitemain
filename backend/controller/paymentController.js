@@ -110,29 +110,46 @@ export const stripeWebhookPayment = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
 
+  // Log the raw event body and signature for debugging purposes
+  console.log('Raw event body:', req.body);
+  console.log('Stripe signature:', sig);
+
   try {
+    // Attempt to construct the event from the request body
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
+    console.log('Constructed event:', event); // Log the full event
   } catch (err) {
     console.error('Webhook signature verification failed.', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Handle the event
+  // Log event type
+  console.log('Stripe event type:', event.type);
+
+  // Handle the event based on its type
   switch (event.type) {
     case 'payment_intent.succeeded': {
       const paymentIntent = event.data.object;
+      console.log('Payment Intent (Succeeded):', paymentIntent);
+
       // Convert userId and programmeId to ObjectId
       const userId = Types.ObjectId(paymentIntent.metadata.userId);
       const programmeId = Types.ObjectId(paymentIntent.metadata.programmeId);
+
+      console.log('Converted userId:', userId);
+      console.log('Converted programmeId:', programmeId);
 
       try {
         // Find the user and programme
         const user = await User.findById(userId);
         const programme = await Programme.findById(programmeId);
+
+        console.log('User found:', user);
+        console.log('Programme found:', programme);
 
         if (!user || !programme) {
           return res.status(404).json({ error: 'User or programme not found' });
@@ -142,6 +159,7 @@ export const stripeWebhookPayment = async (req, res) => {
         user.hasTakenProgramme = true;
         user.takenProgrammes.push(programmeId);
         await user.save();
+        console.log('User programme status updated and saved.');
 
         // Save payment details
         const paymentDetails = new Payment({
@@ -152,6 +170,7 @@ export const stripeWebhookPayment = async (req, res) => {
           programmes: [programme._id],
         });
         await paymentDetails.save();
+        console.log('Payment details saved:', paymentDetails);
 
         // Send confirmation email
         const emailData = {
@@ -162,8 +181,9 @@ export const stripeWebhookPayment = async (req, res) => {
           } USD. Your payment ID is ${paymentIntent.id}.`,
         };
         await sendEmail(emailData);
+        console.log('Confirmation email sent:', emailData);
 
-        console.log('Payment successful, actions completed');
+        console.log('Payment successful, actions completed.');
       } catch (error) {
         console.error('Error processing payment success:', error);
       }
@@ -173,12 +193,18 @@ export const stripeWebhookPayment = async (req, res) => {
 
     case 'payment_intent.canceled': {
       const paymentIntent = event.data.object;
+      console.log('Payment Intent (Canceled):', paymentIntent);
+
       // Convert userId and programmeId to ObjectId
       const userId = Types.ObjectId(paymentIntent.metadata.userId);
       const programmeId = Types.ObjectId(paymentIntent.metadata.programmeId);
 
+      console.log('Converted userId:', userId);
+      console.log('Converted programmeId:', programmeId);
+
       try {
         const user = await User.findById(userId);
+        console.log('User found for cancellation:', user);
 
         // Send cancellation email
         if (user) {
@@ -188,6 +214,7 @@ export const stripeWebhookPayment = async (req, res) => {
             message: `Your payment for programme ID ${programmeId} was canceled.`,
           };
           await sendEmail(emailData);
+          console.log('Cancellation email sent:', emailData);
         }
 
         console.log('Payment canceled, email sent.');
@@ -205,6 +232,7 @@ export const stripeWebhookPayment = async (req, res) => {
   // Return a response to acknowledge receipt of the event
   res.json({ received: true });
 };
+
 // Refund Method
 export const refundForPayment = async (req, res) => {
   const { paymentIntentId } = req.body;
