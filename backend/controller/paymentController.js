@@ -111,7 +111,7 @@ export const stripeWebhookPayment = async (req, res) => {
   let event;
 
   // Log the raw event body and signature for debugging purposes
-  console.log('Raw event body:', req.body);
+  console.log('Raw event body:', req.body.toString()); // Convert Buffer to string
   console.log('Stripe signature:', sig);
 
   try {
@@ -393,8 +393,6 @@ export const stripeWebhook = async (req, res) => {
   const sig = req.headers['stripe-signature'];
 
   let event;
-  console.log(event);
-  res.send({ message: 'Hello logo' });
 
   try {
     // Verify the webhook signature and extract the event

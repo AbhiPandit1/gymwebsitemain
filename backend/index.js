@@ -72,13 +72,13 @@ app.use('/api', reviewPlanRouter);
 
 app.post(
   '/webhook',
-  express.raw({ type: 'application/json' }), // Raw body for Stripe
+  bodyParser.raw({ type: 'application/json' }), // Raw body for Stripe
   stripeWebhookPayment // Your webhook handling function
 );
 
 app.post(
   '/account/webhook',
-  express.raw({ type: 'application/json' }), // Raw body for Stripe
+  bodyParser.raw({ type: 'application/json' }), // Raw body for Stripe
   stripeWebhook // Your webhook handling function
 );
 
