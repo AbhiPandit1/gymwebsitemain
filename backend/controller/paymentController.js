@@ -408,6 +408,7 @@ export const createAccount = async (req, res) => {
 
 export const stripeWebhook = async (req, res) => {
   const sig = req.headers['stripe-signature'];
+  console.log('Received signature:', sig);
   let event;
 
   try {

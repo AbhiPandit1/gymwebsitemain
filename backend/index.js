@@ -39,13 +39,14 @@ app.post(
   stripeWebhookPayment // Your webhook handling function
 );
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.post(
   '/account-webhook',
   express.raw({ type: 'application/json' }),
   stripeWebhook
 );
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Configure CORS
 const corsOptions = {
