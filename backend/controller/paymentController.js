@@ -407,7 +407,7 @@ export const createAccount = async (req, res) => {
 //Create Account
 
 export const stripeWebhook = async (req, res) => {
-  const sig = request.headers.get('stripe-signature');
+  const sig = req.headers['stripe-signature'];
   let event;
 
   try {
