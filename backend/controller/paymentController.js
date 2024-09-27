@@ -414,7 +414,6 @@ export const createAccount = async (req, res) => {
 
 export const stripeWebhook = async (req, res) => {
   const sig = req.headers['stripe-signature'];
-
   let event;
 
   try {
@@ -425,13 +424,16 @@ export const stripeWebhook = async (req, res) => {
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
-    console.error('⚠️  Webhook signature verification failed.', err.message);
+    console.error('⚠️  Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
   // Handle the event
   if (event.type === 'account.updated') {
     const account = event.data.object;
+
+    console.log('Charges enabled:', account.charges_enabled);
+    console.log('Payouts enabled:', account.payouts_enabled);
 
     // Check if the account has both charges and payouts enabled
     if (account.charges_enabled && account.payouts_enabled) {
@@ -447,12 +449,14 @@ export const stripeWebhook = async (req, res) => {
             `Trainer with ID ${trainer._id} has completed onboarding.`
           );
         } else {
-          console.log('Trainer with this Stripe account ID not found.');
+          console.log('No trainer found with this Stripe account ID.');
         }
       } catch (error) {
         console.error('Error updating trainer status:', error.message);
         return res.status(500).send('Error updating trainer status.');
       }
+    } else {
+      console.log('Account does not have both charges and payouts enabled.');
     }
   }
 
