@@ -33,6 +33,17 @@ dotenv.config();
 
 // Initialize Express application
 const app = express();
+app.post(
+  '/webhook',
+  bodyParser.raw({ type: 'application/json' }), // Raw body for Stripe//payment_intent.succeeded
+  stripeWebhookPayment // Your webhook handling function
+);
+
+app.post(
+  '/account/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  stripeWebhook
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -69,18 +80,6 @@ app.use('/api/setting', settingRouter);
 app.use('/api/trainer', programmeDietPlanRouter);
 app.use('/api/trainer', programmeDayPlanRouter);
 app.use('/api', reviewPlanRouter);
-
-app.post(
-  '/webhook',
-  bodyParser.raw({ type: 'application/json' }), // Raw body for Stripe//payment_intent.succeeded
-  stripeWebhookPayment // Your webhook handling function
-);
-
-app.post(
-  '/account/webhook',
-  bodyParser.raw({ type: 'application/json' }),
-  stripeWebhook
-);
 
 // Serve static files (if any)
 // Uncomment and adjust the path if you have static files to serve
