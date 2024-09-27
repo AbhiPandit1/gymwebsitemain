@@ -1,6 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../../component/Header';
 
@@ -12,6 +12,44 @@ const StripeAccount = () => {
   const backendApi = import.meta.env.VITE_BACKEND_URL;
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [trainer, setTrainer] = useState(null);
+  const [isLoadingTrainer, setIsLoadingTrainer] = useState(true); // Loading state for trainer
+
+  useEffect(() => {
+    // Fetch user data to get trainer details
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const response = await fetch(
+            `${backendApi}/api/trainer/about/get/detail/${user.user._id}`,
+            {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${user.token}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            const errorResponse = await response.json();
+            throw new Error(errorResponse.error || 'Failed to fetch user data');
+          }
+
+          const data = await response.json();
+          setTrainer(data.trainer); // Set trainer data from the response
+        } catch (error) {
+          console.error('Error fetching trainer data:', error.message);
+          setErrorMessage(
+            'Failed to fetch trainer data. Please try again later.'
+          );
+        } finally {
+          setIsLoadingTrainer(false); // Set loading to false after fetching
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user, backendApi]);
 
   const handleClick = async () => {
     setLoading(true);
@@ -21,6 +59,7 @@ const StripeAccount = () => {
       const stripe = await stripePromise;
 
       if (!stripe) throw new Error('Stripe failed to initialize');
+
       const url = `${backendApi}/api/payment/create/account/${user.user._id}`;
 
       const response = await fetch(url, {
@@ -73,7 +112,11 @@ const StripeAccount = () => {
         {/* Main Content */}
         <div className="bg-white p-10 rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-500 hover:scale-105">
           <h2 className="text-3xl font-bold text-center text-purple-600 mb-6">
-            Create a Stripe Account
+            {isLoadingTrainer
+              ? 'Loading...'
+              : trainer?.stripeAccountLinked
+              ? 'Update Your Account'
+              : 'Create a Stripe Account'}
           </h2>
 
           <p className="text-gray-600 text-center mb-4">
@@ -95,14 +138,6 @@ const StripeAccount = () => {
           >
             {loading ? 'Processing...' : 'Connect with Stripe'}
           </button>
-
-          <div className="flex justify-center mt-6">
-            <Link to="/dashboard" className="text-center text-white w-full">
-              <button className="w-full py-3 px-6 rounded-lg text-lg font-semibold bg-blue-600 hover:bg-blue-700 shadow-lg transition duration-300">
-                Check Your Dashboard
-              </button>
-            </Link>
-          </div>
         </div>
       </div>
     </div>
