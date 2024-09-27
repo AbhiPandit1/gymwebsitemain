@@ -40,7 +40,7 @@ app.post(
 );
 
 app.post(
-  '/account/webhook',
+  '/account-webhook',
   express.raw({ type: 'application/json' }),
   stripeWebhook
 );
