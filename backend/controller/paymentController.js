@@ -6,6 +6,7 @@ import sendEmail from '../lib/sendEmail.js';
 import Programme from '../model/programmeModel.js';
 import Trainer from '../model/trainerModel.js';
 import cloudinary from 'cloudinary';
+import { Types, ObjectId } from 'mongoose';
 
 dotenv.config();
 
@@ -105,6 +106,7 @@ export const paymentCheckout = async (req, res) => {
       .json({ error: 'Failed to process payment', message: error.message });
   }
 };
+
 export const stripeWebhookPayment = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
@@ -114,37 +116,48 @@ export const stripeWebhookPayment = async (req, res) => {
   console.log('Stripe signature:', sig);
 
   try {
-    // Use the Stripe webhook secret directly here
-    const endpointSecret = 'whsec_AdkgX3EHz4wL7Lgasqim7NiGFKagViJU';
-
     // Attempt to construct the event from the request body
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    console.log('Constructed event:', event); // Log the full event
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
   } catch (err) {
     console.error('Webhook signature verification failed.', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
   // Log event type
-  console.log('Stripe event type:', event.type);
 
   // Handle the event based on its type
   switch (event.type) {
     case 'payment_intent.succeeded': {
       const paymentIntent = event.data.object;
-      console.log('Payment Intent (Succeeded):', paymentIntent);
 
       // Convert userId and programmeId to ObjectId
-      const userId = Types.ObjectId(paymentIntent.metadata.userId);
-      const programmeId = Types.ObjectId(paymentIntent.metadata.programmeId);
+      const userId = paymentIntent.metadata.userId;
+      const programmeId = paymentIntent.metadata.programmeId;
 
-      console.log('Converted userId:', userId);
-      console.log('Converted programmeId:', programmeId);
+      // Validate ObjectId
+      if (
+        !Types.ObjectId.isValid(userId) ||
+        !Types.ObjectId.isValid(programmeId)
+      ) {
+        console.error('Invalid ObjectId:', userId, programmeId);
+        return res.status(400).json({ error: 'Invalid user or programme ID' });
+      }
+
+      // Convert valid IDs to ObjectIds
+      const userObjectId = new Types.ObjectId(userId); // No need for 'new ObjectId'
+      const programmeObjectId = new Types.ObjectId(programmeId); // No need for 'new ObjectId'
+
+      console.log('Converted userId:', userObjectId);
+      console.log('Converted programmeId:', programmeObjectId);
 
       try {
         // Find the user and programme
-        const user = await User.findById(userId);
-        const programme = await Programme.findById(programmeId);
+        const user = await User.findById(userObjectId);
+        const programme = await Programme.findById(programmeObjectId);
 
         console.log('User found:', user);
         console.log('Programme found:', programme);
@@ -155,13 +168,13 @@ export const stripeWebhookPayment = async (req, res) => {
 
         // Update user programme status and save payment details
         user.hasTakenProgramme = true;
-        user.takenProgrammes.push(programmeId);
+        user.takenProgrammes.push(programmeObjectId);
         await user.save();
         console.log('User programme status updated and saved.');
 
         // Save payment details
         const paymentDetails = new Payment({
-          userId: userId,
+          userId: userObjectId,
           amount: paymentIntent.amount / 100,
           currency: paymentIntent.currency,
           paymentIntentId: paymentIntent.id,
@@ -194,14 +207,26 @@ export const stripeWebhookPayment = async (req, res) => {
       console.log('Payment Intent (Canceled):', paymentIntent);
 
       // Convert userId and programmeId to ObjectId
-      const userId = Types.ObjectId(paymentIntent.metadata.userId);
-      const programmeId = Types.ObjectId(paymentIntent.metadata.programmeId);
+      const userId = paymentIntent.metadata.userId;
+      const programmeId = paymentIntent.metadata.programmeId;
 
-      console.log('Converted userId:', userId);
-      console.log('Converted programmeId:', programmeId);
+      // Validate ObjectId
+      if (
+        !Types.ObjectId.isValid(userId) ||
+        !Types.ObjectId.isValid(programmeId)
+      ) {
+        console.error('Invalid ObjectId:', userId, programmeId);
+        return res.status(400).json({ error: 'Invalid user or programme ID' });
+      }
+
+      const userObjectId = new ObjectId(userId);
+      const programmeObjectId = new ObjectId(programmeId);
+
+      console.log('Converted userId:', userObjectId);
+      console.log('Converted programmeId:', programmeObjectId);
 
       try {
-        const user = await User.findById(userId);
+        const user = await User.findById(userObjectId);
         console.log('User found for cancellation:', user);
 
         // Send cancellation email
@@ -209,7 +234,7 @@ export const stripeWebhookPayment = async (req, res) => {
           const emailData = {
             email: user.email,
             subject: 'Payment Canceled',
-            message: `Your payment for programme ID ${programmeId} was canceled.`,
+            message: `Your payment for programme ID ${programmeObjectId} was canceled.`,
           };
           await sendEmail(emailData);
           console.log('Cancellation email sent:', emailData);
