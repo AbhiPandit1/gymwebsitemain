@@ -46,6 +46,8 @@ export const paymentCheckout = async (req, res) => {
     // Convert ObjectId to string
     const programmeIdString = programme._id.toString();
     const userIdString = userId.toString();
+    console.log(programmeIdString);
+    console.log(userIdString);
 
     // Calculate application fee (23% of total amount)
     const applicationFeePercentage = 0.23; // 23%
@@ -61,10 +63,10 @@ export const paymentCheckout = async (req, res) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: programme.title, // Ensure the product name is provided
-              description: programme.description || 'Programme Purchase', // Optional: add a description
+              name: programme.title,
+              description: programme.description || 'Programme Purchase',
             },
-            unit_amount: amount * 100, // Total amount in cents
+            unit_amount: amount * 100,
           },
           quantity: 1,
         },
@@ -73,16 +75,26 @@ export const paymentCheckout = async (req, res) => {
       success_url: `https://www.programpanda.co/payment/success`,
       cancel_url: `https://www.programpanda.co/payment/cancel`,
       payment_intent_data: {
-        application_fee_amount: applicationFeeAmount, // Your fee in cents
+        application_fee_amount: applicationFeeAmount,
         transfer_data: {
-          destination: trainer.stripeAccountId, // Connected account ID of the trainer
+          destination: trainer.stripeAccountId,
         },
         metadata: {
-          programmeId: programmeIdString, // Converted ObjectId to string
-          userId: userIdString, // Converted ObjectId to string
+          programmeId: programmeIdString,
+          userId: userIdString,
         },
       },
     });
+
+    console.log(session);
+
+    // Retrieve the payment intent to check metadata
+    if (session.payment_intent) {
+      const paymentIntent = await stripe.paymentIntents.retrieve(
+        session.payment_intent
+      );
+      console.log('Payment Intent Metadata:', paymentIntent.metadata);
+    }
 
     // Respond with the session ID
     res.json({ id: session.id });
@@ -113,7 +125,9 @@ export const stripeWebhookPayment = async (req, res) => {
   switch (event.type) {
     case 'payment_intent.succeeded': {
       const paymentIntent = event.data.object;
-      const { programmeId, userId } = paymentIntent.metadata;
+      // Convert userId and programmeId to ObjectId
+      const userId = Types.ObjectId(paymentIntent.metadata.userId);
+      const programmeId = Types.ObjectId(paymentIntent.metadata.programmeId);
 
       try {
         // Find the user and programme
@@ -159,7 +173,9 @@ export const stripeWebhookPayment = async (req, res) => {
 
     case 'payment_intent.canceled': {
       const paymentIntent = event.data.object;
-      const { programmeId, userId } = paymentIntent.metadata;
+      // Convert userId and programmeId to ObjectId
+      const userId = Types.ObjectId(paymentIntent.metadata.userId);
+      const programmeId = Types.ObjectId(paymentIntent.metadata.programmeId);
 
       try {
         const user = await User.findById(userId);
@@ -189,7 +205,6 @@ export const stripeWebhookPayment = async (req, res) => {
   // Return a response to acknowledge receipt of the event
   res.json({ received: true });
 };
-
 // Refund Method
 export const refundForPayment = async (req, res) => {
   const { paymentIntentId } = req.body;
@@ -350,6 +365,7 @@ export const stripeWebhook = async (req, res) => {
   const sig = req.headers['stripe-signature'];
 
   let event;
+  console.log(event);
 
   try {
     // Verify the webhook signature and extract the event

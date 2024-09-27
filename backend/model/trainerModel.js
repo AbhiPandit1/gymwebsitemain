@@ -78,7 +78,7 @@ const trainerSchema = new mongoose.Schema({
   // Required fields for Stripe account registration
   stripeAccountId: {
     type: String,
-    required: true,
+    required: false,
   },
   stripeAccountLinked: {
     type: Boolean,
