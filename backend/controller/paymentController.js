@@ -105,7 +105,6 @@ export const paymentCheckout = async (req, res) => {
       .json({ error: 'Failed to process payment', message: error.message });
   }
 };
-
 export const stripeWebhookPayment = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
@@ -115,12 +114,11 @@ export const stripeWebhookPayment = async (req, res) => {
   console.log('Stripe signature:', sig);
 
   try {
+    // Use the Stripe webhook secret directly here
+    const endpointSecret = 'whsec_AdkgX3EHz4wL7Lgasqim7NiGFKagViJU';
+
     // Attempt to construct the event from the request body
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     console.log('Constructed event:', event); // Log the full event
   } catch (err) {
     console.error('Webhook signature verification failed.', err.message);
