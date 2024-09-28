@@ -10,7 +10,7 @@ import { Types, ObjectId } from 'mongoose';
 
 dotenv.config();
 
-const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
+const stripe = stripePackage(process.env.STRIPE_SECRET_KEY_TEST);
 
 export const paymentCheckout = async (req, res) => {
   const { amount } = req.body; // Total amount from the request body
@@ -118,7 +118,7 @@ export const stripeWebhookPayment = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET_1
+      process.env.STRIPE_WEBHOOK_SECRET_1_TEST
     );
   } catch (err) {
     console.error('Webhook signature verification failed.', err.message);

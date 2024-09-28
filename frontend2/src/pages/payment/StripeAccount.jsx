@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Header from '../../component/Header';
 
 // Load Stripe using your publishable key
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY_TEST);
 
 const StripeAccount = () => {
   const { user } = useSelector((state) => state.user);

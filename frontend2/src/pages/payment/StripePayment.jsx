@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 const StripePayment = ({ amount }) => {
-  const stripePromise = loadStripe(import.meta.process.env.STRIPE_LOAD);
+  const stripePromise = loadStripe(import.meta.process.env.STRIPE_LOAD_TEST);
 
   const [country, setCountry] = useState('inr');
   console.log(amount);
