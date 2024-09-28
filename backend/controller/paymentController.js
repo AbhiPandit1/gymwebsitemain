@@ -273,7 +273,7 @@ export const stripeWebhookPayment = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET_TEST
+      process.env.STRIPE_WEBHOOK_SECRET_TEST_1
     );
   } catch (err) {
     console.error('Webhook signature verification failed.', err.message);
