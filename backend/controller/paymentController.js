@@ -108,8 +108,10 @@ export const paymentCheckout = async (req, res) => {
 export const stripeWebhookPayment = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
-  console.log(process.env.STRIPE_WEBHOOK_SECRET_TEST);
+  console.log(process.env.STRIPE_WEBHOOK_SECRET_1_TEST);
   // Log the raw event body and signature for debugging purposes
+  console.log('Raw body:', req.body);
+  console.log('Signature:', sig);
 
   console.log('Stripe signature:', sig);
 
@@ -147,9 +149,6 @@ export const stripeWebhookPayment = async (req, res) => {
       const userObjectId = new Types.ObjectId(userId);
       const programmeObjectId = new Types.ObjectId(programmeId);
 
-      console.log('Converted userId:', userObjectId);
-      console.log('Converted programmeId:', programmeObjectId);
-
       try {
         // Find the user and programme
         const user = await User.findById(userObjectId);
@@ -166,7 +165,6 @@ export const stripeWebhookPayment = async (req, res) => {
         user.hasTakenProgramme = true;
         user.takenProgrammes.push(programmeObjectId);
         await user.save();
-        console.log('User programme status updated and saved.');
 
         // Save payment details
         const paymentDetails = new Payment({
@@ -177,7 +175,6 @@ export const stripeWebhookPayment = async (req, res) => {
           programmes: [programme._id],
         });
         await paymentDetails.save();
-        console.log('Payment details saved:', paymentDetails);
 
         // Send confirmation email
         const emailData = {
