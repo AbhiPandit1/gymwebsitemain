@@ -23,7 +23,10 @@ import settingRouter from './route/settingRoute.js';
 import programmeDietPlanRouter from './route/programmeDietPlanRoute.js';
 import programmeDayPlanRouter from './route/programmeDayPlanRoute.js';
 import reviewPlanRouter from './route/reviewRoute.js';
-import { stripeWebhookPayment } from './controller/paymentController.js';
+import {
+  stripeWebhook,
+  stripeWebhookPayment,
+} from './controller/paymentController.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -32,13 +35,29 @@ dotenv.config();
 const app = express();
 app.post(
   '/webhook',
-  express.raw({ type: 'application/json' }), // Raw body for Stripe
+  express.raw({ type: 'application/json' }), // Raw body for Stripe//payment_intent.succeeded
   stripeWebhookPayment // Your webhook handling function
 );
-// Middleware
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+
+app.post(
+  '/webhook/account',
+  express.raw({ type: 'application/json' }),
+  stripeWebhook
+);
+
+// Configure CORS
+const corsOptions = {
+  origin: '*', // For security, specify allowed origins if possible
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
+
+// Middleware
+app.use(express.json());
 app.use(cookieParser());
 
 // Configure Cloudinary
@@ -47,8 +66,6 @@ cloudinary.v2.config({
   api_key: process.env.CLOUDINARY_CLIENT_API,
   api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
 });
-
-// Configure Webhook routes
 
 // Set up API routes
 app.use('/api', userRoute);
@@ -70,6 +87,8 @@ app.use('/api', reviewPlanRouter);
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
 // app.use(express.static(path.join(__dirname, 'public')));
+
+// Webhook route
 
 // Error handling for unknown routes
 app.use((req, res, next) => {

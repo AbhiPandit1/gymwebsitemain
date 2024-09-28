@@ -16,7 +16,7 @@ export const paymentCheckout = async (req, res) => {
   const { amount } = req.body; // Total amount from the request body
   const userId = req.user._id; // User ID from the request
   const id = req.params.id; // Programme ID
-  console.log(process.env.STRIPE_WEBHOOK_SECRET_1);
+  console.log(process.env.STRIPE_WEBHOOK_SECRET_1_TEST);
   try {
     // Check if the programme exists
     const programme = await Programme.findById(id);
@@ -102,6 +102,151 @@ export const paymentCheckout = async (req, res) => {
     res
       .status(500)
       .json({ error: 'Failed to process payment', message: error.message });
+  }
+};
+
+export const stripeWebhookPayment = async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+  console.log(process.env.STRIPE_WEBHOOK_SECRET_TEST);
+  // Log the raw event body and signature for debugging purposes
+
+  console.log('Stripe signature:', sig);
+
+  try {
+    // Attempt to construct the event from the request body
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET_1_TEST
+    );
+  } catch (err) {
+    console.error('Webhook signature verification failed.', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event based on its type
+  switch (event.type) {
+    case 'payment_intent.succeeded': {
+      const paymentIntent = event.data.object;
+
+      // Convert userId and programmeId to ObjectId
+      const userId = paymentIntent.metadata.userId;
+      const programmeId = paymentIntent.metadata.programmeId;
+
+      // Validate ObjectId
+      if (
+        !Types.ObjectId.isValid(userId) ||
+        !Types.ObjectId.isValid(programmeId)
+      ) {
+        console.error('Invalid ObjectId:', userId, programmeId);
+        return res.status(400).json({ error: 'Invalid user or programme ID' });
+      }
+
+      // Convert valid IDs to ObjectIds
+      const userObjectId = new Types.ObjectId(userId);
+      const programmeObjectId = new Types.ObjectId(programmeId);
+
+      console.log('Converted userId:', userObjectId);
+      console.log('Converted programmeId:', programmeObjectId);
+
+      try {
+        // Find the user and programme
+        const user = await User.findById(userObjectId);
+        const programme = await Programme.findById(programmeObjectId);
+
+        console.log('User found:', user);
+        console.log('Programme found:', programme);
+
+        if (!user || !programme) {
+          return res.status(404).json({ error: 'User or programme not found' });
+        }
+
+        // Update user programme status and save payment details
+        user.hasTakenProgramme = true;
+        user.takenProgrammes.push(programmeObjectId);
+        await user.save();
+        console.log('User programme status updated and saved.');
+
+        // Save payment details
+        const paymentDetails = new Payment({
+          userId: userObjectId,
+          amount: paymentIntent.amount / 100,
+          currency: paymentIntent.currency,
+          paymentIntentId: paymentIntent.id,
+          programmes: [programme._id],
+        });
+        await paymentDetails.save();
+        console.log('Payment details saved:', paymentDetails);
+
+        // Send confirmation email
+        const emailData = {
+          email: user.email,
+          subject: 'Purchase Confirmation',
+          message: `Thank you for your purchase of ${
+            paymentIntent.amount / 100
+          } USD. Your payment ID is ${paymentIntent.id}.`,
+        };
+        await sendEmail(emailData);
+        console.log('Confirmation email sent:', emailData);
+
+        console.log('Payment successful, actions completed.');
+        return res.status(200).json({ success: true });
+      } catch (error) {
+        console.error('Error processing payment success:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+    }
+
+    case 'payment_intent.canceled': {
+      const paymentIntent = event.data.object;
+      console.log('Payment Intent (Canceled):', paymentIntent);
+
+      // Convert userId and programmeId to ObjectId
+      const userId = paymentIntent.metadata.userId;
+      const programmeId = paymentIntent.metadata.programmeId;
+
+      // Validate ObjectId
+      if (
+        !Types.ObjectId.isValid(userId) ||
+        !Types.ObjectId.isValid(programmeId)
+      ) {
+        console.error('Invalid ObjectId:', userId, programmeId);
+        return res.status(400).json({ error: 'Invalid user or programme ID' });
+      }
+
+      const userObjectId = new Types.ObjectId(userId);
+      const programmeObjectId = new Types.ObjectId(programmeId);
+
+      console.log('Converted userId:', userObjectId);
+      console.log('Converted programmeId:', programmeObjectId);
+
+      try {
+        const user = await User.findById(userObjectId);
+        console.log('User found for cancellation:', user);
+
+        // Send cancellation email
+        if (user) {
+          const emailData = {
+            email: user.email,
+            subject: 'Payment Canceled',
+            message: `Your payment for programme ID ${programmeObjectId} was canceled.`,
+          };
+          await sendEmail(emailData);
+          console.log('Cancellation email sent:', emailData);
+        }
+
+        console.log('Payment canceled, email sent.');
+        return res.status(200).json({ success: true });
+      } catch (error) {
+        console.error('Error processing payment cancellation:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+    }
+
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+      return res.status(200).json({ received: true }); // Acknowledge receipt of the event
   }
 };
 
@@ -261,146 +406,57 @@ export const createAccount = async (req, res) => {
 
 //Create Account
 
-export const stripeWebhookPayment = async (req, res) => {
+export const stripeWebhook = async (req, res) => {
   const sig = req.headers['stripe-signature'];
+  console.log('Received signature:', sig);
   let event;
 
-  // Log the raw event body and signature for debugging purposes
-  console.log('Stripe signature:', sig);
-
   try {
-    // Attempt to construct the event from the request body
+    // Verify the webhook signature and extract the event
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET_TEST_1
+      process.env.STRIPE_WEBHOOK_SECRET_TEST
     );
   } catch (err) {
-    console.error('Webhook signature verification failed.', err.message);
+    console.error('⚠️  Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Handle the event based on its type
+  // Handle the event
   switch (event.type) {
-    case 'payment_intent.succeeded': {
-      const paymentIntent = event.data.object;
+    case 'account.updated':
+      const account = event.data.object;
+      console.log('Charges enabled:', account.charges_enabled);
+      console.log('Payouts enabled:', account.payouts_enabled);
 
-      // Convert userId and programmeId to ObjectId
-      const userId = paymentIntent.metadata.userId;
-      const programmeId = paymentIntent.metadata.programmeId;
-
-      // Validate ObjectId
-      if (
-        !Types.ObjectId.isValid(userId) ||
-        !Types.ObjectId.isValid(programmeId)
-      ) {
-        console.error('Invalid ObjectId:', userId, programmeId);
-        return res.status(400).json({ error: 'Invalid user or programme ID' });
-      }
-
-      // Convert valid IDs to ObjectIds
-      const userObjectId = new Types.ObjectId(userId);
-      const programmeObjectId = new Types.ObjectId(programmeId);
-
-      console.log('Converted userId:', userObjectId);
-      console.log('Converted programmeId:', programmeObjectId);
-
-      try {
-        // Find the user and programme
-        const user = await User.findById(userObjectId);
-        const programme = await Programme.findById(programmeObjectId);
-
-        console.log('User found:', user);
-        console.log('Programme found:', programme);
-
-        if (!user || !programme) {
-          return res.status(404).json({ error: 'User or programme not found' });
+      // Check if the account has both charges and payouts enabled
+      if (account.charges_enabled && account.payouts_enabled) {
+        try {
+          const trainer = await Trainer.findOne({
+            stripeAccountId: account.id,
+          });
+          if (trainer) {
+            trainer.stripeAccountLinked = true;
+            await trainer.save();
+            console.log(
+              `Trainer with ID ${trainer._id} has completed onboarding.`
+            );
+          } else {
+            console.log('No trainer found with this Stripe account ID.');
+          }
+        } catch (error) {
+          console.error('Error updating trainer status:', error.message);
+          return res.status(500).send('Error updating trainer status.');
         }
-
-        // Update user programme status and save payment details
-        user.hasTakenProgramme = true;
-        user.takenProgrammes.push(programmeObjectId);
-        await user.save();
-        console.log('User programme status updated and saved.');
-
-        // Save payment details
-        const paymentDetails = new Payment({
-          userId: userObjectId,
-          amount: paymentIntent.amount / 100,
-          currency: paymentIntent.currency,
-          paymentIntentId: paymentIntent.id,
-          programmes: [programme._id],
-        });
-        await paymentDetails.save();
-        console.log('Payment details saved:', paymentDetails);
-
-        // Send confirmation email
-        const emailData = {
-          email: user.email,
-          subject: 'Purchase Confirmation',
-          message: `Thank you for your purchase of ${
-            paymentIntent.amount / 100
-          } USD. Your payment ID is ${paymentIntent.id}.`,
-        };
-        await sendEmail(emailData);
-        console.log('Confirmation email sent:', emailData);
-
-        console.log('Payment successful, actions completed.');
-        return res.status(200).json({ success: true });
-      } catch (error) {
-        console.error('Error processing payment success:', error);
-        return res.status(500).json({ error: 'Internal server error' });
+      } else {
+        console.log('Account does not have both charges and payouts enabled.');
       }
-    }
+      break;
 
-    case 'payment_intent.canceled': {
-      const paymentIntent = event.data.object;
-      console.log('Payment Intent (Canceled):', paymentIntent);
-
-      // Convert userId and programmeId to ObjectId
-      const userId = paymentIntent.metadata.userId;
-      const programmeId = paymentIntent.metadata.programmeId;
-
-      // Validate ObjectId
-      if (
-        !Types.ObjectId.isValid(userId) ||
-        !Types.ObjectId.isValid(programmeId)
-      ) {
-        console.error('Invalid ObjectId:', userId, programmeId);
-        return res.status(400).json({ error: 'Invalid user or programme ID' });
-      }
-
-      const userObjectId = new Types.ObjectId(userId);
-      const programmeObjectId = new Types.ObjectId(programmeId);
-
-      console.log('Converted userId:', userObjectId);
-      console.log('Converted programmeId:', programmeObjectId);
-
-      try {
-        const user = await User.findById(userObjectId);
-        console.log('User found for cancellation:', user);
-
-        // Send cancellation email
-        if (user) {
-          const emailData = {
-            email: user.email,
-            subject: 'Payment Canceled',
-            message: `Your payment for programme ID ${programmeObjectId} was canceled.`,
-          };
-          await sendEmail(emailData);
-          console.log('Cancellation email sent:', emailData);
-        }
-
-        console.log('Payment canceled, email sent.');
-        return res.status(200).json({ success: true });
-      } catch (error) {
-        console.error('Error processing payment cancellation:', error);
-        return res.status(500).json({ error: 'Internal server error' });
-      }
-    }
-
+    // Add more event types as needed
     default:
-      console.log(`Unhandled event type ${event.type}`);
+      console.log(`Unhandled event type: ${event.type}`);
   }
 
   // Return a response to acknowledge receipt of the event
