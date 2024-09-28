@@ -43,7 +43,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post(
-  '/account-webhook',
+  '/webhook/account',
   express.raw({ type: 'application/json' }),
   stripeWebhook
 );
