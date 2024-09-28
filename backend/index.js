@@ -33,14 +33,15 @@ dotenv.config();
 
 // Initialize Express application
 const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.post(
   '/webhook',
   express.raw({ type: 'application/json' }), // Raw body for Stripe//payment_intent.succeeded
   stripeWebhookPayment // Your webhook handling function
 );
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post(
   '/webhook/account',
