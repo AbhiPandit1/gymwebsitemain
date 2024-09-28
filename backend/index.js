@@ -23,21 +23,13 @@ import settingRouter from './route/settingRoute.js';
 import programmeDietPlanRouter from './route/programmeDietPlanRoute.js';
 import programmeDayPlanRouter from './route/programmeDayPlanRoute.js';
 import reviewPlanRouter from './route/reviewRoute.js';
-import {
-  stripeWebhook,
-  stripeWebhookPayment,
-} from './controller/paymentController.js';
+import { stripeWebhookPayment } from './controller/paymentController.js';
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Initialize Express application
 const app = express();
-app.post(
-  '/webhook/account',
-  express.raw({ type: 'application/json' }),
-  stripeWebhook
-);
 
 app.post(
   '/webhook',
