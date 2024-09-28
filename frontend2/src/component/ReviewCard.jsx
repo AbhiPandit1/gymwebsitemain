@@ -189,7 +189,7 @@ const ReviewCard = ({ currentUser }) => {
 
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/delete/review/${
-          currentUser._id
+          currentUser?._id
         }`,
         {
           method: 'DELETE',
@@ -291,7 +291,7 @@ const ReviewCard = ({ currentUser }) => {
                     size={24}
                     activeColor="#ffd700"
                   />
-                  {(item.user._id === currentUser?._id ||
+                  {(item.user?._id === currentUser?._id ||
                     currentUser?.role === 'admin') && (
                     <div className="flex gap-2 mt-2">
                       <button
