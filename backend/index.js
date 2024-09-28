@@ -30,7 +30,11 @@ dotenv.config();
 
 // Initialize Express application
 const app = express();
-
+app.post(
+  '/webhook',
+  express.raw({ type: 'application/json' }), // Raw body for Stripe
+  stripeWebhookPayment // Your webhook handling function
+);
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -45,11 +49,6 @@ cloudinary.v2.config({
 });
 
 // Configure Webhook routes
-app.post(
-  '/webhook',
-  express.raw({ type: 'application/json' }), // Raw body for Stripe
-  stripeWebhookPayment // Your webhook handling function
-);
 
 // Set up API routes
 app.use('/api', userRoute);

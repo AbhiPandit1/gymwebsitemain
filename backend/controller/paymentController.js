@@ -10,7 +10,7 @@ import { Types, ObjectId } from 'mongoose';
 
 dotenv.config();
 
-const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
+const stripe = stripePackage(process.env.STRIPE_SECRET_KEY_TEST);
 
 export const paymentCheckout = async (req, res) => {
   const { amount } = req.body; // Total amount from the request body
@@ -353,36 +353,6 @@ export const stripeWebhookPayment = async (req, res) => {
       }
     }
 
-    case 'account.updated': {
-      const account = event.data.object;
-      console.log('Charges enabled:', account.charges_enabled);
-      console.log('Payouts enabled:', account.payouts_enabled);
-
-      // Check if the account has both charges and payouts enabled
-      if (account.charges_enabled && account.payouts_enabled) {
-        try {
-          const trainer = await Trainer.findOne({
-            stripeAccountId: account.id,
-          });
-          if (trainer) {
-            trainer.stripeAccountLinked = true;
-            await trainer.save();
-            console.log(
-              `Trainer with ID ${trainer._id} has completed onboarding.`
-            );
-          } else {
-            console.log('No trainer found with this Stripe account ID.');
-          }
-        } catch (error) {
-          console.error('Error updating trainer status:', error.message);
-          return res.status(500).send('Error updating trainer status.');
-        }
-      } else {
-        console.log('Account does not have both charges and payouts enabled.');
-      }
-      break;
-    }
-
     case 'payment_intent.canceled': {
       const paymentIntent = event.data.object;
       console.log('Payment Intent (Canceled):', paymentIntent);
@@ -400,8 +370,8 @@ export const stripeWebhookPayment = async (req, res) => {
         return res.status(400).json({ error: 'Invalid user or programme ID' });
       }
 
-      const userObjectId = new ObjectId(userId);
-      const programmeObjectId = new ObjectId(programmeId);
+      const userObjectId = new Types.ObjectId(userId);
+      const programmeObjectId = new Types.ObjectId(programmeId);
 
       console.log('Converted userId:', userObjectId);
       console.log('Converted programmeId:', programmeObjectId);
