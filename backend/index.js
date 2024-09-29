@@ -23,7 +23,10 @@ import settingRouter from './route/settingRoute.js';
 import programmeDietPlanRouter from './route/programmeDietPlanRoute.js';
 import programmeDayPlanRouter from './route/programmeDayPlanRoute.js';
 import reviewPlanRouter from './route/reviewRoute.js';
-import { stripeWebhookPayment } from './controller/paymentController.js';
+import {
+  stripeWebhook,
+  stripeWebhookPayment,
+} from './controller/paymentController.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -34,6 +37,12 @@ app.post(
   '/webhook',
   bodyParser.raw({ type: 'application/json' }),
   stripeWebhookPayment
+);
+
+app.post(
+  '/account/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  stripeWebhook
 );
 
 app.use(bodyParser.json());

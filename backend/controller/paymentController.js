@@ -402,3 +402,55 @@ export const createAccount = async (req, res) => {
 };
 
 //Create Account
+
+export const stripeWebhook = async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    // Verify the webhook signature and extract the event
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET_2_TEST
+    );
+  } catch (err) {
+    console.error('⚠️  Webhook signature verification failed:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event
+  if (event.type === 'account.updated') {
+    const account = event.data.object;
+
+    console.log('Charges enabled:', account.charges_enabled);
+    console.log('Payouts enabled:', account.payouts_enabled);
+
+    // Check if the account has both charges and payouts enabled
+    if (account.charges_enabled && account.payouts_enabled) {
+      try {
+        // Find the trainer by Stripe account ID and update the stripeAccountLinked field
+        const trainer = await Trainer.findOne({ stripeAccountId: account.id });
+
+        if (trainer) {
+          trainer.stripeAccountLinked = true;
+          await trainer.save();
+
+          console.log(
+            `Trainer with ID ${trainer._id} has completed onboarding.`
+          );
+        } else {
+          console.log('No trainer found with this Stripe account ID.');
+        }
+      } catch (error) {
+        console.error('Error updating trainer status:', error.message);
+        return res.status(500).send('Error updating trainer status.');
+      }
+    } else {
+      console.log('Account does not have both charges and payouts enabled.');
+    }
+  }
+
+  // Return a response to acknowledge receipt of the event
+  res.json({ received: true });
+};
