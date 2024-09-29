@@ -176,13 +176,20 @@ export const stripeWebhookPayment = async (req, res) => {
         });
         await paymentDetails.save();
 
+        // Retrieve the invoice URL from Stripe
+        const invoiceUrl = paymentIntent.charges.data[0].invoice
+          ? `https://invoice.stripe.com/i/${paymentIntent.charges.data[0].invoice}`
+          : null;
+
         // Send confirmation email
         const emailData = {
           email: user.email,
           subject: 'Purchase Confirmation',
           message: `Thank you for your purchase of ${
             paymentIntent.amount / 100
-          } USD. Your payment ID is ${paymentIntent.id}.`,
+          } USD. Your payment ID is ${paymentIntent.id}. ${
+            invoiceUrl ? `You can view your invoice [here](${invoiceUrl}).` : ''
+          }`,
         };
         await sendEmail(emailData);
         console.log('Confirmation email sent:', emailData);
@@ -194,7 +201,6 @@ export const stripeWebhookPayment = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' });
       }
     }
-
     case 'payment_intent.canceled': {
       const paymentIntent = event.data.object;
       console.log('Payment Intent (Canceled):', paymentIntent);
@@ -237,6 +243,55 @@ export const stripeWebhookPayment = async (req, res) => {
         return res.status(200).json({ success: true });
       } catch (error) {
         console.error('Error processing payment cancellation:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+    }
+    case 'payment_intent.payment_failed': {
+      const paymentIntent = event.data.object;
+      console.log('Payment Intent (Failed):', paymentIntent);
+
+      // Convert userId and programmeId to ObjectId
+      const userId = paymentIntent.metadata.userId;
+      const programmeId = paymentIntent.metadata.programmeId;
+
+      // Validate ObjectId
+      if (
+        !Types.ObjectId.isValid(userId) ||
+        !Types.ObjectId.isValid(programmeId)
+      ) {
+        console.error('Invalid ObjectId:', userId, programmeId);
+        return res.status(400).json({ error: 'Invalid user or programme ID' });
+      }
+
+      const userObjectId = new Types.ObjectId(userId);
+      const programmeObjectId = new Types.ObjectId(programmeId);
+
+      console.log('Converted userId:', userObjectId);
+      console.log('Converted programmeId:', programmeObjectId);
+
+      try {
+        const user = await User.findById(userObjectId);
+        console.log('User found for failed payment:', user);
+
+        // Find the programme to get its title
+        const programme = await Programme.findById(programmeObjectId);
+        const programmeTitle = programme ? programme.title : 'the programme'; // Default value if not found
+
+        // Send failure email
+        if (user) {
+          const emailData = {
+            email: user.email,
+            subject: 'Payment Failed',
+            message: `Unfortunately, your payment for ${programmeTitle} has failed. Please try again or contact support.`,
+          };
+          await sendEmail(emailData);
+          console.log('Failure email sent:', emailData);
+        }
+
+        console.log('Payment failed, email sent.');
+        return res.status(200).json({ success: true });
+      } catch (error) {
+        console.error('Error processing payment failure:', error);
         return res.status(500).json({ error: 'Internal server error' });
       }
     }
