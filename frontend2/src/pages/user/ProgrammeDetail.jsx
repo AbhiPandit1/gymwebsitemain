@@ -12,7 +12,7 @@ import { RxCross2 } from 'react-icons/rx';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
 const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY_TEST
+  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY_LIVE
 );
 
 const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
