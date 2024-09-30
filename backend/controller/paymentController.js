@@ -10,13 +10,13 @@ import { Types, ObjectId } from 'mongoose';
 
 dotenv.config();
 
-const stripe = stripePackage(process.env.STRIPE_SECRET_KEY_TEST);
+const stripe = stripePackage(process.env.STRIPE_SECRET_KEY_LIVE);
 
 export const paymentCheckout = async (req, res) => {
   const { amount } = req.body; // Total amount from the request body
   const userId = req.user._id; // User ID from the request
   const id = req.params.id; // Programme ID
-  console.log(process.env.STRIPE_WEBHOOK_SECRET_1_TEST);
+  console.log(process.env.STRIPE_WEBHOOK_SECRET_1_LIVE);
   try {
     // Check if the programme exists
     const programme = await Programme.findById(id);
@@ -108,7 +108,7 @@ export const paymentCheckout = async (req, res) => {
 export const stripeWebhookPayment = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
-  console.log(process.env.STRIPE_WEBHOOK_SECRET_1_TEST);
+  console.log(process.env.STRIPE_WEBHOOK_SECRET_1_LIVE);
   // Log the raw event body and signature for debugging purposes
   console.log('Raw body:', req.body);
   console.log('Signature:', sig);
@@ -120,7 +120,7 @@ export const stripeWebhookPayment = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET_1_TEST
+      process.env.STRIPE_WEBHOOK_SECRET_1_LIVE
     );
   } catch (err) {
     console.error('Webhook signature verification failed.', err.message);
@@ -467,7 +467,7 @@ export const stripeWebhook = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET_2_TEST
+      process.env.STRIPE_WEBHOOK_SECRET_2_LIVE
     );
   } catch (err) {
     console.error('⚠️  Webhook signature verification failed:', err.message);
