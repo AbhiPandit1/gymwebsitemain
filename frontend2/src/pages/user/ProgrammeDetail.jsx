@@ -11,7 +11,9 @@ import { FaImage } from 'react-icons/fa'; // Importing an icon for placeholder
 import { RxCross2 } from 'react-icons/rx';
 
 const backendapi = import.meta.env.VITE_BACKEND_URL;
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY_TEST);
+const stripePromise = loadStripe(
+  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY_TEST
+);
 
 const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
   const [singleProgramme, setSingleProgramme] = useState(null);
@@ -55,6 +57,8 @@ const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
   useEffect(() => {
     fetchProgramme();
   }, [programmeId]);
+
+  console.log(singleProgramme);
 
   const makePayment = async () => {
     if (!singleProgramme) {
@@ -135,7 +139,7 @@ const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
                       <img
                         src={singleProgramme?.categoryPhoto?.url}
                         alt={singleProgramme?.category}
-                        className="w-full min-w-full sm:min-w-[40vw] max-h-[60vh] h-[100%]  min-h-[60vh] sm:max-h-[80vh] object-cover shadow-md"
+                        className="w-full min-w-full max-w-[20vw] sm:min-w-[40vw]  max-h-[20vh] h-[100%]  sm:min-h-[60vh] sm:max-h-[80vh] object-cover shadow-md"
                       />
                     </div>
                   ) : (
@@ -178,19 +182,16 @@ const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
                         <div className="flex items-center mt-2 gap-4 ">
                           {singleProgramme?.discount > 0 && (
                             <span className="text-gray-400 line-through text-lg">
-                              ${singleProgramme?.price.toFixed(2)}
+                              $
+                              {Math.ceil(
+                                singleProgramme.price +
+                                  singleProgramme.price.toFixed(2) /
+                                    singleProgramme.discount
+                              ).toFixed(2)}
                             </span>
                           )}
                           <span className="text-gray-800 text-2xl">
-                            $
-                            {singleProgramme?.discount > 0
-                              ? (
-                                  singleProgramme?.price -
-                                  (singleProgramme?.price *
-                                    singleProgramme?.discount) /
-                                    100
-                                ).toFixed(2)
-                              : singleProgramme?.price.toFixed(2)}
+                            ${singleProgramme?.price.toFixed(2)}
                           </span>
                         </div>
                       </div>

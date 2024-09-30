@@ -12,10 +12,10 @@ import { BiCategoryAlt } from 'react-icons/bi';
 
 const Menu = () => {
   const { user } = useSelector((state) => state.user);
-  const isSignIn = user && user.user && user.token; // Check if user is signed in
+  const isSignIn = user && user?.user && user?.token; // Check if user is signed in
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(user.user.role);
+  
 
   // Initial menu items
   let menuData = [
@@ -101,7 +101,7 @@ const Menu = () => {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          {menuDatas.map((data) => (
+          {menuDatas?.map((data) => (
             <Link
               to={data.link}
               key={data.id}

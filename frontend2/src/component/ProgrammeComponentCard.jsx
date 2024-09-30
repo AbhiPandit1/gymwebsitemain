@@ -100,32 +100,33 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
               >
                 <div className="text-sm sm:text-lg mt-2">{card.desc}</div>
               </div>
-
+              {card.discount > 0 && (
+                <div className="h-10 w-24 border-2 border-green-300 mt-4 flex justify-center items-center bg-green-500 ">
+                  {card.discount}% OFF
+                </div>
+              )}
               {/* Arrow icon to toggle description visibility */}
               <div className="flex  justify-between mt-4 z-10">
                 <div className="flex justify-between mt-4 z-10">
-                  <div className="flex flex-col">
+                  <div className="flex brightness-200">
                     {card?.discount > 0 && (
-                      <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
-                        <span className="text-gray-400 line-through text-lg mr-2">
-                          $
-                          {Math.ceil(
-                            card.price + card.price.toFixed(2) / card.discount
-                          ).toFixed(2)}
-                        </span>
-                      </div>
+                      <span className="text-gray-400 line-through text-lg mr-2">
+                        $
+                        {Math.ceil(
+                          card.price + card.price.toFixed(2) / card.discount
+                        ).toFixed(2)}
+                      </span>
                     )}
-                    <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
-                      <p className="text-xl font-bold text-yellow-600">
-                        ${card?.price.toFixed(2)}
-                      </p>
-                    </div>
+
+                    <p className="text-xl font-bold text-yellow-600">
+                      ${card?.price.toFixed(2)}
+                    </p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => openModal(card)}
-                  className="w-[3.6rem] h-10 sm:h-[3.2rem] bg-gray-950 border-2 border-orange-600 hover:bg-gray-800 hover:border-orange-900 flex items-center justify-center rounded-xl"
+                  className="w-[3.6rem] h-[3.2rem] sm:h-[3.2rem] bg-gray-950 border-2 border-orange-600 hover:bg-gray-800 hover:border-orange-900 flex items-center justify-center rounded-xl"
                 >
                   <IoIosArrowRoundForward
                     color="white"

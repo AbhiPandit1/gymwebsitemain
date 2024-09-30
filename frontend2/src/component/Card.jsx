@@ -165,25 +165,22 @@ const Card = ({ title, backgroundColor }) => {
                   <h2 className="text-xl text-white font-sans font-bold mb-1">
                     {card.title}
                   </h2>
-                  <p className="text-sm text-gray-100 font-sans mb-2 font-extrabold">
+                  <p className="text-sm text-gray-900 brightness-50 font-sans mb-2 font-extrabold">
                     {card.trainer?.name}
                   </p>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col brightness-100">
                     {card?.discount > 0 && (
-                      <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
-                        <span className="text-gray-400 line-through text-lg mr-2">
-                          $
-                          {Math.ceil(
-                            card.price + card.price.toFixed(2) / card.discount
-                          ).toFixed(2)}
-                        </span>
-                      </div>
+                      <span className="text-gray-400 line-through text-lg mr-2">
+                        $
+                        {Math.ceil(
+                          card.price + card.price.toFixed(2) / card.discount
+                        ).toFixed(2)}
+                      </span>
                     )}
-                    <div className="h-[2rem] w-[5rem] border-2 border-orange-600 bg-gray-950 rounded-2xl flex justify-center items-center">
-                      <p className="text-xl font-bold text-yellow-600">
-                        ${card?.price.toFixed(2)}
-                      </p>
-                    </div>
+
+                    <p className="text-xl font-bold text-yellow-600">
+                      ${card?.price.toFixed(2)}
+                    </p>
                   </div>
                 </div>
               </div>
