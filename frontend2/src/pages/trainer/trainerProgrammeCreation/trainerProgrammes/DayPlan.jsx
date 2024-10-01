@@ -3,13 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import useDashboardLinks from '../../../../../hook/CreateDahsboardLinks';
 import DashboardComponent from '../../../../component/DashboardComponent';
 import DashboardHeader from '../../../../component/DashboardHeader';
-import { BiSolidRightArrow, BiArrowBack, BiCross } from 'react-icons/bi';
+import { BiSolidRightArrow, BiArrowBack } from 'react-icons/bi';
 import ReactPlayer from 'react-player';
 import Modal from 'react-modal';
 import { useSelector } from 'react-redux';
 import usePostDayPlan from '../../../../../hook/usePostDayPlan';
 import { toast } from 'react-toastify';
-import { CgCross } from 'react-icons/cg';
 import { ImCross } from 'react-icons/im';
 
 const DayPlan = () => {
@@ -27,24 +26,16 @@ const DayPlan = () => {
   const { loading, error, success, postDayPlan } = usePostDayPlan();
 
   useEffect(() => {
-    if (numDays > 0) {
-      setTrainingPlan(
-        Array.from({ length: numDays }, (_, i) => ({
-          day: `Day ${i + 1}`,
-          exercises: [
-            {
-              name: '',
-              sets: '',
-              reps: '',
-              video: '',
-              videoName: '',
-              showVideo: true,
-            },
-          ],
-        }))
-      );
+    const savedPlan = JSON.parse(localStorage.getItem('trainingPlan'));
+    if (savedPlan) {
+      setTrainingPlan(savedPlan);
+      setNumDays(savedPlan.length);
     }
-  }, [numDays]);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('trainingPlan', JSON.stringify(trainingPlan));
+  }, [trainingPlan]);
 
   const handleExerciseChange = (dayIndex, exerciseIndex, field, value) => {
     setTrainingPlan((prevPlan) =>
@@ -114,18 +105,26 @@ const DayPlan = () => {
     );
   };
 
-  const handleClick = () => {
-    setHoverDashboard((prevState) => !prevState);
+  const removeDay = (dayIndex) => {
+    setTrainingPlan((prevPlan) => prevPlan.filter((_, i) => i !== dayIndex));
   };
 
   const handleBack = () => {
     navigate(`/trainer/programmes/${user.user._id}`);
   };
-  const backendapi = import.meta.env.VITE_BACKEND_URL;
 
   const handleDaysChange = (e) => {
     const newDays = parseInt(e.target.value, 10);
     setNumDays(newDays > 0 ? newDays : 1);
+  };
+
+  const addDays = () => {
+    const newDaysArray = Array.from({ length: numDays }, (_, i) => ({
+      day: `Day ${trainingPlan.length + i + 1}`,
+      exercises: [],
+    }));
+
+    setTrainingPlan((prevPlan) => [...prevPlan, ...newDaysArray]);
   };
 
   const openModal = (videoUrl, videoName) => {
@@ -147,11 +146,10 @@ const DayPlan = () => {
 
   const handleSubmit = async () => {
     try {
-      const respone = await postDayPlan(programmeId, trainingPlan);
-      console.log(respone);
+      const response = await postDayPlan(programmeId, trainingPlan);
+      console.log(response);
       navigate(`/user/dashboard/${user.user._id}`);
     } catch (err) {
-      // Handle error (e.g., show an error message)
       toast.error('Failed to submit day plan.');
     }
   };
@@ -172,23 +170,12 @@ const DayPlan = () => {
           <div
             className="absolute top-4 left-4 cursor-pointer z-10"
             onClick={handleBack}
-          ></div>
+          >
+            <BiArrowBack className="text-white" size={30} />
+          </div>
         )}
 
         <h2 className="text-3xl font-bold mb-8 text-center">Day Plan</h2>
-
-        <div className="p-4 mb-6">
-          <label className="block text-lg mb-2 font-semibold">
-            Number of Days:
-          </label>
-          <input
-            type="number"
-            value={numDays}
-            onChange={handleDaysChange}
-            className="border p-3 rounded w-full bg-white text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-            min="1"
-          />
-        </div>
 
         {trainingPlan.length === 0 ? (
           <div className="flex flex-col justify-center items-center text-2xl font-semibold mt-16">
@@ -201,7 +188,15 @@ const DayPlan = () => {
                 key={dayIndex}
                 className="mb-8 border p-4 rounded-lg bg-gray-800"
               >
-                <h3 className="text-2xl font-bold mb-4">{day.day}</h3>
+                <h3 className="text-2xl font-bold mb-4 flex justify-between items-center">
+                  {day.day}
+                  <button
+                    onClick={() => removeDay(dayIndex)}
+                    className="text-red-500"
+                  >
+                    <ImCross size={20} />
+                  </button>
+                </h3>
                 {day.exercises.map((exercise, exerciseIndex) => (
                   <div key={exerciseIndex} className="mb-4">
                     <input
@@ -216,7 +211,7 @@ const DayPlan = () => {
                         )
                       }
                       placeholder="Exercise Name"
-                      className="border p-3 rounded w-full bg-white text-black mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                     <input
                       type="text"
@@ -230,7 +225,7 @@ const DayPlan = () => {
                         )
                       }
                       placeholder="Sets"
-                      className="border p-3 rounded w-full bg-white text-black mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                     <input
                       type="text"
@@ -244,7 +239,7 @@ const DayPlan = () => {
                         )
                       }
                       placeholder="Reps"
-                      className="border p-3 rounded w-full bg-white text-black mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
 
                     <div className="p-4">
@@ -268,7 +263,7 @@ const DayPlan = () => {
                               )
                             }
                             placeholder="Video Name"
-                            className="border p-3 rounded w-full bg-white text-black mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                           />
                           <input
                             type="text"
@@ -282,18 +277,16 @@ const DayPlan = () => {
                               )
                             }
                             placeholder="Video URL"
-                            className="border p-3 rounded w-full bg-white text-black mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                           />
-                          {exercise.video && (
-                            <button
-                              onClick={() =>
-                                openModal(exercise.video, exercise.videoName)
-                              }
-                              className="bg-blue-500 text-white rounded px-4 py-2"
-                            >
-                              Play Video
-                            </button>
-                          )}
+                          <button
+                            onClick={() =>
+                              openModal(exercise.video, exercise.videoName)
+                            }
+                            className="bg-blue-500 text-white rounded px-4 py-2"
+                          >
+                            Preview Video
+                          </button>
                         </>
                       )}
                       <button
@@ -315,40 +308,76 @@ const DayPlan = () => {
             ))}
           </div>
         )}
+        <div className="flex flex-col items-center mb-8">
+          <input
+            type="number"
+            value={numDays}
+            onChange={handleDaysChange}
+            className="border p-2 rounded w-1/4 bg-gray-700 text-white mb-4"
+          />
+          <button
+            onClick={addDays}
+            className="bg-blue-500 text-white rounded px-4 py-2 mb-2"
+          >
+            Add Days
+          </button>
+        </div>
 
-        <button
-          onClick={handleSubmit}
-          className="bg-green-500 text-white rounded px-4 py-2 mt-8 mb-4"
-        >
-          Submit Day Plan
-        </button>
-        <Modal
-          isOpen={isModalOpen}
-          onRequestClose={closeModal}
-          contentLabel="Video Modal"
-          className="inset-0 top-[20%] bg-gray-950 text-black p-6 rounded-lg shadow-lg mx-auto max-w-4xl w-full h-[60vh] max-h-[100%] flex flex-col items-center justify-center relative overflow-auto"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-70 z-40"
-        >
+        <div className="flex justify-center items-center mb-5">
+          <button
+            onClick={handleSubmit}
+            className="bg-green-500 text-white rounded px-4 py-2 mt-4"
+          >
+            Submit Plan
+          </button>
+        </div>
+      </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: '#1a202c', // Optional: Dark background for modal
+            borderRadius: '10px',
+            padding: '20px',
+            width: '80%',
+            maxWidth: '600px',
+            height: '60%',
+            minHeight: '50vh',
+          },
+          overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          },
+        }}
+      >
+        <div className="relative">
           <button
             onClick={closeModal}
-            className="absolute top-3 right-3 text-white bg-gray-800 hover:bg-gray-600 rounded-full p-2 text-3xl transition-colors"
+            className="absolute top-2 right-2 text-white focus:outline-none"
           >
-            <ImCross />
+            <ImCross size={20} />
           </button>
-          <h2 className="text-2xl sm:text-3xl mb-4 font-semibold text-center">
+
+          <h2 className="text-2xl font-bold text-center text-white mb-4">
             {currentVideoName}
           </h2>
-          <div className="w-full min-h-[full] h-[50vh]">
-            <ReactPlayer
-              url={currentVideoUrl}
-              controls
-              width="100%"
-              height="100%"
-              className="rounded-lg overflow-hidden"
-            />
-          </div>
-        </Modal>
-      </div>
+
+          <ReactPlayer
+            url={currentVideoUrl}
+            controls
+            width="100%"
+            height="50vh"
+            className="rounded-lg"
+          />
+        </div>
+      </Modal>
     </div>
   );
 };

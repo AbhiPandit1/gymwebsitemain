@@ -80,6 +80,8 @@ const DynamicDayPlanComponent = () => {
 
   const handleDownload = () => {
     const doc = new jsPDF();
+
+    // Set the background color for the entire page
     doc.setTextColor(headingColor);
     doc.rect(
       0,
@@ -92,7 +94,7 @@ const DynamicDayPlanComponent = () => {
     // Adding the logo at the top
     const logoWidth = 50; // Define desired logo width
     const logoHeight = 20; // Define desired logo height
-    const logoXPosition = 80; // Centering the logo horizontally
+    const logoXPosition = (doc.internal.pageSize.getWidth() - logoWidth) / 2; // Centering the logo horizontally
     const logoYPosition = 10; // Y position at the top
 
     doc.addImage(
@@ -103,22 +105,35 @@ const DynamicDayPlanComponent = () => {
       logoWidth,
       logoHeight
     ); // Add logo
-    doc.setFontSize(20);
-    doc.setTextColor(headingColor);
-    doc.text('Training Plan', 14, 40);
 
-    let startY = 50;
+    // Set the title "Training Plan" below the logo, 4 rem down (64 pixels from the logo)
+    const contentYPosition = logoYPosition + logoHeight + 64; // 4 rem down from logo
+    doc.setFontSize(20);
+    doc.setTextColor(255, 255, 255); // Set text color to white
+    doc.text(
+      'Training Plan',
+      doc.internal.pageSize.getWidth() / 2,
+      contentYPosition,
+      { align: 'center' }
+    ); // Centered title
+
+    // Define starting Y position for the content
+    let startY = contentYPosition + 10; // Start content a bit lower than the title
 
     planData.forEach((dayPlan) => {
+      // Set the day title with white text
       doc.setFontSize(18);
+      doc.setTextColor(255, 255, 255); // White text color for day titles
+      doc.text(dayPlan.day, 14, startY); // Display the day (like "Day 1")
 
-      doc.setFillColor(240, 240, 240);
-      doc.text(dayPlan.day, 14, startY);
-
+      // Calculate the Y position for the table
       const tableStartY = startY + 10;
 
+      // Set the text color for table content
       doc.setFontSize(14);
-      doc.setTextColor(textColor);
+      doc.setTextColor(255, 255, 255); // White text for table content
+
+      // Draw the table for exercises
       doc.autoTable({
         startY: tableStartY,
         head: [['Exercise', 'Sets', 'Reps']],
@@ -128,12 +143,20 @@ const DynamicDayPlanComponent = () => {
           exercise.reps,
         ]),
         theme: 'striped',
-        styles: { fontSize: 12 },
+        styles: { fontSize: 12 }, // White text in the table
       });
 
-      startY = doc.previousAutoTable.finalY + 20;
+      // Update startY after the table
+      startY = doc.previousAutoTable.finalY + 20; // Space after the table for the next section
+
+      // Add a new page if the content is too long
+      if (startY > 250) {
+        doc.addPage();
+        startY = 20; // Reset Y position for the new page
+      }
     });
 
+    // Save the generated PDF
     doc.save('training-plan.pdf');
   };
 

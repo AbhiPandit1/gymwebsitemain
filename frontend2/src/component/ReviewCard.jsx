@@ -251,7 +251,7 @@ const ReviewCard = ({ currentUser }) => {
       )}
       <div className="flex items-center justify-between mt-3 mb-10">
         <div
-          className="flex gap-4 overflow-x-scroll scrollbar-hide scroll-smooth p-4"
+          className="flex  overflow-x-scroll scrollbar-hide scroll-smooth"
           ref={containerRef}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -317,7 +317,7 @@ const ReviewCard = ({ currentUser }) => {
       {currentUser && (
         <div className="flex justify-center mt-4">
           <button
-            className="bg-orange-600 text-white rounded-full px-6 py-2 hover:bg-orange-500 transition-colors"
+            className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600  text-white rounded-full flex items-center"
             onClick={openReviewForm}
           >
             Add a Review

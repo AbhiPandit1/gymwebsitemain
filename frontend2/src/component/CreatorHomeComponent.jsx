@@ -226,7 +226,7 @@ const CreatorHomeComponent = () => {
       <div className="flex justify-center mt-8">
         <Link
           to="/trainers"
-          className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600 hover:shadow-lg hover:shadow-orange-600 text-white rounded-full flex items-center"
+          className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600  text-white rounded-full flex items-center"
         >
           View All Trainers
           <FaArrowRight className="ml-2" />

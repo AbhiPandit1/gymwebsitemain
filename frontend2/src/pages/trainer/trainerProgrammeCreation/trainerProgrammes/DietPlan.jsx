@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DashboardComponent from '../../../../component/DashboardComponent';
 import useDashboardLinks from '../../../../../hook/CreateDahsboardLinks';
 import DashboardHeader from '../../../../component/DashboardHeader';
@@ -10,19 +10,30 @@ import { useSelector } from 'react-redux';
 
 const DietPlan = () => {
   const dashBoardLink = useDashboardLinks();
-  const { id, programmeId } = useParams(); // Get the IDs from the URL params
+  const { id, programmeId } = useParams();
   const [hoverDashboard, setHoverDashboard] = useState(false);
-  const [dietPlan, setDietPlan] = useState([
-    {
-      id: 1,
-      day: 'Day 1',
-      meals: [{ id: 1, time: '', meal: '' }],
-    },
-  ]);
+  const [dietPlan, setDietPlan] = useState(() => {
+    // Get the initial state from local storage
+    const savedPlan = localStorage.getItem('dietPlan');
+    return savedPlan
+      ? JSON.parse(savedPlan)
+      : [
+          {
+            id: 1,
+            day: 'Day 1',
+            meals: [{ id: 1, time: '', meal: '' }],
+          },
+        ];
+  });
   const [removedDays, setRemovedDays] = useState([]);
   const navigate = useNavigate();
 
   const { programme } = useSelector((state) => state.programme);
+
+  useEffect(() => {
+    // Save the diet plan to local storage whenever it changes
+    localStorage.setItem('dietPlan', JSON.stringify(dietPlan));
+  }, [dietPlan]);
 
   const handleInputChange = (dayId, mealId, field, value) => {
     setDietPlan((prevPlan) =>
@@ -45,6 +56,7 @@ const DietPlan = () => {
       dietPlan.find((d) => d.id === dayId),
     ]);
     setDietPlan((prevPlan) => prevPlan.filter((d) => d.id !== dayId));
+    toast.success('Day removed successfully');
   };
 
   const handleAddDay = () => {
@@ -78,8 +90,20 @@ const DietPlan = () => {
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
   };
+
   const backendapi = import.meta.env.VITE_BACKEND_URL;
+
   const handleSubmit = async () => {
+    // Validate input
+    for (const day of dietPlan) {
+      for (const meal of day.meals) {
+        if (!meal.time || !meal.meal) {
+          toast.error('Please fill in all meal details.');
+          return;
+        }
+      }
+    }
+
     try {
       const response = await fetch(
         `${backendapi}/api/trainer/diet/plan/${programmeId}`,
@@ -95,6 +119,10 @@ const DietPlan = () => {
       if (response.ok) {
         const data = await response.json();
         toast.success('Diet plan created');
+
+        // Clear local storage after successful submission
+        localStorage.removeItem('dietPlan');
+
         if (programme.planType === 'Both') {
           navigate(`/trainer/create/programme/day/plan/${id}/${programmeId}`);
         } else {

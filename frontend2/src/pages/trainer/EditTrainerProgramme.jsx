@@ -3,9 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { BiSolidRightArrow } from 'react-icons/bi';
-
-import DashboardComponent from '../../component/DashboardComponent';
 import DashboardHeader from '../../component/DashboardHeader';
 import { updateProgramme } from '../../action/programmeActions';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
@@ -21,14 +18,14 @@ const EditTrainerProgramme = () => {
 
   const [category, setCategory] = useState([]);
   const [price, setPrice] = useState('');
-  const [discount, setDiscount] = useState(''); // Added state for discount
+  const [discount, setDiscount] = useState('');
   const [categoryPhoto, setCategoryPhoto] = useState(null);
   const [categoryPhotoName, setCategoryPhotoName] = useState('');
   const [trainerMail, setTrainerMail] = useState(user?.user?.email || '');
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState(['']);
   const [loading, setLoading] = useState(false);
-  const [hoverDashboard, setHoverDashboard] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0); // Added upload progress state
 
   const categoryOptions = [
     'Nutrition',
@@ -47,7 +44,7 @@ const EditTrainerProgramme = () => {
       const prog = programme.programme;
       setCategory(prog.category || []);
       setPrice(prog.price || '');
-      setDiscount(prog.discount || ''); // Set discount value
+      setDiscount(prog.discount || '');
       setCategoryPhotoName(prog.categoryPhotoName || '');
       setTrainerMail(prog.trainerMail || user?.email);
       setTitle(prog.title || '');
@@ -55,13 +52,52 @@ const EditTrainerProgramme = () => {
     }
   }, [programme, user]);
 
+  useEffect(() => {
+    // Load form state from local storage
+    const savedData = JSON.parse(localStorage.getItem(`programme-${id}`));
+    if (savedData) {
+      setCategory(savedData.category || []);
+      setPrice(savedData.price || '');
+      setDiscount(savedData.discount || '');
+      setCategoryPhotoName(savedData.categoryPhotoName || '');
+      setTrainerMail(savedData.trainerMail || '');
+      setTitle(savedData.title || '');
+      setDesc(savedData.desc || ['']);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    // Save form state to local storage
+    localStorage.setItem(
+      `programme-${id}`,
+      JSON.stringify({
+        category,
+        price,
+        discount,
+        categoryPhotoName,
+        trainerMail,
+        title,
+        desc,
+      })
+    );
+  }, [
+    category,
+    price,
+    discount,
+    categoryPhotoName,
+    trainerMail,
+    title,
+    desc,
+    id,
+  ]);
+
   const handleUpdateProgramme = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
     formData.append('category', JSON.stringify(category));
     formData.append('price', price);
-    formData.append('discount', discount); // Append discount
+    formData.append('discount', discount);
     if (categoryPhoto) formData.append('categoryPhoto', categoryPhoto);
     formData.append('trainerMail', trainerMail);
     formData.append('title', title);
@@ -93,13 +129,28 @@ const EditTrainerProgramme = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setCategoryPhoto(file);
-    setCategoryPhotoName(file ? file.name : '');
+    if (file) {
+      setCategoryPhoto(file);
+      setCategoryPhotoName(file.name);
+      // Reset upload progress when a new file is selected
+      setUploadProgress(0);
+      // Simulate upload progress
+      const interval = setInterval(() => {
+        setUploadProgress((prevProgress) => {
+          if (prevProgress < 100) {
+            return prevProgress + 10;
+          }
+          clearInterval(interval);
+          return 100;
+        });
+      }, 100);
+    }
   };
 
   const handleClearFile = () => {
     setCategoryPhoto(null);
     setCategoryPhotoName('');
+    setUploadProgress(0); // Reset progress when clearing file
   };
 
   const handleDescChange = (index, value) => {
@@ -117,12 +168,6 @@ const EditTrainerProgramme = () => {
     setDesc(newDesc);
   };
 
-  const handleClick = () => {
-    setHoverDashboard((prev) => !prev);
-  };
-
-  const dashboardLink = useDashboardLinks();
-
   return (
     <div
       className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
@@ -134,7 +179,7 @@ const EditTrainerProgramme = () => {
         <DashboardHeader />
       </div>
 
-      <div className='min-h-screen min-w-[100vw]'>
+      <div className="min-h-screen min-w-[100vw]">
         <h1 className="text-3xl font-extrabold text-center py-4">
           Edit Program
         </h1>
@@ -149,14 +194,20 @@ const EditTrainerProgramme = () => {
               <label className="w-[80%] bg-tertiary text-primary p-10 rounded-[40px] border-b-white border-[4px] border-dotted flex justify-center items-center cursor-pointer relative">
                 <div className="flex flex-col items-center">
                   {categoryPhotoName ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col items-center gap-2">
+                      <img
+                        src={URL.createObjectURL(categoryPhoto)}
+                        alt={categoryPhotoName}
+                        className="w-20 h-20 object-cover rounded-full"
+                      />
                       <h1 className="text-white font-sans">
-                        {categoryPhotoName}
+                        {uploadProgress}% uploaded
                       </h1>
                       <button
                         type="button"
                         className="text-white"
                         onClick={handleClearFile}
+                        disabled={uploadProgress < 100}
                       >
                         <FaTimes />
                       </button>
@@ -223,46 +274,46 @@ const EditTrainerProgramme = () => {
             </div>
 
             {/* Price, Discount, Title, and Trainer Mail */}
-            <div className="flex flex-col gap-4 mb-4">
+            <div className="flex flex-col gap-4 mb-4 ">
               <input
                 type="text"
                 placeholder="Price > $10"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="p-2 rounded-lg bg-gray-700 text-black"
+                className="p-2 rounded-lg bg-gray-700 text-white"
               />
               <input
                 type="text"
-                placeholder="Discount (e.g., 20%)"
+                placeholder="Discount (e.g., 10%)"
                 value={discount}
                 onChange={(e) => setDiscount(e.target.value)}
-                className="p-2 rounded-lg bg-gray-700 text-black"
+                className="p-2 rounded-lg bg-gray-700 text-white"
+              />
+              <input
+                type="text"
+                placeholder="Trainer Email"
+                value={trainerMail}
+                onChange={(e) => setTrainerMail(e.target.value)}
+                className="p-2 rounded-lg bg-gray-700 text-white"
               />
               <input
                 type="text"
                 placeholder="Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="p-2 rounded-lg bg-gray-700 text-black"
-              />
-              <input
-                type="email"
-                placeholder="Trainer Mail"
-                value={trainerMail}
-                onChange={(e) => setTrainerMail(e.target.value)}
-                className="p-2 rounded-lg bg-gray-700 text-black"
+                className="p-2 rounded-lg bg-gray-700 text-white"
               />
             </div>
 
             {/* Description Fields */}
             <div className="flex flex-col gap-4 mb-4">
-              {desc.map((descItem, index) => (
-                <div key={index} className="flex items-center gap-4">
+              {desc.map((d, index) => (
+                <div key={index} className="flex items-center gap-2">
                   <input
                     type="text"
-                    value={descItem}
+                    value={d}
                     onChange={(e) => handleDescChange(index, e.target.value)}
-                    className="p-2 rounded-lg bg-gray-700 text-black w-full"
+                    className="p-2 rounded-lg bg-gray-700 text-white flex-grow"
                   />
                   <button
                     type="button"
@@ -276,15 +327,18 @@ const EditTrainerProgramme = () => {
               <button
                 type="button"
                 onClick={handleAddDescField}
-                className="text-green-500"
+                className="text-blue-500"
               >
-                Add Description Field
+                Add Description
               </button>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
-              className="bg-blue-500 text-white p-4 rounded-lg"
+              className={`py-2 px-4 rounded-lg ${
+                loading ? 'bg-gray-400' : 'bg-blue-600'
+              } text-white`}
               disabled={loading}
             >
               {loading ? 'Updating...' : 'Update Programme'}

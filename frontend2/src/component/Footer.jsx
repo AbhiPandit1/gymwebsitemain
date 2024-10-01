@@ -59,10 +59,6 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-10 sm:py-20 border-b border-gray-600">
             <div className="flex flex-col items-start sm:items-center">
               <Logo backgroundImage={footerImage} />
-              <p className="text-white mt-4 max-w-sm text-lg font-light leading-relaxed">
-                Empowering developers with modern tools and resources to build
-                seamless digital experiences.
-              </p>
             </div>
             <div className="flex space-x-5 mt-10 sm:mt-0">
               <a

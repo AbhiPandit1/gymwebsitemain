@@ -39,7 +39,7 @@ const Faq = () => {
 
   return (
     <div className="p-6 rounded-lg min-h-[60vh]">
-      <h2 className="text-2xl font-bold text-center text-gray-300 mb-6">
+      <h2 className="text-2xl font-bebes text-center text-gray-300 mb-6">
         Frequently Asked Questions
       </h2>
       {faqData.map((item, index) => (
@@ -48,7 +48,7 @@ const Faq = () => {
             onClick={() => handleToggle(index)}
             className="flex items-center justify-between text-[1.5rem] p-6 border-b-4 border-white text-gray-400 cursor-pointer"
           >
-            <span className="font-semibold">{item.question}</span>
+            <span className="font-bebes">{item.question}</span>
             {openIndex === index ? (
               <FaArrowUp size={20} />
             ) : (

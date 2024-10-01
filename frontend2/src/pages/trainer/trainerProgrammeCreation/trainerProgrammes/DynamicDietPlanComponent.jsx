@@ -61,14 +61,20 @@ const DynamicDietPlanComponent = () => {
 
   const handleDownload = () => {
     const doc = new jsPDF();
-    doc.setFillColor(240, 240, 240); // Light grey background
+
+    // Set text color to white
+    doc.setTextColor(255, 255, 255);
+
+    // Draw a filled rectangle that covers the entire page
     doc.rect(
       0,
       0,
       doc.internal.pageSize.getWidth(),
       doc.internal.pageSize.getHeight(),
       'F'
-    );
+    ); // 'F' means fill
+
+    // Adding the logo at the top
     const logoWidth = 50; // Define desired logo width
     const logoHeight = 20; // Define desired logo height
     const logoXPosition = 80; // Centering the logo horizontally
@@ -83,12 +89,15 @@ const DynamicDietPlanComponent = () => {
       logoHeight
     ); // Add logo
 
-    // Set title
+    // Set title in the center, 4rem (about 64px) below the logo
     doc.setFontSize(18);
-    doc.text('Weekly Diet Plan', 14, 22);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    doc.text('Weekly Diet Plan', pageWidth / 2, logoYPosition + 64, {
+      align: 'center',
+    });
 
-    // Define starting Y position for content
-    let yPosition = 32;
+    // Define starting Y position for content (at least 4rem below the logo)
+    let yPosition = logoYPosition + 64 + 16; // 64px (4rem) + 16px extra padding
 
     dietPlanData.forEach((plan, index) => {
       doc.setFontSize(16);
@@ -199,20 +208,6 @@ const DynamicDietPlanComponent = () => {
                   </label>
                 </div>
               </div>
-              <div className="mt-4 flex gap-4">
-                <button
-                  onClick={handleReset}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                  Reset
-                </button>
-                <button
-                  onClick={handleDownload}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                >
-                  Download PDF
-                </button>
-              </div>
             </div>
           )}
 
@@ -271,6 +266,20 @@ const DynamicDietPlanComponent = () => {
               ))
             )}
           </div>
+        </div>
+        <div className="mt-4 flex gap-4">
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Reset
+          </button>
+          <button
+            onClick={handleDownload}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Download PDF
+          </button>
         </div>
       </div>
     </div>

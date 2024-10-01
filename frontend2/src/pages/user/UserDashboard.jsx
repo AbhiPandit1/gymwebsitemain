@@ -58,10 +58,13 @@ const UserDashboard = () => {
                 }
                 className="text-gray-300 hover:text-gray-100 focus:outline-none"
               >
-                <button className="w-[17rem]  h-[4rem] bg-orange-500 hover:bg-orange-500 flex justify-between items-center px-8">
+                <button className="w-[17rem]  h-[4rem] bg-orange-500 hover:bg-orange-500 flex justify-between items-center px-8 rounded-[32px]">
                   <span className="text-2xl text-white flex justify-center items-center gap-2">
                     Your Programs
-                    <HiOutlineArrowNarrowRight size={20} className='flex justify-center items-center' />
+                    <HiOutlineArrowNarrowRight
+                      size={20}
+                      className="flex justify-center items-center"
+                    />
                   </span>
                 </button>
               </Link>
