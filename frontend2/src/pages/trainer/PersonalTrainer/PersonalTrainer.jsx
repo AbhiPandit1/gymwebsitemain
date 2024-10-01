@@ -75,7 +75,7 @@ const PersonalTrainer = () => {
           <PersonalInfoTrainer />
         </div>
         <div>
-          <ReviewCard currentUser={user.user} />
+          <ReviewCard currentUser={user?.user} />
         </div>
         <div>
           <Footer />

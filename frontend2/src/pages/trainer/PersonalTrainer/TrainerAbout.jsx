@@ -8,13 +8,9 @@ import { BsArrowRight } from 'react-icons/bs';
 
 const TrainerAbout = () => {
   const { trainerId } = useParams();
-  const { user } = useSelector((state) => state.user);
 
-  console.log(user.user.gender);
   const { trainer, description, loading, error, userTrainerDetails } =
     useTrainerDetailHook(trainerId);
-
-  console.log(user.user.role);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading trainer details.</p>;
@@ -26,7 +22,7 @@ const TrainerAbout = () => {
         className="relative z-10"
         style={{
           backgroundImage:
-            user.user.gender === 'male'
+            trainer.gender === 'male'
               ? `url('https://res.cloudinary.com/diohupopk/image/upload/v1727720104/profile_photos/zjuarlhlnzd8jaxmy7mx.png')`
               : `url('https://res.cloudinary.com/diohupopk/image/upload/v1727544314/profile_photos/csyacnjklkjpcmzevcqh.png')`,
           backgroundSize: 'cover', // Ensures the image covers the entire container

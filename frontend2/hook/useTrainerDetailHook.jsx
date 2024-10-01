@@ -18,12 +18,7 @@ const useTrainerDetailHook = (trainerId) => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `${backendapi}/api/trainer/about/get/detail/${trainerId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
+          `${backendapi}/api/trainer/about/get/detail/${trainerId}`
         );
 
         setTrainer(response.data.trainer);
@@ -39,10 +34,10 @@ const useTrainerDetailHook = (trainerId) => {
       }
     };
 
-    if (trainerId && user.token) {
+    if (trainerId) {
       fetchTrainerDetails();
     }
-  }, [trainerId, user.token, backendapi]);
+  }, [trainerId, backendapi]);
 
   return { trainer, description, loading, error, userTrainerDetails };
 };

@@ -217,10 +217,7 @@ function App() {
             path="/user/detail/:id"
             element={token ? <UserDetails /> : <Navigate to="/login" />}
           />
-          <Route
-            path="/trainer/:trainerId"
-            element={token ? <PersonalTrainer /> : <Navigate to="/login" />}
-          />
+          <Route path="/trainer/:trainerId" element={<PersonalTrainer />} />
           <Route
             path="/trainer/about/:userId"
             element={token ? <TrainerAboutSection /> : <Navigate to="/login" />}

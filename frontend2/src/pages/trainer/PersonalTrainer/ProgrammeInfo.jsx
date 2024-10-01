@@ -125,7 +125,7 @@ const ProgrammeInfo = ({
           onClose={closeModal}
           className="fixed inset-0 flex items-center justify-center p-4"
         >
-          <Dialog.Panel className="relative p-6 rounded-lg shadow-lg max-w-2xl w-full overflow-y-auto bg-white h-[60vh] scrollbar-hide">
+          <Dialog.Panel className="relative p-6 rounded-lg shadow-lg max-w-2xl w-full overflow-y-auto bg-gray-100 h-[60vh] scrollbar-hide">
             <h1 className="text-2xl font-bold mb-4">About the Program</h1>
             <div className="text-gray-700 space-y-4 scrollbar-hide">
               {description && renderDescription(description)}
