@@ -117,7 +117,7 @@ const PersonalInfoTrainer = () => {
       </div>
 
       {/* Buy Program Button */}
-      <div className="mt-8 flex justify-center">
+      <div className="flex justify-center">
         <button
           onClick={handleBuyProgram}
           className="bg-orange-500 text-white py-4 px-10 shadow-lg hover:bg-orange-600 transition duration-300"

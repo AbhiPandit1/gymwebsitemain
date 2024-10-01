@@ -1,10 +1,7 @@
-import DashboardComponent from '../../component/DashboardComponent';
 import DashboardHeader from '../../component/DashboardHeader';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 import { useState } from 'react';
-import { BiSolidRightArrow } from 'react-icons/bi';
 import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
 
 const UserDashboard = () => {
@@ -39,15 +36,15 @@ const UserDashboard = () => {
         }}
       >
         {/* Welcome Text Instead of Image */}
-        <div className="h-full w-full flex flex-col mt-[35%] sm:mt-0 justify-start sm:justify-center items-center text-center mb-1 ">
+        <div className="h-full w-full flex flex-col mt-[55%] sm:mt-0 justify-start sm:justify-center items-center text-center mb-1 ">
           <div className="text-gray-100 flex flex-col items-center">
             {/* User's Name */}
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-wide">
+            <h1 className="text-4xl sm:text-5xl font-bebes tracking-wide">
               Welcome, {user.user.name}!
             </h1>
 
             {/* Beautiful Line of Text */}
-            <p className="mt-4 text-xl sm:text-2xl text-orange-400 font-medium tracking-widest">
+            <p className="mt-4 text-xl sm:text-2xl text-orange-400  font-medium tracking-widest">
               Start your journey towards fitness excellence today.
             </p>
 
@@ -61,10 +58,10 @@ const UserDashboard = () => {
                 }
                 className="text-gray-300 hover:text-gray-100 focus:outline-none"
               >
-                <button className="w-[17rem] sm:w-[15rem] h-[4rem] bg-orange-500 flex justify-between items-center px-4">
-                  <span className="text-xl flex justify-center items-center gap-2">
+                <button className="w-[17rem]  h-[4rem] bg-orange-500 hover:bg-orange-500 flex justify-between items-center px-8">
+                  <span className="text-2xl text-white flex justify-center items-center gap-2">
                     Your Programs
-                    <HiOutlineArrowNarrowRight size={30} />
+                    <HiOutlineArrowNarrowRight size={20} className='flex justify-center items-center' />
                   </span>
                 </button>
               </Link>

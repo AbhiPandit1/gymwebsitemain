@@ -2,20 +2,14 @@ import { useState, useEffect } from 'react';
 import { IoIosArrowRoundForward } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-
-import homeGirl from '../assets/homeGirl.jpeg';
 import Card from '../component/Card';
 import ReviewCard from '../component/ReviewCard';
-import CategoriesCard from '../component/CategoriesCard';
-import DescriptionComponent from '../component/DescriptionComponent';
 import CreatorHomeComponent from '../component/CreatorHomeComponent';
 import Faq from '../component/Faq';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
 import HomeSkeleton from './skeletons/HomeSkeleton';
-import { FaAngleDoubleDown } from 'react-icons/fa';
-import ReviewForm from './Setting/Component/ReviewForm';
-import StripeAccount from './payment/StripeAccount';
+
 
 const Home = () => {
   const { user } = useSelector((state) => state.user);
@@ -49,48 +43,34 @@ const Home = () => {
           <div className="flex flex-col justify-center items-center gap-6 w-full px-4 sm:px-6 overflow-hidden">
             {/* Headings */}
             <div className="text-white flex flex-col justify-start items-start">
-              <div className="flex justify-start text-left text-[2rem] sm:text-[2rem] lg:text-[3rem] tracking-wide w-full font-bebes">
+              <p className="flex justify-start text-left text-[1.8rem] sm:text-[2rem] lg:text-[3rem] tracking-wide w-full font-bebes">
                 YOUR
                 <span className="relative ml-2 bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 text-transparent underline underline-offset-8">
                   FITNESS LIBRARY
                 </span>
-              </div>
+              </p>
             </div>
 
             {/* Subtext */}
-            <div className="flex justify-center items-center ">
-              <p className="text-[1rem]  sm:text-[1.2rem] lg:text-[1.5rem] leading-tight sm:w-[100%] font-Arial text-gray-300">
-                Decades of fitness experience at your fingertips.
-              </p>
-
-              {/* Button Section */}
-            </div>
           </div>
         </div>
 
         {/* Moving Cards Section */}
-        <div className="flex flex-col p-5 font-bebes ">
-          <div className="h-full w-full ml-4">
+        <div className="flex flex-col font-bebes ">
+          <div className="h-full w-full ">
             <Card title="Featured Programs" backgroundColor="transparent" />
           </div>
           <Link to="/programmes">
-            <div className="flex justify-center items-center">
-              <div className="justify-center w-[8rem] sm:w-[8rem] h-[2rem] sm:h-[3rem] bg-orange-600 rounded-xl hover:bg-orange-800 flex items-center">
-                <span className="m-2 text-[1rem] sm:text-[1rem] text-white">
-                  More
-                </span>
-
+            <div className="flex justify-center items-center my-4">
+              <div className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600 hover:bg-orange-500  text-white rounded-full flex items-center">
+                view all programs
                 <IoIosArrowRoundForward color="white" className="w-10 h-6" />
               </div>
             </div>
           </Link>
         </div>
 
-        <div className="relative ">
-          <CategoriesCard />
-        </div>
-
-        <div className="relative">
+        <div className="relative mt-8">
           <CreatorHomeComponent />
         </div>
 

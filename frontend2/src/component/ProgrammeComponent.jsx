@@ -94,7 +94,7 @@ const ProgrammeComponent = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  console.log(currentItems)
+  console.log(currentItems);
 
   // Render page numbers with a limit
   const renderPageNumbers = () => {
@@ -140,14 +140,9 @@ const ProgrammeComponent = () => {
           'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
       }}
     >
-      <HeroSection
-        category="Programs"
-        para="Explore our wide range of programs"
-        title="Programs"
-      />
+      <HeroSection title="Programs" />
       <div className="w-full flex flex-col items-center text-white p-5 min-h-screen max-w-full mx-auto relative z-40">
-        <h1 className="text-2xl font-bold mb-6">Our Programs</h1>
-        <div className="flex flex-col sm:flex-row items-center gap-2 justify-start mb-6">
+        <div className="flex max-w-[100vw] flex-col sm:flex-row items-center gap-2 sm:gap-16 justify-between ">
           <div className="mt-3 px-8 py-2">
             <select
               id="filter"

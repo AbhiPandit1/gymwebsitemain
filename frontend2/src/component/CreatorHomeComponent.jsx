@@ -131,8 +131,8 @@ const CreatorHomeComponent = () => {
   }
 
   return (
-    <div className="p-8 text-white relative">
-      <h1 className="text-4xl font-extrabold text-center mb-8">
+    <div className=" text-white relative">
+      <h1 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[32px] text-center mb-4">
         Meet Our Creators
       </h1>
 
@@ -197,7 +197,7 @@ const CreatorHomeComponent = () => {
         >
           {trainerDatas?.map((data) => (
             <Link
-              to={`/trainer/${data?._id}`}
+              to={`/trainer/${data?.user?._id}`}
               key={data._id}
               className="relative inline-block rounded-xl w-[300px] m-2 hover:shadow-lg bg-transparent border-2 border-orange-600 transition-shadow duration-300 border-b-4 hover:border-4"
             >

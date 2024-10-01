@@ -221,7 +221,7 @@ const ReviewCard = ({ currentUser }) => {
   return (
     <div className="rounded-[40px]  relative h-full m-auto w-full sm:rounded-[10px] p-4 ">
       <div className="flex justify-between items-center m-3">
-        <h2 className="flex justify-between text-center font-extrabold items-center text-2xl sm:text-4xl font-sans text-white">
+        <h2 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[32px] text-center mb-4">
           What People Say
         </h2>
         <div className="bg-orange-600 flex justify-center items-center w-[4rem] h-10 text-xs sm:text-xl sm:w-28 sm:h-14 rounded-[7px] sm:rounded-[10px] text-white">

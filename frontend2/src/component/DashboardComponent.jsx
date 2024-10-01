@@ -33,7 +33,7 @@ const DashboardComponent = ({
               <p className="text-xl font-sans font-bold mr-4">
                 {dashboard.icon}
               </p>
-              <span className="text-lg font-sans font-bold">
+              <span className="text-lg   font-sans font-bold">
                 {dashboard.name}
               </span>
             </Link>

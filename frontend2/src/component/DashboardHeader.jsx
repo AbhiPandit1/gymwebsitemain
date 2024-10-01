@@ -50,7 +50,7 @@ const DashboardHeader = () => {
         <div
           className={`absolute top-0 left-0 z-40 bg-gray-700 text-white transform ${
             dashComponent
-              ? 'translate-x-0 opacity-100 w-6/12 sm:w-1/5' // Slide in and become visible
+              ? 'translate-x-0 opacity-100 w-8/12 sm:w-1/5' // Slide in and become visible
               : '-translate-x-full opacity-0 w-0' // Slide out and become invisible
           }`}
           style={{
@@ -83,7 +83,7 @@ const DashboardHeader = () => {
                     <p className="text-2xl font-sans font-bold mr-4">
                       {dashboard.icon}
                     </p>
-                    <span className="text-3xl font-sans font-bold">
+                    <span className="text-3xl  font-sans font-bold">
                       {dashboard.name}
                     </span>
                   </Link>
@@ -110,7 +110,7 @@ const DashboardHeader = () => {
           </div>
         </Link>
         <div className="flex items-center justify-between gap-2">
-          <div className="relative">
+          <div className="relative sm:flex hidden">
             <IoMdNotifications
               size={30}
               color="white"
@@ -132,18 +132,18 @@ const DashboardHeader = () => {
             ) : (
               user && (
                 <>
-                  <p className="text-xl sm:text-2xl font-sans text-white font-bold">
+                  <p className="text-xl sm:text-2xl font-sans hidden sm:flex text-white font-bold">
                     {user.name}
                   </p>
                   <div
-                    className="h-[2rem] w-[2rem] sm:h-[3rem] sm:w-[3rem] bg-tertiary rounded-xl flex justify-center items-center"
+                    className="h-[3rem] w-[3rem]  bg-tertiary rounded-xl flex justify-center items-center"
                     onMouseEnter={handleProfileHover}
                   >
                     {user.profilePhoto?.url ? (
                       <img
                         src={user.profilePhoto.url}
                         alt="profilePhoto"
-                        className="rounded-[32px] opacity-1 h-[3rem] w-[3rem]"
+                        className="rounded-[32px] opacity-1 h-[3.5rem] w-[3.5rem]"
                       />
                     ) : (
                       <RxAvatar size={40} />

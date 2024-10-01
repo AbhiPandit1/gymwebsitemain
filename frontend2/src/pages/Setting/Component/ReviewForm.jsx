@@ -104,9 +104,7 @@ const ReviewForm = ({ trainerId, heading }) => {
     <div className="flex flex-col items-center justify-start text-white p-6 rounded-lg shadow-md font-sans">
       <div className="flex flex-col space-y-6 mt-4 w-full max-w-md">
         <label className="text-xl font-semibold">
-          {existingReview
-            ? `Edit your review for ${heading}`
-            : `Rate the ${heading}`}
+          {existingReview ? `Edit your review ` : `Rate us`}
         </label>
         <div className="flex justify-center space-x-3">
           {[1, 2, 3, 4, 5].map((star) => (

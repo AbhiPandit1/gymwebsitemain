@@ -206,7 +206,7 @@ const Card = ({ title, backgroundColor }) => {
             backgroundColor: 'rgba(0, 0, 0, 0)', // Transparent background
           },
           content: {
-            top: isMobile ? '35%' : '50%', // Adjust top based on screen size
+            top: isMobile ? '50%' : '50%', // Adjust top based on screen size
             left: '50%',
             right: 'auto',
             bottom: 'auto',

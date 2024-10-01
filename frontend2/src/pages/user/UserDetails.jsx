@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { updateUserDetail } from '../../action/userActions';
 import SmallSpinner from '../../../SmallSpinner';
-import SocialMediaLinkChange from '../Setting/Component/SocialMediaLinkChange'; // Ensure this component is imported
+
 
 const UserDetails = () => {
   const [name, setName] = useState('');

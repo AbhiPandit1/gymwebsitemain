@@ -49,7 +49,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
   return (
     <div className="mt-10">
       {/* Grid layout with responsive columns */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 overflow-hidden">
+      <div className="grid w-[100vw] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 overflow-hidden">
         {visibleProgrammes.map((card) => (
           <div
             key={card._id}
