@@ -196,7 +196,7 @@ const EditTrainerProgramme = () => {
                   {categoryPhotoName ? (
                     <div className="flex flex-col items-center gap-2">
                       <img
-                        src={URL.createObjectURL(categoryPhoto)}
+                        src={URL?.createObjectURL(categoryPhoto)}
                         alt={categoryPhotoName}
                         className="w-20 h-20 object-cover rounded-full"
                       />

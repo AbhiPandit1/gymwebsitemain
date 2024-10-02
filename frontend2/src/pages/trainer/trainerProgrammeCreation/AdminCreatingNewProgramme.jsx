@@ -231,7 +231,7 @@ const AdminCreatingNewProgramme = () => {
                   {categoryPhotoName ? (
                     <div className="flex flex-col items-center gap-2">
                       <img
-                        src={URL.createObjectURL(categoryPhoto)}
+                        src={URL?.createObjectURL(categoryPhoto)}
                         alt={categoryPhotoName}
                         className="w-20 h-20 object-cover rounded-full"
                       />
@@ -322,7 +322,7 @@ const AdminCreatingNewProgramme = () => {
               <div className="w-full sm:ml-12 sm:pr-12">
                 <input
                   className="p-2 rounded-lg w-full bg-tertiary text-white"
-                  placeholder="Price (INR)"
+                  placeholder="Price > $10"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   required
@@ -334,7 +334,7 @@ const AdminCreatingNewProgramme = () => {
             <div className="w-full sm:ml-12 sm:pr-12">
               <input
                 className="p-2 rounded-lg w-full bg-tertiary text-white"
-                placeholder="Discount (%)"
+                placeholder="Discount (e.g., 10%)"
                 value={discount}
                 onChange={(e) => setDiscount(e.target.value)}
                 required
