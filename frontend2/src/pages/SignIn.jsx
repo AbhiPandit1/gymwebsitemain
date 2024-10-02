@@ -127,26 +127,6 @@ const SignIn = () => {
 
   return (
     <div>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        className="fixed inset-0 flex items-center justify-center w-[80vw] m-auto h-full  bg-transparent  rounded-lg p-6 shadow-lg"
-        overlayClassName="fixed bg-white bg-opacity-50"
-      >
-        <div className="relative w-full h-full">
-          <button
-            onClick={() => setModalIsOpen(false)}
-            className="absolute top-4 right-20 text-4xl font-bold text-orange-700"
-          >
-            ×
-          </button>
-          <iframe
-            src="https://drive.google.com/file/d/1UqMF3nxv4qzGL5382ojk_2l_bCQXaWAT/preview"
-            className="w-full h-[100vh]"
-            title="Terms of Service"
-          />
-        </div>
-      </Modal>
       <form onSubmit={handleSubmit}>
         <div
           className="grid grid-cols-1 sm:grid-cols-2 font-bebes min-h-screen overflow-auto  py-10 px-4 sm:px-10"
@@ -267,18 +247,20 @@ const SignIn = () => {
                   onChange={handleTermsChange}
                   className="text-orange-600"
                 />
-                <label
-                  htmlFor="terms"
-                  className="text-white text-lg font-semibold"
-                >
-                  I agree to the{' '}
-                  <span
-                    onClick={handleReviewTerms}
-                    className="text-orange-600 cursor-pointer"
+                <Link to="/programpanda/privacy/terms">
+                  <label
+                    htmlFor="terms"
+                    className="text-white text-lg font-semibold"
                   >
-                    terms and conditions
-                  </span>
-                </label>
+                    I agree to the{' '}
+                    <span
+                      onClick={handleReviewTerms}
+                      className="text-orange-600 cursor-pointer"
+                    >
+                      terms and conditions
+                    </span>
+                  </label>
+                </Link>
               </div>
               {errors.terms && (
                 <p className="text-red-500 text-sm mt-1">{errors.terms}</p>
@@ -295,7 +277,7 @@ const SignIn = () => {
               </button>
             </div>
 
-            <div className="flex justify-center sm:ml-20">
+            <div className="flex justify-center items-center flex-col">
               <p className="text-white text-lg">
                 Already have an account?{' '}
                 <Link to="/login" className="text-orange-600 font-semibold">

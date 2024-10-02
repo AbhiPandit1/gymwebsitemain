@@ -154,7 +154,7 @@ const CreatorHomeComponent = () => {
               <Link
                 to={`/trainer/${data?.user?._id}`}
                 key={data?._id}
-                className="relative inline-block rounded-xl w-[350px] bg-gray-800 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4 hover:shadow-orange-600"
+                className="relative inline-block rounded-xl w-[350px] bg-gray-800 m-2 hover:shadow-lg transition-shadow duration-300 border-b border-r border-orange-600 hover:border-4 "
               >
                 <div className="relative w-full h-[550px]">
                   {data?.user?.profilePhoto?.url ? (

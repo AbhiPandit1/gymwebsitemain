@@ -100,7 +100,7 @@ const TrainerCardMobile = ({ searchQuery }) => {
       {displayedTrainers?.map((data) => (
         <div
           key={data._id} // Use the unique _id for the key
-          className="relative max-h-[400px] min-h-[450px] min-w-[70vw] rounded-xl overflow-hidden bg-transparent border border-orange-600 hover:shadow-2xl hover:shadow-orange-600"
+          className="relative max-h-[400px] min-h-[450px] min-w-[70vw] rounded-xl overflow-hidden bg-transparent border border-orange-600  hover:border-8"
         >
           <img
             src={data?.user?.profilePhoto?.url}

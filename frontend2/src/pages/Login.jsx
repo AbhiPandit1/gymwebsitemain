@@ -181,18 +181,17 @@ const Login = () => {
                     onChange={() => setAgreedTerms(!agreedTerms)}
                     className="text-orange-600"
                   />
-                  <label
-                    htmlFor="terms"
-                    className="text-white text-lg font-semibold"
-                  >
-                    I agree to the{' '}
-                    <span
-                      onClick={() => setModalIsOpen(true)}
-                      className="text-orange-600 cursor-pointer"
+                  <Link to="/programpanda/privacy/terms">
+                    <label
+                      htmlFor="terms"
+                      className="text-white text-lg font-semibold"
                     >
-                      terms and conditions
-                    </span>
-                  </label>
+                      I agree to the{' '}
+                      <span className="text-orange-600 cursor-pointer">
+                        terms and conditions
+                      </span>
+                    </label>
+                  </Link>
                 </div>
                 {errors.terms && (
                   <p className="text-red-500 text-sm mt-1">{errors.terms}</p>
@@ -209,13 +208,18 @@ const Login = () => {
                 </button>
               </div>
 
-              <div className="flex justify-center sm:ml-20">
+              <div className="flex flex-col justify-center items-center gap-5 ">
                 <p className="text-white text-lg">
                   Don't have an account?{' '}
                   <Link to="/signin" className="text-orange-600 font-semibold">
                     Sign Up
                   </Link>
                 </p>
+                <Link to="/user/forgot/email">
+                  <p className="text-sans text-xl text-green-500 hover:text-green-700">
+                    Forgot password
+                  </p>
+                </Link>
               </div>
             </div>
 

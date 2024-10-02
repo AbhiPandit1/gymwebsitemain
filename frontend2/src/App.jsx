@@ -29,6 +29,8 @@ import TrainerInvoiceInfo from './pages/trainer/TrainerInvoiceInfo';
 import AccountLinkFailure from './pages/payment/AccountLinkFailure';
 import AccountLinkSuccess from './pages/payment/AccountLinkSuccess';
 import StripeAccount from './pages/payment/StripeAccount';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsAndConditon from './pages/TermsAndConditon';
 
 const Home = lazy(() => import('./pages/Home'));
 const Trainers = lazy(() => import('./pages/trainer/Trainers'));
@@ -119,6 +121,14 @@ function App() {
           <Route path="/programmes" element={<Programmes />} />
           <Route path="/resetpassword/:token" element={<ForgortPassword />} />
           <Route path="/user/forgot/email" element={<EmailField />} />
+          <Route
+            path="/programpanda/privacy/policy"
+            element={<PrivacyPolicy />}
+          />
+          <Route
+            path="/programpanda/privacy/terms"
+            element={<TermsAndConditon />}
+          />
           <Route
             path="/programme/:programmeId"
             element={token ? <ProgrammeDetail /> : <Navigate to="/login" />}

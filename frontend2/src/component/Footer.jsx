@@ -7,6 +7,7 @@ import SiteMap from './SiteMap';
 import site from '../data/siteMapData';
 import legal from '../data/legalData';
 import FooterSkeleton from '../pages/skeletons/FooterSkeleton';
+import { Link } from 'react-router-dom';
 
 // Set up Modal accessibility
 Modal.setAppElement('#root');
@@ -37,16 +38,6 @@ const Footer = () => {
   const closeModal = () => {
     setModalIsOpen(false);
     setModalType('');
-  };
-
-  const getPdfUrl = () => {
-    if (modalType === 'privacy') {
-      return 'https://drive.google.com/file/d/1UqMF3nxv4qzGL5382ojk_2l_bCQXaWAT/preview';
-    }
-    if (modalType === 'terms') {
-      return 'https://drive.google.com/file/d/1SbW_QMZVnrpWcvaMJj65JixuO0GTqcZT/preview';
-    }
-    return '';
   };
 
   return (
@@ -95,18 +86,16 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row justify-between gap-10 mt-10 border-t border-gray-600 pt-10">
             <div className="sm:ml-20">
               <div className="flex space-x-4">
-                <button
-                  onClick={() => openModal('privacy')}
-                  className="text-white hover:text-orange-800 font-sans text-xl "
-                >
-                  Privacy Policy
-                </button>
-                <button
-                  onClick={() => openModal('terms')}
-                  className="text-white hover:text-orange-800 font-sans text-xl"
-                >
-                  Terms of Service
-                </button>
+                <Link to="/programpanda/privacy/policy">
+                  <p className="text-white hover:text-orange-800 font-sans text-xl ">
+                    Privacy Policy
+                  </p>
+                </Link>
+                <Link to="/programpanda/privacy/terms">
+                  <p className="text-white hover:text-orange-800 font-sans text-xl">
+                    Terms of Service
+                  </p>
+                </Link>
               </div>
             </div>
           </div>
@@ -114,33 +103,6 @@ const Footer = () => {
       )}
 
       {/* Modals */}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        className="fixed inset-0 flex items-center justify-center p-6 bg-white rounded-lg shadow-lg max-w-4xl mx-4 sm:mx-auto"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-      >
-        <div className="relative w-full h-full bg-gray-100 rounded-lg overflow-hidden">
-          <button
-            onClick={closeModal}
-            className="absolute top-3 right-3 p-2 text-gray-600 hover:text-gray-800 text-2xl font-bold"
-          >
-            ×
-          </button>
-          {modalType && (
-            <iframe
-              src={getPdfUrl()}
-              width="100%"
-              height="80vh"
-              frameBorder="0"
-              title={
-                modalType === 'privacy' ? 'Privacy Policy' : 'Terms of Service'
-              }
-              className="w-full h-full"
-            ></iframe>
-          )}
-        </div>
-      </Modal>
 
       <div className="text-center py-6 text-xs border-t border-gray-700 mt-auto">
         <p>© 2024 ProgramPanda. All Rights Reserved.</p>

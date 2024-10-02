@@ -62,7 +62,13 @@ const ForgortPassword = () => {
   };
 
   return (
-    <div className="min-h-[100vh] w-full pt-5 flex flex-col gap-10">
+    <div
+      className="min-h-[100vh] w-full pt-5 flex flex-col gap-10"
+      style={{
+        background:
+          'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
+      }}
+    >
       <div>
         <LoginLogo />
       </div>
@@ -93,7 +99,7 @@ const ForgortPassword = () => {
                   className="absolute top-[20%] right-[10%] sm:right-[33%]"
                   onClick={handleShowPassword}
                 >
-                  {showPassword ? (
+                  {!showPassword ? (
                     <IoMdEyeOff color="white" size={25} />
                   ) : (
                     <IoMdEye color="white" size={25} />
@@ -129,7 +135,7 @@ const ForgortPassword = () => {
                   className="absolute top-[20%] right-[10%] sm:right-[33%]"
                   onClick={handleShowConfirmPassword}
                 >
-                  {showConfirmPassword ? (
+                  {!showConfirmPassword ? (
                     <IoMdEyeOff color="white" size={25} />
                   ) : (
                     <IoMdEye color="white" size={25} />
@@ -143,7 +149,7 @@ const ForgortPassword = () => {
 
       <div className="flex justify-center items-center">
         <button
-          className="h-[4rem] w-[20rem] rounded-3xl bg-secondary text-white flex justify-center items-center gap-5"
+          className="h-[4rem] w-[10rem] rounded-2xl bg-gradient-to-r from-orange-400 to-orange-600 hover:bg-orange-500 text-white flex justify-center items-center gap-5"
           onClick={handleChangePassword}
           disabled={loading} // Disable button while loading
         >

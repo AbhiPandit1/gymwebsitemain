@@ -10,7 +10,6 @@ import Header from '../component/Header';
 import Footer from '../component/Footer';
 import HomeSkeleton from './skeletons/HomeSkeleton';
 
-
 const Home = () => {
   const { user } = useSelector((state) => state.user);
   const role = user?.user?.role || 'user';
@@ -63,7 +62,7 @@ const Home = () => {
           <Link to="/programmes">
             <div className="flex justify-center items-center my-4">
               <div className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600 hover:bg-orange-500  text-white rounded-full flex items-center">
-                view all programs
+                View All Programs
                 <IoIosArrowRoundForward color="white" className="w-10 h-6" />
               </div>
             </div>

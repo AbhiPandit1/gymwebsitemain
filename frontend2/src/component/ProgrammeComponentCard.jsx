@@ -53,7 +53,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
         {visibleProgrammes.map((card) => (
           <div
             key={card._id}
-            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[450px] p-4 w-[300px] mx-auto my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:shadow-orange-600 hover:shadow-2xl"
+            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[450px] p-4 w-[300px] mx-auto my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:border-4 hover:shadow-2xl"
             style={{ backgroundImage: `url(${card.categoryPhoto?.url})` }}
           >
             {/* Dark overlay specific to hovered card */}
