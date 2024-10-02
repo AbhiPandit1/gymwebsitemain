@@ -193,7 +193,7 @@ const EditTrainerProgramme = () => {
             <div className="flex justify-center items-center w-full">
               <label className="w-[80%] bg-tertiary text-primary p-10 rounded-[40px] border-b-white border-[4px] border-dotted flex justify-center items-center cursor-pointer relative">
                 <div className="flex flex-col items-center">
-                  {categoryPhotoName ? (
+                  {categoryPhotoName && categoryPhoto instanceof File ? (
                     <div className="flex flex-col items-center gap-2">
                       <img
                         src={URL?.createObjectURL(categoryPhoto)}
