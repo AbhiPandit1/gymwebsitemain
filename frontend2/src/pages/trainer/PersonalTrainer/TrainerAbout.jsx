@@ -18,29 +18,17 @@ const TrainerAbout = () => {
   return (
     <>
       {/* Header */}
-      <div
-        className="relative z-10"
-        style={{
-          backgroundImage:
-            trainer.gender === 'male'
-              ? `url('https://res.cloudinary.com/diohupopk/image/upload/v1727720104/profile_photos/zjuarlhlnzd8jaxmy7mx.png')`
-              : `url('https://res.cloudinary.com/diohupopk/image/upload/v1727544314/profile_photos/csyacnjklkjpcmzevcqh.png')`,
-          backgroundSize: 'cover', // Ensures the image covers the entire container
-          backgroundPosition: 'center', // Centers the image within the container
-          backgroundRepeat: 'no-repeat',
-          backgroundPositionY: '30%',
-        }}
-      >
+      <div className="relative z-10">
         <Header />
 
         {/* Hero Section */}
-        <div className="relative h-[50vh] sm:h-screen w-full flex items-center justify-start text-white bg-cover bg-center">
+        <div className="relative h-[30vh] w-full flex items-center justify-center text-white bg-cover bg-center">
           {/* Semi-transparent overlay for better text readability */}
           <div className="absolute inset-0 bg-opacity-60"></div>
 
           {/* Container for text content */}
           <div className="relative z-10 p-8 sm:p-16 text-center">
-            <h1 className="text-transparent  text-4xl sm:text-6xl md:text-7xl text-white font-extrabold font-sans">
+            <h1 className="text-transparent  text-4xl sm:text-6xl md:text-7xl text-white  font-bebes">
               {userTrainerDetails ? userTrainerDetails?.name : 'Loading...'}
             </h1>
 
@@ -51,11 +39,6 @@ const TrainerAbout = () => {
 
             {/* Pricing Information */}
             <div className="text-white text-lg sm:text-xl mt-6 flex flex-col justify-center items-center space-x-4">
-              <button className="bg-orange-500 flex gap-1 text-white py-4 px-6  shadow-lg hover:bg-orange-600 transition duration-300">
-                Train Yourself now
-                <BsArrowRight size={30} />
-              </button>
-
               <p className="flex items-center text-white text-lg">
                 ProgrammePanda Guaranteed
                 <FaCheckCircle className="text-green-400 text-2xl" />

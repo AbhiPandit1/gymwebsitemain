@@ -175,6 +175,7 @@ export const complain = async (req, res) => {
       email: process.env.COMPANY_EMAIL, // Company email address from environment variables
       subject,
       message,
+      emailType: 'user_complain',
     });
 
     // Respond with success

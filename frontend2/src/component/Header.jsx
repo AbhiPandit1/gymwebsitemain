@@ -62,7 +62,7 @@ const Header = () => {
   return (
     <div className="flex justify-between items-center p-4 w-full  rounded-l-[1.2rem] rounded-r-[1.2rem] shadow-lg bg-transparent font-bebes">
       {/* Logo */}
-      <div className="ml-[5%]">
+      <div className="ml-[1%]">
         <Link to="/">
           <Logo backgroundImage={logoHeader} />
         </Link>
@@ -70,14 +70,14 @@ const Header = () => {
 
       {/* Navigation Menu for larger screens */}
       <div className="hidden sm:flex justify-center items-center gap-3 w-full z-40  ">
-        <div className="flex justify-around items-center font-extrabold opacity-95 ml-[15%] mr-[15%] w-[90%] h-[3rem] z-40 mx-auto rounded-lg ">
+        <div className="flex justify-around items-center font-bebes opacity-95 ml-[10%] mr-[15%] w-[90%] h-[3rem] z-40 mx-auto rounded-lg ">
           {menuItems.map((item) => (
             <Link
               key={item.id}
               to={item.link}
               className="flex flex-col items-center text-[1rem] text-white no-underline transition-colors duration-300  hover:text-orange-400"
             >
-              <span className="text-lg font-extrabold">{item.name}</span>
+              <span className="text-xl ">{item.name}</span>
             </Link>
           ))}
         </div>

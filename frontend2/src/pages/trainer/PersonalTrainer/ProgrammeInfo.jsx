@@ -61,7 +61,7 @@ const ProgrammeInfo = ({
   return (
     <>
       <h1
-        className="text-3xl font-bebes mb-6 text-center text-white mt-10"
+        className="text-3xl font-bebes  text-center text-white"
         style={{
           background:
             'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
@@ -70,44 +70,40 @@ const ProgrammeInfo = ({
         {topHeading}
       </h1>
       <div
-        className="my-8 text-white"
+        className=" text-white"
         style={{
           background:
             'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
         }}
       >
         <div
-          className="grid grid-cols-1 sm:grid-cols-3 h-[50vh] w-[80vw] m-auto overflow-hidden"
+          className="flex flex-col lg:flex-row w-[80vw] m-auto overflow-hidden"
           style={{
             background:
               'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
           }}
         >
-          <div
-            className={`h-full overflow-auto col-span-2 scrollbar-hide p-4 leading-loose order-${orderPara} bg-white `}
-          >
-            <h1 className="text-3xl font-bold mb-6 text-start text-gray-950">
-              {trainerName}
-            </h1>
-
-            <h2 className="text-gray-500">
-              {' '}
-              {description && renderDescription(description)}
-            </h2>
-          </div>
           {descriptionImage ? (
-            <img
-              src={descriptionImage}
-              alt="Program Description"
-              className={`w-full h-full object-cover col-span-1  hidden sm:block order-${orderImage}`}
-            />
+            <div className="w-full lg:w-1/3 h-[40vh] lg:h-[80vh]">
+              <img
+                src={descriptionImage}
+                alt="Program Description"
+                className="w-full h-full object-cover"
+              />
+            </div>
           ) : (
-            <div
-              className={`flex justify-center items-center col-span-1 bg-gray-100 hidden sm:flex order-${orderImage}`}
-            >
+            <div className="w-full lg:w-1/3 h-[40vh] lg:h-[80vh] flex justify-center items-center bg-gray-100">
               <FaInfoCircle size={80} className="text-gray-400" />
             </div>
           )}
+          <div className="h-auto lg:h-[80vh] lg:w-2/3 overflow-auto p-4 leading-loose bg-white scrollbar-hide">
+            <h1 className="text-3xl font-bold mb-6 text-start text-gray-950">
+              {trainerName}
+            </h1>
+            <h2 className="text-gray-500">
+              {description && renderDescription(description)}
+            </h2>
+          </div>
         </div>
         <div className="flex justify-center mb-8">
           <button

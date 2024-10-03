@@ -126,6 +126,7 @@ const AdminCreatingNewProgramme = () => {
         localStorage.removeItem('programmeData');
       }
     } catch (error) {
+      console.log(error)
       toast.error('Error creating programme: ' + error.message);
     } finally {
       setLoadings(false);
@@ -311,7 +312,7 @@ const AdminCreatingNewProgramme = () => {
               <div className="w-full sm:ml-12 sm:pr-12">
                 <input
                   className="p-2 rounded-lg w-full bg-tertiary text-white"
-                  placeholder="Programme Title"
+                  placeholder="Programs Title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
@@ -391,7 +392,7 @@ const AdminCreatingNewProgramme = () => {
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                 disabled={loadings}
               >
-                {loadings ? 'Loading...' : 'Create Programme'}
+                {loadings ? 'Loading...' : 'Create Programs'}
               </button>
             </div>
           </form>

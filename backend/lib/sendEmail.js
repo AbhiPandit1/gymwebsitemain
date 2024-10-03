@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const sendEmail = async ({ email, subject, message }) => {
+const sendEmail = async ({ email, subject, message, emailType }) => {
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -16,9 +16,13 @@ const sendEmail = async ({ email, subject, message }) => {
       to: email,
       subject,
       text: message,
+      headers: {
+        'X-Email-Type': emailType, // Custom header for email type
+      },
     };
 
     // Log mail options to verify correct settings
+    console.log('Mail Options:', mailOptions);
 
     await transporter.sendMail(mailOptions);
     console.log('Email sent successfully');

@@ -190,7 +190,12 @@ export const stripeWebhookPayment = async (req, res) => {
           } USD. Your payment ID is ${paymentIntent.id}. ${
             invoiceUrl ? `You can view your invoice [here](${invoiceUrl}).` : ''
           }`,
+          emailType: 'purchase_confirmation', // Add the email type header here
         };
+
+        // Send the email
+        await sendEmail(emailData);
+
         await sendEmail(emailData);
         console.log('Confirmation email sent:', emailData);
 
@@ -234,6 +239,7 @@ export const stripeWebhookPayment = async (req, res) => {
             email: user.email,
             subject: 'Payment Canceled',
             message: `Your payment for programme ID ${programmeObjectId} was canceled.`,
+            emailType: 'payment_canceled', // Add the email type header here
           };
           await sendEmail(emailData);
           console.log('Cancellation email sent:', emailData);
@@ -283,6 +289,7 @@ export const stripeWebhookPayment = async (req, res) => {
             email: user.email,
             subject: 'Payment Failed',
             message: `Unfortunately, your payment for ${programmeTitle} has failed. Please try again or contact support.`,
+            emailType: 'payment_failed',
           };
           await sendEmail(emailData);
           console.log('Failure email sent:', emailData);
