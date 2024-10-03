@@ -11,7 +11,8 @@ const sendEmail = async ({ email, subject, message, emailType }) => {
       },
     });
 
-    const logoURL = 'https://your-website.com/path-to-programpanda-logo.png'; // Replace with actual logo URL
+    const logoURL =
+      'https://res.cloudinary.com/diohupopk/image/upload/v1727989850/programPanda/xjaf4oowewoanfm6csqn.png'; // Replace with actual logo URL
 
     const mailOptions = {
       from: `ProgramPanda <${process.env.SMTP_FROM_EMAIL}>`, // Display name with email
