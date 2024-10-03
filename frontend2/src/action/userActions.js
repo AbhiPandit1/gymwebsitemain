@@ -28,7 +28,6 @@ export const registerUser = (userData) => async (dispatch) => {
       dispatch(registerUserSuccess(response.data));
       localStorage.setItem('token', response.data.token);
 
-      toast.success(response.data.message);
       return response;
     } else {
       throw new Error('Failed to register user'); // Handle other status codes or flags if needed
@@ -47,7 +46,6 @@ export const signInuser = (userData) => async (dispatch) => {
     // Assuming sign-in is successful if response status is 201
     if (response.status === 201) {
       dispatch(signInSuccess(response.data)); // Dispatching success action with user data
-      toast.success('User signed in successfully'); // Showing success message
     } else {
       throw new Error('Failed to sign in'); // Throwing an error if sign-in fails
     }

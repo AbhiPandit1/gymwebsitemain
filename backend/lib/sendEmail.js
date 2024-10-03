@@ -12,10 +12,10 @@ const sendEmail = async ({ email, subject, message, emailType }) => {
     });
 
     const logoURL =
-      'https://res.cloudinary.com/diohupopk/image/upload/v1727989850/programPanda/xjaf4oowewoanfm6csqn.png'; // Replace with actual logo URL
+      'https://res.cloudinary.com/diohupopk/image/upload/v1727989850/programPanda/xjaf4oowewoanfm6csqn.png'; // ProgramPanda logo URL
 
     const mailOptions = {
-      from: `ProgramPanda <${process.env.SMTP_FROM_EMAIL}>`, // Display name with email
+      from: `ProgramPanda <${process.env.SMTP_FROM_EMAIL}>`, // Display name as "ProgramPanda"
       to: email,
       subject,
       text: message,

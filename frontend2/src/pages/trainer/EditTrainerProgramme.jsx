@@ -108,11 +108,10 @@ const EditTrainerProgramme = () => {
       const response = await dispatch(updateProgramme(formData, id, token));
 
       if (response?.status === 200) {
-        toast.success('Programme updated successfully');
         navigate(`/user/dashboard/${user._id}`);
       }
     } catch (error) {
-      toast.error('Error updating programme: ' + error.message);
+      toast.error('Error updating program: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -341,7 +340,7 @@ const EditTrainerProgramme = () => {
               } text-white`}
               disabled={loading}
             >
-              {loading ? 'Updating...' : 'Update Programme'}
+              {loading ? 'Updating...' : 'Update Program'}
             </button>
           </form>
         </div>

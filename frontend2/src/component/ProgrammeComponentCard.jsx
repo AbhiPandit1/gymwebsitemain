@@ -101,7 +101,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                 <div className="text-sm sm:text-lg mt-2">{card.desc}</div>
               </div>
               {card.discount > 0 && (
-                <div className="h-10 w-24 border-2 border-green-300 mt-4 flex justify-center items-center bg-green-500 ">
+                <div className="h-7 w-20 border-2 border-green-300 mt-4 flex justify-center items-center bg-green-500 ">
                   {card.discount}% OFF
                 </div>
               )}
@@ -118,7 +118,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                       </span>
                     )}
 
-                    <p className="text-xl font-bold text-yellow-600">
+                    <p className="text-2xl font-bold text-yellow-600">
                       ${card?.price.toFixed(2)}
                     </p>
                   </div>

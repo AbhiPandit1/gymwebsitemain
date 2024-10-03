@@ -101,10 +101,6 @@ const AdminCreatingNewProgramme = () => {
       const response = await dispatch(createProgramme(formData, id, token));
 
       if (response?.status === 201) {
-        toast.success(
-          response?.data.message || 'Programme created successfully'
-        );
-
         const programmeId = response?.data.programme._id;
 
         if (planType === 'Day') {
