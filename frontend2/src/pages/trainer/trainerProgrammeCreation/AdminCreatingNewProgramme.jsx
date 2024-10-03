@@ -17,7 +17,7 @@ const AdminCreatingNewProgramme = () => {
 
   const [category, setCategory] = useState([]);
   const [price, setPrice] = useState('');
-  const [discount, setDiscount] = useState('');
+  const [discount, setDiscount] = useState(0);
   const [categoryPhoto, setCategoryPhoto] = useState(null);
   const [categoryPhotoName, setCategoryPhotoName] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -46,7 +46,7 @@ const AdminCreatingNewProgramme = () => {
     if (savedData) {
       setCategory(savedData.category || []);
       setPrice(savedData.price || '');
-      setDiscount(savedData.discount || '');
+      setDiscount(savedData.discount || 0);
       setCategoryPhoto(savedData.categoryPhoto || null);
       setCategoryPhotoName(savedData.categoryPhotoName || '');
       setTrainerMail(savedData.trainerMail || user.user.email);
@@ -126,7 +126,7 @@ const AdminCreatingNewProgramme = () => {
         localStorage.removeItem('programmeData');
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error('Error creating programme: ' + error.message);
     } finally {
       setLoadings(false);
@@ -137,7 +137,7 @@ const AdminCreatingNewProgramme = () => {
   const resetForm = () => {
     setCategory([]);
     setPrice('');
-    setDiscount('');
+    setDiscount(0);
     setCategoryPhoto(null);
     setCategoryPhotoName('');
     setTrainerMail(user.user.email);
