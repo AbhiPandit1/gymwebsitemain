@@ -78,37 +78,38 @@ export const createProgrammeDayPlan = async (req, res) => {
 
 export const updateProgrammeDayPlan = async (req, res) => {
   const { id } = req.params; // Programme ID
-  const { day, exercises, planId } = req.body; // Day ID and the new values
+  const { day, exercises } = req.body; // New values for day and exercises
 
   try {
-    if (!planId) {
-      return res.status(400).json({ error: 'Plan ID is required' });
+    // Validate inputs
+    if (!day && !exercises) {
+      return res
+        .status(400)
+        .json({ error: 'At least one field to update is required' });
     }
 
-    const existingDayPlan = await programmeDayPlanModel.findOne({
-      _id: planId,
-      programme: id,
-    });
+    // Find existing programme day by its ID
+    const existingProgrammeDay = await programmeDayModel.findById(id);
 
-    if (!existingDayPlan) {
-      return res.status(404).json({ message: 'Day plan not found' });
+    if (!existingProgrammeDay) {
+      return res.status(404).json({ message: 'Programme day not found' });
     }
 
     // Update fields with provided values while preserving existing ones
-    const updatedDayPlan = await programmeDayPlanModel.findOneAndUpdate(
-      { _id: planId, programme: id },
+    const updatedProgrammeDay = await programmeDayModel.findByIdAndUpdate(
+      id,
       {
         $set: {
-          day: day ?? existingDayPlan.day,
-          exercises: exercises ?? existingDayPlan.exercises,
+          day: day ?? existingProgrammeDay.day,
+          exercises: exercises ?? existingProgrammeDay.exercises,
         },
       },
       { new: true }
     );
 
     res.status(200).json({
-      message: 'Day plan updated successfully',
-      updatedDayPlan,
+      message: 'Programme day updated successfully',
+      updatedProgrammeDay,
     });
   } catch (error) {
     console.error(error);

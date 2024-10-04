@@ -9,7 +9,7 @@ const usePostDayPlan = () => {
   const [dayPlans, setDayPlans] = useState([]);
   const backendapi = import.meta.env.VITE_BACKEND_URL;
 
-  const postDayPlan = async (programmeId, dayPlan) => {
+  const postDayPlan = async (programmeId, dayPlan, trainingPlan) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -47,6 +47,7 @@ const usePostDayPlan = () => {
       }
 
       toast.success('Day plan submitted successfully!');
+      localStorage.removeItem('trainingPlan', JSON.stringify(trainingPlan));
       setSuccess(true);
     } catch (error) {
       toast.error(`Error: ${error.message}`);

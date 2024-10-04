@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import useDashboardLinks from '../../../../../hook/CreateDahsboardLinks';
-import DashboardComponent from '../../../../component/DashboardComponent';
 import DashboardHeader from '../../../../component/DashboardHeader';
 import { BiSolidRightArrow, BiArrowBack } from 'react-icons/bi';
 import ReactPlayer from 'react-player';
@@ -15,7 +13,22 @@ const DayPlan = () => {
   const { programmeId } = useParams();
   const navigate = useNavigate();
 
-  const [trainingPlan, setTrainingPlan] = useState([]);
+  const [trainingPlan, setTrainingPlan] = useState([
+    {
+      day: 'Day 1',
+      exercises: [
+        {
+          name: '',
+          sets: '',
+          reps: '',
+          description: '',
+          video: '',
+          videoName: '',
+          showVideo: false,
+        },
+      ],
+    },
+  ]);
   const [numDays, setNumDays] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
@@ -66,7 +79,7 @@ const DayPlan = () => {
                   description: '', // New description field
                   video: '',
                   videoName: '',
-                  showVideo: true,
+                  showVideo: false,
                 },
               ],
             }
@@ -129,7 +142,7 @@ const DayPlan = () => {
           description: '', // New description field
           video: '',
           videoName: '',
-          showVideo: true,
+          showVideo: false,
         },
       ],
     }));
@@ -156,8 +169,13 @@ const DayPlan = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await postDayPlan(programmeId, trainingPlan);
-      console.log(response);
+      const response = await postDayPlan(
+        programmeId,
+        trainingPlan,
+        trainingPlan
+      );
+
+      localStorage.removeItem('trainingPlan', JSON.stringify(trainingPlan));
       navigate(`/user/dashboard/${user.user._id}`);
     } catch (err) {
       toast.error('Failed to submit day plan.');
