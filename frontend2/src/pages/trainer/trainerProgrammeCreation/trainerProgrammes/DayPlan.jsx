@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import useDashboardLinks from '../../../../../hook/CreateDahsboardLinks';
+import DashboardComponent from '../../../../component/DashboardComponent';
 import DashboardHeader from '../../../../component/DashboardHeader';
 import { BiSolidRightArrow, BiArrowBack } from 'react-icons/bi';
 import ReactPlayer from 'react-player';
@@ -13,22 +15,7 @@ const DayPlan = () => {
   const { programmeId } = useParams();
   const navigate = useNavigate();
 
-  const [trainingPlan, setTrainingPlan] = useState([
-    {
-      day: 'Day 1',
-      exercises: [
-        {
-          name: '',
-          sets: '',
-          reps: '',
-          description: '',
-          video: '',
-          videoName: '',
-          showVideo: false,
-        },
-      ],
-    },
-  ]);
+  const [trainingPlan, setTrainingPlan] = useState([]);
   const [numDays, setNumDays] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
@@ -37,17 +24,48 @@ const DayPlan = () => {
   const { user } = useSelector((state) => state.user);
   const { loading, error, success, postDayPlan } = usePostDayPlan();
 
+  // Initialize the training plan with a default empty day if none exists
   useEffect(() => {
-    const savedPlan = JSON.parse(localStorage.getItem('trainingPlan'));
+    const savedPlan = JSON.parse(
+      localStorage.getItem(`trainingPlan_${programmeId}`)
+    );
     if (savedPlan) {
       setTrainingPlan(savedPlan);
       setNumDays(savedPlan.length);
+    } else {
+      // Default plan with one empty day
+      const defaultPlan = [
+        {
+          day: 'Day 1',
+          exercises: [
+            {
+              name: '',
+              sets: '',
+              reps: '',
+              description: '',
+              video: '',
+              videoName: '',
+              showVideo: false,
+            },
+          ],
+        },
+      ];
+      setTrainingPlan(defaultPlan);
+      setNumDays(1);
+      localStorage.setItem(
+        `trainingPlan_${programmeId}`,
+        JSON.stringify(defaultPlan)
+      );
     }
-  }, []);
+  }, [programmeId]);
 
+  // Save the training plan to local storage whenever it changes
   useEffect(() => {
-    localStorage.setItem('trainingPlan', JSON.stringify(trainingPlan));
-  }, [trainingPlan]);
+    localStorage.setItem(
+      `trainingPlan_${programmeId}`,
+      JSON.stringify(trainingPlan)
+    );
+  }, [trainingPlan, programmeId]);
 
   const handleExerciseChange = (dayIndex, exerciseIndex, field, value) => {
     setTrainingPlan((prevPlan) =>
@@ -76,7 +94,7 @@ const DayPlan = () => {
                   name: '',
                   sets: '',
                   reps: '',
-                  description: '', // New description field
+                  description: '',
                   video: '',
                   videoName: '',
                   showVideo: false,
@@ -139,7 +157,7 @@ const DayPlan = () => {
           name: '',
           sets: '',
           reps: '',
-          description: '', // New description field
+          description: '',
           video: '',
           videoName: '',
           showVideo: false,
@@ -169,13 +187,8 @@ const DayPlan = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await postDayPlan(
-        programmeId,
-        trainingPlan,
-        trainingPlan
-      );
-
-      localStorage.removeItem('trainingPlan', JSON.stringify(trainingPlan));
+      const response = await postDayPlan(programmeId, trainingPlan);
+      console.log(response);
       navigate(`/user/dashboard/${user.user._id}`);
     } catch (err) {
       toast.error('Failed to submit day plan.');
@@ -338,14 +351,14 @@ const DayPlan = () => {
                 </button>
               </div>
             ))}
+            <button
+              onClick={addDays}
+              className="bg-yellow-500 text-white rounded px-4 py-2 mb-4"
+            >
+              Add Days
+            </button>
           </div>
         )}
-        <button
-          onClick={addDays}
-          className="bg-yellow-500 text-white rounded px-4 py-2 mb-4 mr-4"
-        >
-          Add Days
-        </button>
 
         <button
           onClick={handleSubmit}
