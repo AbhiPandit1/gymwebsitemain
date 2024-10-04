@@ -347,7 +347,7 @@ const AdminCreatingNewProgramme = () => {
                 required
               >
                 <option value="">Select Plan Type</option>
-                <option value="Day">Day Plan</option>
+                <option value="Day">Workout Plan</option>
                 <option value="Diet">Diet Plan</option>
                 <option value="Both">Both</option>
               </select>

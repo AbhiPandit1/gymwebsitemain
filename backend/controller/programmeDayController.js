@@ -22,7 +22,7 @@ export const createProgrammeDayPlan = async (req, res) => {
 
         const exercisesWithVideo = await Promise.all(
           day.exercises.map(async (exercise) => {
-            const { name, sets, reps, video } = exercise;
+            const { name, sets, reps, video, description } = exercise;
 
             let videoUrl = video?.url || null;
             let videoName = video?.name || null;
@@ -50,6 +50,7 @@ export const createProgrammeDayPlan = async (req, res) => {
               reps,
               videoUrl,
               videoName,
+              description, // Include the exercise description
             };
           })
         );

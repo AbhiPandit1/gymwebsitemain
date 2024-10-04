@@ -166,16 +166,16 @@ const DynamicDietPlanComponent = () => {
 
   return (
     <div
-      className="grid grid-cols-1 sm:grid-cols-9 text-white font-sans"
+      className="grid grid-cols-1 sm:grid-cols-9 text-white font-sans "
       style={{
         background: 'linear-gradient(180deg, #050c1e 0%, #050c1e 100%)',
       }}
     >
-      <div className="col-span-9 sticky top-0 z-50">
+      <div className="col-span-9 sticky top-0 z-50 ">
         <DashboardHeader />
       </div>
 
-      <div className="min-h-screen">
+      <div className="min-h-screen  min-w-[100vw]">
         {hoverDashboard && (
           <div
             className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
@@ -185,46 +185,45 @@ const DynamicDietPlanComponent = () => {
           </div>
         )}
 
-        <div className="overflow-scroll w-[240vw] sm:w-[90vw] m-auto scrollbar-hide">
-          {user.user.role === 'trainer' && (
-            <div className="bg-gray-800 p-6 rounded-md shadow-md mb-6">
-              <h3 className="text-lg font-semibold mb-4">Settings</h3>
-              <div className="flex flex-col sm:flex-row justify-start items-start gap-4">
-                <div>
-                  <label className="block mb-1">Heading Color:</label>
+        {user.user.role === 'trainer' && (
+          <div className="bg-gray-800 p-6 rounded-md shadow-md mb-6">
+            <h3 className="text-lg font-semibold mb-4">Settings</h3>
+            <div className="flex flex-col sm:flex-row justify-start items-start gap-4">
+              <div>
+                <label className="block mb-1">Heading Color:</label>
+                <input
+                  type="color"
+                  value={headingColor}
+                  onChange={(e) => setHeadingColor(e.target.value)}
+                  className="w-24 h-8 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Text Color:</label>
+                <input
+                  type="color"
+                  value={textColor}
+                  onChange={(e) => setTextColor(e.target.value)}
+                  className="w-24 h-8 border rounded"
+                />
+              </div>
+              <div>
+                <label className="flex flex-col items-center space-y-2">
+                  <span>Text Size:</span>
                   <input
-                    type="color"
-                    value={headingColor}
-                    onChange={(e) => setHeadingColor(e.target.value)}
-                    className="w-24 h-8 border rounded"
+                    type="number"
+                    value={parseInt(textSize, 10)}
+                    onChange={(e) => setTextSize(`${e.target.value}px`)}
+                    className="w-24 p-2 border border-gray-400 rounded bg-gray-100 text-gray-800"
+                    placeholder="Enter size"
                   />
-                </div>
-                <div>
-                  <label className="block mb-1">Text Color:</label>
-                  <input
-                    type="color"
-                    value={textColor}
-                    onChange={(e) => setTextColor(e.target.value)}
-                    className="w-24 h-8 border rounded"
-                  />
-                </div>
-                <div>
-                  <label className="flex flex-col items-center space-y-2">
-                    <span>Text Size:</span>
-                    <input
-                      type="number"
-                      value={parseInt(textSize, 10)}
-                      onChange={(e) => setTextSize(`${e.target.value}px`)}
-                      className="w-24 p-2 border border-gray-400 rounded bg-gray-100 text-gray-800"
-                      placeholder="Enter size"
-                    />
-                  </label>
-                </div>
+                </label>
               </div>
             </div>
-          )}
-
-          <div className="bg-gray-900 p-6 rounded-md shadow-md">
+          </div>
+        )}
+        <div className="p-4 overflow-scroll ">
+          <div className="bg-gray-900 p-6 rounded-md shadow-md overflow-x-auto scrollbar-hide">
             <h1
               className="text-center text-4xl font-bold mb-4"
               style={{ color: headingColor, fontSize: textSize }}

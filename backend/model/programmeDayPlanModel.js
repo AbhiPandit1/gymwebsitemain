@@ -6,6 +6,7 @@ const exerciseSchema = new mongoose.Schema({
   reps: { type: String, default: 0 }, // Number of repetitions
   videoName: { type: String, default: '' }, // Name of the video file
   videoUrl: { type: String, default: '' }, // URL of the exercise video
+  description: { type: String, default: '' }, // Description of the exercise
 });
 
 const dayPlanSchema = new mongoose.Schema({

@@ -21,6 +21,7 @@ const usePostDayPlan = () => {
           name: exercise.name,
           sets: exercise.sets,
           reps: exercise.reps,
+          description: exercise.description, // Include the description field
           video: {
             name: exercise.videoName,
             url: exercise.video,

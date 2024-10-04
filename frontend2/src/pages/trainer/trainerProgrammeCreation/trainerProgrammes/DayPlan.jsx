@@ -14,8 +14,7 @@ import { ImCross } from 'react-icons/im';
 const DayPlan = () => {
   const { programmeId } = useParams();
   const navigate = useNavigate();
-  const dashBoardLink = useDashboardLinks();
-  const [hoverDashboard, setHoverDashboard] = useState(false);
+
   const [trainingPlan, setTrainingPlan] = useState([]);
   const [numDays, setNumDays] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,6 +63,7 @@ const DayPlan = () => {
                   name: '',
                   sets: '',
                   reps: '',
+                  description: '', // New description field
                   video: '',
                   videoName: '',
                   showVideo: true,
@@ -121,7 +121,17 @@ const DayPlan = () => {
   const addDays = () => {
     const newDaysArray = Array.from({ length: numDays }, (_, i) => ({
       day: `Day ${trainingPlan.length + i + 1}`,
-      exercises: [],
+      exercises: [
+        {
+          name: '',
+          sets: '',
+          reps: '',
+          description: '', // New description field
+          video: '',
+          videoName: '',
+          showVideo: true,
+        },
+      ],
     }));
 
     setTrainingPlan((prevPlan) => [...prevPlan, ...newDaysArray]);
@@ -241,61 +251,65 @@ const DayPlan = () => {
                       placeholder="Reps"
                       className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
-
+                    <input
+                      type="text"
+                      value={exercise.description}
+                      onChange={(e) =>
+                        handleExerciseChange(
+                          dayIndex,
+                          exerciseIndex,
+                          'description',
+                          e.target.value
+                        )
+                      }
+                      placeholder="Description"
+                      className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
                     <div className="p-4">
                       <button
                         onClick={() => toggleShowVideo(dayIndex, exerciseIndex)}
-                        className="bg-blue-500 text-white rounded px-4 py-2 mb-2"
+                        className="bg-blue-500 text-white rounded px-4 py-2"
                       >
-                        {exercise.showVideo ? 'Remove Video' : 'Show Video'}
+                        {exercise.showVideo ? 'Hide Video' : 'Show Video'}
                       </button>
                       {exercise.showVideo && (
-                        <>
-                          <input
-                            type="text"
-                            value={exercise.videoName}
-                            onChange={(e) =>
-                              handleExerciseChange(
-                                dayIndex,
-                                exerciseIndex,
-                                'videoName',
-                                e.target.value
-                              )
-                            }
-                            placeholder="Video Name"
-                            className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                          />
-                          <input
-                            type="text"
-                            value={exercise.video}
-                            onChange={(e) =>
-                              handleExerciseChange(
-                                dayIndex,
-                                exerciseIndex,
-                                'video',
-                                e.target.value
-                              )
-                            }
-                            placeholder="Video URL"
-                            className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                        <div>
+                          <ReactPlayer
+                            url={exercise.video}
+                            controls
+                            className="mt-4"
                           />
                           <button
                             onClick={() =>
-                              openModal(exercise.video, exercise.videoName)
+                              handleRemoveVideo(dayIndex, exerciseIndex)
                             }
-                            className="bg-blue-500 text-white rounded px-4 py-2"
+                            className="text-red-500 mt-2"
                           >
-                            Preview Video
+                            Remove Video
                           </button>
-                        </>
+                        </div>
                       )}
-                      <button
-                        onClick={() => removeExercise(dayIndex, exerciseIndex)}
-                        className="bg-red-500 text-white rounded px-4 py-2 mt-2"
-                      >
-                        Remove Exercise
-                      </button>
                     </div>
+                    <input
+                      type="text"
+                      value={exercise.video}
+                      onChange={(e) =>
+                        handleExerciseChange(
+                          dayIndex,
+                          exerciseIndex,
+                          'video',
+                          e.target.value
+                        )
+                      }
+                      placeholder="Video URL"
+                      className="border p-3 rounded w-full bg-tertiary text-white mb-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    <button
+                      onClick={() => removeExercise(dayIndex, exerciseIndex)}
+                      className="text-red-500"
+                    >
+                      Remove Exercise
+                    </button>
                   </div>
                 ))}
                 <button
@@ -306,78 +320,34 @@ const DayPlan = () => {
                 </button>
               </div>
             ))}
+            <button
+              onClick={addDays}
+              className="bg-yellow-500 text-white rounded px-4 py-2 mb-4"
+            >
+              Add Days
+            </button>
           </div>
         )}
-        <div className="flex flex-col items-center mb-8">
-          <input
-            type="number"
-            value={numDays}
-            onChange={handleDaysChange}
-            className="border p-2 rounded w-1/4 bg-gray-700 text-white mb-4"
-          />
-          <button
-            onClick={addDays}
-            className="bg-blue-500 text-white rounded px-4 py-2 mb-2"
-          >
-            Add Days
-          </button>
-        </div>
 
-        <div className="flex justify-center items-center mb-5">
-          <button
-            onClick={handleSubmit}
-            className="bg-green-500 text-white rounded px-4 py-2 mt-4"
-          >
-            Submit Plan
-          </button>
-        </div>
-      </div>
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="bg-blue-500 text-white rounded px-4 py-2"
+        >
+          Submit Day Plan
+        </button>
 
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        style={{
-          content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: '#1a202c', // Optional: Dark background for modal
-            borderRadius: '10px',
-            padding: '20px',
-            width: '80%',
-            maxWidth: '600px',
-            height: '60%',
-            minHeight: '50vh',
-          },
-          overlay: {
-            backgroundColor: 'rgba(0, 0, 0, 0.75)',
-          },
-        }}
-      >
-        <div className="relative">
+        <Modal isOpen={isModalOpen} onRequestClose={closeModal}>
+          <h2 className="text-2xl mb-4">Video Player</h2>
+          <ReactPlayer url={currentVideoUrl} controls />
           <button
             onClick={closeModal}
-            className="absolute top-2 right-2 text-white focus:outline-none"
+            className="mt-4 bg-red-500 text-white rounded px-4 py-2"
           >
-            <ImCross size={20} />
+            Close
           </button>
-
-          <h2 className="text-2xl font-bold text-center text-white mb-4">
-            {currentVideoName}
-          </h2>
-
-          <ReactPlayer
-            url={currentVideoUrl}
-            controls
-            width="100%"
-            height="50vh"
-            className="rounded-lg"
-          />
-        </div>
-      </Modal>
+        </Modal>
+      </div>
     </div>
   );
 };

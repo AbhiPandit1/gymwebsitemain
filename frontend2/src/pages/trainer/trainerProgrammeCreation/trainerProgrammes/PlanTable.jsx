@@ -42,6 +42,26 @@ const VideoModal = ({ isOpen, videoUrl, onClose }) => {
   );
 };
 
+// Description Modal Component
+const DescriptionModal = ({ isOpen, description, onClose }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg relative max-w-4xl w-full">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 px-4 py-2 text-white bg-red-500 hover:bg-red-700 rounded-lg z-10"
+          aria-label="Close"
+        >
+          Close
+        </button>
+        <div className="text-gray-800 text-lg">{description}</div>
+      </div>
+    </div>
+  );
+};
+
 // PlanTable Component
 const PlanTable = ({
   planData = [],
@@ -52,17 +72,29 @@ const PlanTable = ({
   tableRowColor = 'gray-50',
   tableColumnColor = 'gray-100',
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState('');
+  const [currentDescription, setCurrentDescription] = useState('');
 
   const handleVideoClick = (videoUrl) => {
     setCurrentVideoUrl(videoUrl);
-    setIsModalOpen(true);
+    setIsVideoModalOpen(true);
+  };
+
+  const handleDescriptionClick = (description) => {
+    setCurrentDescription(description);
+    setIsDescriptionModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);
+    setIsVideoModalOpen(false);
     setCurrentVideoUrl('');
+  };
+
+  const closeDescriptionModal = () => {
+    setIsDescriptionModalOpen(false);
+    setCurrentDescription('');
   };
 
   const defaultStyles = {
@@ -99,16 +131,18 @@ const PlanTable = ({
         <table className="w-full text-left border-collapse">
           <thead>
             <tr>
-              {['Day', 'Exercise', 'Sets', 'Reps', 'Videos'].map((heading) => (
-                <th
-                  key={heading}
-                  scope="col"
-                  className="border-b-2 py-2"
-                  style={defaultStyles.heading}
-                >
-                  {heading}
-                </th>
-              ))}
+              {['Day', 'Exercise', 'Sets', 'Reps', 'Description', 'Videos'].map(
+                (heading) => (
+                  <th
+                    key={heading}
+                    scope="col"
+                    className="border-b-2 py-2"
+                    style={defaultStyles.heading}
+                  >
+                    {heading}
+                  </th>
+                )
+              )}
             </tr>
           </thead>
           <tbody>
@@ -141,6 +175,19 @@ const PlanTable = ({
                   <td className="border-b py-2" style={defaultStyles.cell}>
                     {exercise.reps}
                   </td>
+
+                  <td className="border-b py-2" style={defaultStyles.cell}>
+                    <button
+                      onClick={() =>
+                        handleDescriptionClick(exercise.description)
+                      }
+                      className="text-blue-400 hover:underline"
+                      aria-label="View description"
+                    >
+                      {exercise.description.length > 0 && 'show'}
+                    </button>
+                  </td>
+
                   <td className="border-b py-2" style={defaultStyles.cell}>
                     {exercise.videoUrl ? (
                       <button
@@ -163,9 +210,14 @@ const PlanTable = ({
         <p className="text-center text-gray-400">No plans available.</p>
       )}
       <VideoModal
-        isOpen={isModalOpen}
+        isOpen={isVideoModalOpen}
         videoUrl={currentVideoUrl}
         onClose={closeModal}
+      />
+      <DescriptionModal
+        isOpen={isDescriptionModalOpen}
+        description={currentDescription}
+        onClose={closeDescriptionModal}
       />
     </div>
   );

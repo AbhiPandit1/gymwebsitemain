@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import useDashboardLinks from '../../../../../hook/CreateDahsboardLinks';
 import DashboardHeader from '../../../../component/DashboardHeader';
 import PlanTable from './PlanTable';
-import DashboardComponent from '../../../../component/DashboardComponent';
 import { BiSolidRightArrow } from 'react-icons/bi';
 import usePostDayPlan from '../../../../../hook/usePostDayPlan';
 import { useParams } from 'react-router-dom';
@@ -13,7 +11,7 @@ import newLogo from '../../../../assets/NewLogo.png'; // Importing the logo
 
 const DynamicDayPlanComponent = () => {
   const { programmeId, id } = useParams();
-  const dashBoardLink = useDashboardLinks();
+
   const [hoverDashboard, setHoverDashboard] = useState(false);
   const [headingColor, setHeadingColor] = useState(
     localStorage.getItem('headingColor') || '#FFFFFF'
@@ -223,7 +221,7 @@ const DynamicDayPlanComponent = () => {
 
         <div className="p-4 overflow-scroll">
           <h1 className="text-2xl mb-4" style={{ color: headingColor }}>
-            Dynamic Day Plan
+            Dynamic Workout Plan
           </h1>
           {loading && <p>Loading...</p>}
           {error && <p className="text-red-500">{error}</p>}
