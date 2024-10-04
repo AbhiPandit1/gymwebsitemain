@@ -16,7 +16,7 @@ export const paymentCheckout = async (req, res) => {
   const { amount } = req.body; // Total amount from the request body
   const userId = req.user._id; // User ID from the request
   const id = req.params.id; // Programme ID
-  console.log(process.env.STRIPE_WEBHOOK_SECRET_1_LIVE);
+  console.log(process.env.STRIPE_WEBHOOK_SECRET_1_TEST);
   try {
     // Check if the programme exists
     const programme = await Programme.findById(id);
@@ -108,15 +108,8 @@ export const paymentCheckout = async (req, res) => {
 export const stripeWebhookPayment = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
-  console.log(process.env.STRIPE_WEBHOOK_SECRET_1_LIVE);
-  // Log the raw event body and signature for debugging purposes
-  console.log('Raw body:', req.body);
-  console.log('Signature:', sig);
-
-  console.log('Stripe signature:', sig);
 
   try {
-    // Attempt to construct the event from the request body
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
@@ -127,16 +120,13 @@ export const stripeWebhookPayment = async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Handle the event based on its type
   switch (event.type) {
     case 'payment_intent.succeeded': {
       const paymentIntent = event.data.object;
 
-      // Convert userId and programmeId to ObjectId
       const userId = paymentIntent.metadata.userId;
       const programmeId = paymentIntent.metadata.programmeId;
 
-      // Validate ObjectId
       if (
         !Types.ObjectId.isValid(userId) ||
         !Types.ObjectId.isValid(programmeId)
@@ -145,23 +135,18 @@ export const stripeWebhookPayment = async (req, res) => {
         return res.status(400).json({ error: 'Invalid user or programme ID' });
       }
 
-      // Convert valid IDs to ObjectIds
       const userObjectId = new Types.ObjectId(userId);
       const programmeObjectId = new Types.ObjectId(programmeId);
 
       try {
-        // Find the user and programme
         const user = await User.findById(userObjectId);
         const programme = await Programme.findById(programmeObjectId);
-
-        console.log('User found:', user);
-        console.log('Programme found:', programme);
 
         if (!user || !programme) {
           return res.status(404).json({ error: 'User or programme not found' });
         }
 
-        // Update user programme status and save payment details
+        // Update user's programme status
         user.hasTakenProgramme = true;
         user.takenProgrammes.push(programmeObjectId);
         await user.save();
@@ -176,12 +161,10 @@ export const stripeWebhookPayment = async (req, res) => {
         });
         await paymentDetails.save();
 
-        // Retrieve the invoice URL from Stripe
         const invoiceUrl = paymentIntent.charges.data[0].invoice
           ? `https://invoice.stripe.com/i/${paymentIntent.charges.data[0].invoice}`
           : null;
 
-        // Send confirmation email
         const emailData = {
           email: user.email,
           subject: 'Purchase Confirmation',
@@ -190,31 +173,24 @@ export const stripeWebhookPayment = async (req, res) => {
           } USD. Your payment ID is ${paymentIntent.id}. ${
             invoiceUrl ? `You can view your invoice [here](${invoiceUrl}).` : ''
           }`,
-          emailType: 'purchase_confirmation', // Add the email type header here
+          emailType: 'purchase_confirmation',
         };
-
-        // Send the email
-        await sendEmail(emailData);
 
         await sendEmail(emailData);
         console.log('Confirmation email sent:', emailData);
 
-        console.log('Payment successful, actions completed.');
         return res.status(200).json({ success: true });
       } catch (error) {
         console.error('Error processing payment success:', error);
         return res.status(500).json({ error: 'Internal server error' });
       }
     }
+
     case 'payment_intent.canceled': {
       const paymentIntent = event.data.object;
-      console.log('Payment Intent (Canceled):', paymentIntent);
-
-      // Convert userId and programmeId to ObjectId
       const userId = paymentIntent.metadata.userId;
       const programmeId = paymentIntent.metadata.programmeId;
 
-      // Validate ObjectId
       if (
         !Types.ObjectId.isValid(userId) ||
         !Types.ObjectId.isValid(programmeId)
@@ -226,41 +202,31 @@ export const stripeWebhookPayment = async (req, res) => {
       const userObjectId = new Types.ObjectId(userId);
       const programmeObjectId = new Types.ObjectId(programmeId);
 
-      console.log('Converted userId:', userObjectId);
-      console.log('Converted programmeId:', programmeObjectId);
-
       try {
         const user = await User.findById(userObjectId);
-        console.log('User found for cancellation:', user);
-
-        // Send cancellation email
         if (user) {
           const emailData = {
             email: user.email,
             subject: 'Payment Canceled',
             message: `Your payment for programme ID ${programmeObjectId} was canceled.`,
-            emailType: 'payment_canceled', // Add the email type header here
+            emailType: 'payment_canceled',
           };
           await sendEmail(emailData);
           console.log('Cancellation email sent:', emailData);
         }
 
-        console.log('Payment canceled, email sent.');
         return res.status(200).json({ success: true });
       } catch (error) {
         console.error('Error processing payment cancellation:', error);
         return res.status(500).json({ error: 'Internal server error' });
       }
     }
+
     case 'payment_intent.payment_failed': {
       const paymentIntent = event.data.object;
-      console.log('Payment Intent (Failed):', paymentIntent);
-
-      // Convert userId and programmeId to ObjectId
       const userId = paymentIntent.metadata.userId;
       const programmeId = paymentIntent.metadata.programmeId;
 
-      // Validate ObjectId
       if (
         !Types.ObjectId.isValid(userId) ||
         !Types.ObjectId.isValid(programmeId)
@@ -272,18 +238,11 @@ export const stripeWebhookPayment = async (req, res) => {
       const userObjectId = new Types.ObjectId(userId);
       const programmeObjectId = new Types.ObjectId(programmeId);
 
-      console.log('Converted userId:', userObjectId);
-      console.log('Converted programmeId:', programmeObjectId);
-
       try {
         const user = await User.findById(userObjectId);
-        console.log('User found for failed payment:', user);
-
-        // Find the programme to get its title
         const programme = await Programme.findById(programmeObjectId);
-        const programmeTitle = programme ? programme.title : 'the programme'; // Default value if not found
+        const programmeTitle = programme ? programme.title : 'the programme';
 
-        // Send failure email
         if (user) {
           const emailData = {
             email: user.email,
@@ -295,7 +254,6 @@ export const stripeWebhookPayment = async (req, res) => {
           console.log('Failure email sent:', emailData);
         }
 
-        console.log('Payment failed, email sent.');
         return res.status(200).json({ success: true });
       } catch (error) {
         console.error('Error processing payment failure:', error);
@@ -305,7 +263,7 @@ export const stripeWebhookPayment = async (req, res) => {
 
     default:
       console.log(`Unhandled event type ${event.type}`);
-      return res.status(200).json({ received: true }); // Acknowledge receipt of the event
+      return res.status(200).json({ received: true });
   }
 };
 
@@ -474,7 +432,7 @@ export const stripeWebhook = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET_2_LIVE
+      process.env.STRIPE_WEBHOOK_SECRET_2_TEST
     );
   } catch (err) {
     console.error('⚠️  Webhook signature verification failed:', err.message);
