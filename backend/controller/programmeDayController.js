@@ -141,7 +141,15 @@ export const getProgrammeDayPlan = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const dayPlans = await programmeDayPlanModel.find({ programme: id });
+    const dayPlans = await programmeDayPlanModel
+      .find({ programme: id })
+      .populate({
+        path: 'programme', // Populate the programme field
+        populate: {
+          path: 'trainer', // Populate the trainer field directly from Programme
+          select: 'name', // Select the name field from the User model
+        },
+      });
 
     if (!dayPlans.length) {
       return res
@@ -160,16 +168,37 @@ export const getSingleProgrammeDayPlan = async (req, res) => {
   const { id, planId } = req.params;
 
   try {
-    const dayPlan = await programmeDayPlanModel.findOne({
-      _id: planId,
-      programme: id,
-    });
+    const dayPlan = await programmeDayPlanModel
+      .findOne({
+        _id: planId,
+        programme: id,
+      })
+      .populate({
+        path: 'programme', // Populate the programme field
+        populate: {
+          path: 'trainer', // Populate the trainer field
+          populate: {
+            path: 'user', // Populate the user field within the trainer
+            select: 'name', // Select only the name field from the User model
+          },
+        },
+      });
 
     if (!dayPlan) {
       return res.status(404).json({ message: 'Day plan not found' });
     }
 
-    res.status(200).json(dayPlan);
+    // Extract trainer's name
+    const trainerName = dayPlan.programme.trainer
+      ? dayPlan.programme.trainer.user
+        ? dayPlan.programme.trainer.user.name
+        : 'Trainer not assigned'
+      : 'No trainer assigned';
+
+    res.status(200).json({
+      dayPlan,
+      trainerName, // Send the trainer's name in the response
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message || 'Internal Server Error' });

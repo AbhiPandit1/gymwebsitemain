@@ -138,7 +138,13 @@ export const getProgrammeDietPlan = async (req, res) => {
   const id = req.params.id; // Programme ID from the request parameters
 
   try {
-    const dietPlans = await DietPlan.find({ programme: id });
+    const dietPlans = await DietPlan.find({ programme: id }).populate({
+      path: 'programme', // Populate the programme field
+      populate: {
+        path: 'trainer', // Populate the trainer field directly from Programme
+        select: 'name', // Select the name field from the User model
+      },
+    });
 
     if (!dietPlans.length) {
       return res

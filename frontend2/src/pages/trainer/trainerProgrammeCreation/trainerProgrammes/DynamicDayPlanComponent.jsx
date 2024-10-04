@@ -16,10 +16,10 @@ const DynamicDayPlanComponent = () => {
   const dashBoardLink = useDashboardLinks();
   const [hoverDashboard, setHoverDashboard] = useState(false);
   const [headingColor, setHeadingColor] = useState(
-    localStorage.getItem('headingColor') || '#000000'
+    localStorage.getItem('headingColor') || '#FFFFFF'
   );
   const [textColor, setTextColor] = useState(
-    localStorage.getItem('textColor') || '#000000'
+    localStorage.getItem('textColor') || '#FFFFFF'
   );
   const [textSize, setTextSize] = useState(
     localStorage.getItem('textSize') || '18px'
@@ -37,7 +37,16 @@ const DynamicDayPlanComponent = () => {
       try {
         setLoading(true);
         const data = await getDayPlan(programmeId);
-        setPlanData(data);
+        let trainerName = data[0].programme.trainer.name;
+
+        // Sort the fetched data based on the day number
+        const sortedData = data.sort((a, b) => {
+          const dayA = parseInt(a.day.replace('Day ', '')); // Extract number from "Day 1"
+          const dayB = parseInt(b.day.replace('Day ', ''));
+          return dayA - dayB; // Ascending order
+        });
+
+        setPlanData(sortedData);
       } catch (err) {
         setError(err.message || 'An error occurred while fetching data');
       } finally {
@@ -46,7 +55,7 @@ const DynamicDayPlanComponent = () => {
     };
 
     fetchData();
-  }, []);
+  }, []); // Added `programmeId` as dependency
 
   const handleUpdate = async (dayIndex, exerciseIndex, field, value) => {
     const updatedPlanData = [...planData];
@@ -81,33 +90,41 @@ const DynamicDayPlanComponent = () => {
   const handleDownload = () => {
     const doc = new jsPDF();
 
-    // Set the background color for the entire page
-    doc.setTextColor(headingColor);
-    doc.rect(
-      0,
-      0,
-      doc.internal.pageSize.getWidth(),
-      doc.internal.pageSize.getHeight(),
-      'F'
-    ); // 'F' means fill
+    // Function to set the background color on each page
+    const setPageBackground = () => {
+      doc.setFillColor(17, 24, 39); // Equivalent to #111827 (gray-950)
+      doc.rect(
+        0,
+        0,
+        doc.internal.pageSize.getWidth(),
+        doc.internal.pageSize.getHeight(),
+        'F'
+      ); // 'F' means fill
+    };
 
-    // Adding the logo at the top
-    const logoWidth = 50; // Define desired logo width
-    const logoHeight = 20; // Define desired logo height
-    const logoXPosition = (doc.internal.pageSize.getWidth() - logoWidth) / 2; // Centering the logo horizontally
-    const logoYPosition = 10; // Y position at the top
+    // Function to add the logo at the bottom-right corner on each page
+    const addBottomRightLogo = () => {
+      const logoWidth = 30; // Define a smaller logo width
+      const logoHeight = 12; // Define a smaller logo height
+      const logoXPosition = doc.internal.pageSize.getWidth() - logoWidth - 10; // Positioned 10 units from the right
+      const logoYPosition = doc.internal.pageSize.getHeight() - logoHeight - 10; // Positioned 10 units from the bottom
 
-    doc.addImage(
-      newLogo,
-      'PNG',
-      logoXPosition,
-      logoYPosition,
-      logoWidth,
-      logoHeight
-    ); // Add logo
+      // Add the logo in the bottom-right corner of the page
+      doc.addImage(
+        newLogo,
+        'PNG',
+        logoXPosition,
+        logoYPosition,
+        logoWidth,
+        logoHeight
+      );
+    };
 
-    // Set the title "Training Plan" below the logo, 4 rem down (64 pixels from the logo)
-    const contentYPosition = logoYPosition + logoHeight + 64; // 4 rem down from logo
+    // Set the background color for the first page
+    setPageBackground();
+
+    // Set the title "Training Plan" at the center of the first page
+    const contentYPosition = 30; // Define position for the title
     doc.setFontSize(20);
     doc.setTextColor(255, 255, 255); // Set text color to white
     doc.text(
@@ -118,20 +135,26 @@ const DynamicDayPlanComponent = () => {
     ); // Centered title
 
     // Define starting Y position for the content
-    let startY = contentYPosition + 10; // Start content a bit lower than the title
+    let startY = contentYPosition + 20; // Start content a bit lower than the title
 
+    // Loop through each day's plan and add it to the PDF
     planData.forEach((dayPlan) => {
       // Set the day title with white text
       doc.setFontSize(18);
       doc.setTextColor(255, 255, 255); // White text color for day titles
+      doc.text(
+        `Creator: ${dayPlan.programme.trainer.name}`, // Add trainer's name directly here
+        14,
+        contentYPosition + 10
+      );
       doc.text(dayPlan.day, 14, startY); // Display the day (like "Day 1")
 
       // Calculate the Y position for the table
       const tableStartY = startY + 10;
 
-      // Set the text color for table content
+      // Set the text color for table content (changed to black)
       doc.setFontSize(14);
-      doc.setTextColor(255, 255, 255); // White text for table content
+      doc.setTextColor(0, 0, 0); // Black text for table content
 
       // Draw the table for exercises
       doc.autoTable({
@@ -143,18 +166,25 @@ const DynamicDayPlanComponent = () => {
           exercise.reps,
         ]),
         theme: 'striped',
-        styles: { fontSize: 12 }, // White text in the table
+        styles: { fontSize: 12, textColor: 0 }, // Black text in the table
       });
 
       // Update startY after the table
       startY = doc.previousAutoTable.finalY + 20; // Space after the table for the next section
 
+      // Add the logo at the bottom-right of the current page
+      addBottomRightLogo();
+
       // Add a new page if the content is too long
       if (startY > 250) {
         doc.addPage();
+        setPageBackground(); // Set the background on the new page
         startY = 20; // Reset Y position for the new page
       }
     });
+
+    // Ensure the logo is added to the last page as well
+    addBottomRightLogo();
 
     // Save the generated PDF
     doc.save('training-plan.pdf');

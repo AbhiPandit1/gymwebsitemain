@@ -13,7 +13,6 @@ export const createProgramme = async (req, res) => {
     req.body;
   const userId = req.params.id;
   console.log(price, discount);
-  
 
   // Parse category and description
   let parsedCategory, parsedDesc;
@@ -116,6 +115,7 @@ export const createProgramme = async (req, res) => {
 
     // Calculate final price after applying discount
     const finalPrice = discount ? price - (price * discount) / 100 : price;
+    console.log(finalPrice);
 
     // Create new programme
     const newProgramme = new Programme({
@@ -175,6 +175,7 @@ export const getSingleProgrammeOpen = async (req, res) => {
 export const getProgrammes = async (req, res) => {
   try {
     const programmes = await Programme.find().populate('trainer', 'name');
+    console.log(programmes)
 
     // Respond with the fetched programmes
     res.status(200).json(programmes);

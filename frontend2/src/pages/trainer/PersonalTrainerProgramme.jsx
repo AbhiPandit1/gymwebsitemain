@@ -33,6 +33,7 @@ const PersonalTrainerProgramme = () => {
           }
         );
         setTrainerDatas(response.data.programmes);
+        console.log(response.data);
       } catch (error) {
         toast.error(error.response?.data?.message || 'Failed to fetch data.');
       }

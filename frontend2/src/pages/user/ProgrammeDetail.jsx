@@ -39,6 +39,7 @@ const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
       );
       if (response.data.message === 'success') {
         setSingleProgramme(response.data.singleProgramme);
+        console.log(response.data);
       } else {
         throw new Error('Failed to fetch programme.');
       }
@@ -184,9 +185,8 @@ const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
                             <span className="text-gray-400 line-through text-lg">
                               $
                               {Math.ceil(
-                                singleProgramme.price +
-                                  singleProgramme.price.toFixed(2) /
-                                    singleProgramme.discount
+                                singleProgramme.price /
+                                  (1 - singleProgramme.discount / 100)
                               ).toFixed(2)}
                             </span>
                           )}

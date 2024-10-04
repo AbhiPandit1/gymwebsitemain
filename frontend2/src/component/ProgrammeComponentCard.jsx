@@ -113,7 +113,7 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
                       <span className="text-gray-400 line-through text-lg mr-2">
                         $
                         {Math.ceil(
-                          card.price + card.price.toFixed(2) / card.discount
+                          card.price / (1 - card.discount / 100)
                         ).toFixed(2)}
                       </span>
                     )}

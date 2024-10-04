@@ -1,25 +1,22 @@
 import { useState, useEffect } from 'react';
 import { BiSolidRightArrow } from 'react-icons/bi';
-import useDashboardLinks from '../../../../../hook/CreateDahsboardLinks.jsx';
-import DashboardComponent from '../../../../component/DashboardComponent.jsx';
 import DashboardHeader from '../../../../component/DashboardHeader.jsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { useParams } from 'react-router-dom';
-import newLogo from '../../../../assets/NewLogo.png'; // Importing the logo
+import newLogo from '../../../../assets/NewLogo.png';
 import { useSelector } from 'react-redux';
 
 const DynamicDietPlanComponent = () => {
-  const dashBoardLink = useDashboardLinks();
   const [hoverDashboard, setHoverDashboard] = useState(false);
-  const [headingColor, setHeadingColor] = useState('#FFA500'); // Orange in hex
-  const [textColor, setTextColor] = useState('#FFFFFF'); // White in hex
-  const [textSize, setTextSize] = useState('1.5rem'); // Size remains as '1.5rem'
+  const [headingColor, setHeadingColor] = useState('#FFA500');
+  const [textColor, setTextColor] = useState('#FFFFFF');
+  const [textSize, setTextSize] = useState('1.5rem');
   const [dietPlanData, setDietPlanData] = useState([]);
   const { programmeId } = useParams();
   const { user } = useSelector((state) => state.user);
 
-  // Load and save settings to local storage
+  // Load settings from localStorage
   useEffect(() => {
     const loadSettings = () => {
       setHeadingColor(localStorage.getItem('headingColor') || '#FFA500');
@@ -30,6 +27,7 @@ const DynamicDietPlanComponent = () => {
     loadSettings();
   }, []);
 
+  // Store settings in localStorage
   useEffect(() => {
     localStorage.setItem('headingColor', headingColor);
     localStorage.setItem('textColor', textColor);
@@ -38,7 +36,7 @@ const DynamicDietPlanComponent = () => {
 
   const backendapi = import.meta.env.VITE_BACKEND_URL;
 
-  // Fetch diet plan data from API
+  // Fetch diet plan data from backend
   useEffect(() => {
     const fetchDietPlanData = async () => {
       try {
@@ -55,94 +53,111 @@ const DynamicDietPlanComponent = () => {
     fetchDietPlanData();
   }, [programmeId]);
 
+  // Toggle hover state for dashboard
   const handleClick = () => {
     setHoverDashboard((prevState) => !prevState);
   };
 
+  // Handle PDF download
   const handleDownload = () => {
     const doc = new jsPDF();
 
-    // Set text color to white
-    doc.setTextColor(255, 255, 255);
+    // Function to set the page background color
+    const setPageBackground = () => {
+      doc.setFillColor(17, 24, 39); // Equivalent to #111827 (gray-950)
+      doc.rect(
+        0,
+        0,
+        doc.internal.pageSize.getWidth(),
+        doc.internal.pageSize.getHeight(),
+        'F' // 'F' means fill
+      );
+    };
 
-    // Draw a filled rectangle that covers the entire page
-    doc.rect(
-      0,
-      0,
-      doc.internal.pageSize.getWidth(),
-      doc.internal.pageSize.getHeight(),
-      'F'
-    ); // 'F' means fill
+    // Function to add the logo to the bottom right corner
+    const addBottomRightLogo = () => {
+      const logoWidth = 30; // Smaller logo width
+      const logoHeight = 12; // Smaller logo height
+      const logoXPosition = doc.internal.pageSize.getWidth() - logoWidth - 10; // Positioned 10 units from the right
+      const logoYPosition = doc.internal.pageSize.getHeight() - logoHeight - 10; // Positioned 10 units from the bottom
 
-    // Adding the logo at the top
-    const logoWidth = 50; // Define desired logo width
-    const logoHeight = 20; // Define desired logo height
-    const logoXPosition = 80; // Centering the logo horizontally
-    const logoYPosition = 10; // Y position at the top
+      // Add the logo in the bottom-right corner of the page
+      doc.addImage(
+        newLogo,
+        'PNG',
+        logoXPosition,
+        logoYPosition,
+        logoWidth,
+        logoHeight
+      );
+    };
 
-    doc.addImage(
-      newLogo,
-      'PNG',
-      logoXPosition,
-      logoYPosition,
-      logoWidth,
-      logoHeight
-    ); // Add logo
+    // Set the background color for the first page
+    setPageBackground();
+    addBottomRightLogo();
 
-    // Set title in the center, 4rem (about 64px) below the logo
+    // Add content before the logo
     doc.setFontSize(18);
+    doc.setTextColor(255, 255, 255); // White text for title
     const pageWidth = doc.internal.pageSize.getWidth();
-    doc.text('Weekly Diet Plan', pageWidth / 2, logoYPosition + 64, {
+    doc.text('Weekly Diet Plan', pageWidth / 2, 40, {
       align: 'center',
     });
 
-    // Define starting Y position for content (at least 4rem below the logo)
-    let yPosition = logoYPosition + 64 + 16; // 64px (4rem) + 16px extra padding
+    let yPosition = 64; // Initial y position for content
 
-    dietPlanData.forEach((plan, index) => {
+    dietPlanData.forEach((plan, planIndex) => {
       doc.setFontSize(16);
-      doc.text(`Plan ${index + 1}`, 14, yPosition);
-      yPosition += 10; // Add space after the plan title
+      doc.setTextColor(255, 255, 255); // White text for creator
+      doc.text(`Creator: ${plan.programme.trainer.name}`, 14, yPosition);
+      yPosition += 10;
 
       plan.days.forEach((day, dayIndex) => {
         doc.setFontSize(14);
+        doc.setTextColor(255, 255, 255); // White text for day
         doc.text(day.day || `Day ${dayIndex + 1}`, 14, yPosition);
-        yPosition += 10; // Add space before the table
+        yPosition += 10;
 
-        doc.setFontSize(12);
         const mealData = day.meals.map((meal) => [meal.time, meal.meal]);
 
-        // Draw table
+        // Create the meal table
         doc.autoTable({
           startY: yPosition,
           head: [['Time', 'Meal']],
           body: mealData.length > 0 ? mealData : [['No Data', 'No Data']],
           theme: 'striped',
-          styles: { cellPadding: 2, fontSize: 12 },
+          styles: {
+            cellPadding: 2,
+            fontSize: 12,
+            textColor: 0, // Black text for table
+          },
           columnStyles: { 0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto' } },
           margin: { left: 14 },
         });
 
-        // Update yPosition to be after the table
-        yPosition = doc.autoTable.previous.finalY + 10; // Add space after the table
+        yPosition = doc.autoTable.previous.finalY + 10; // Update yPosition after table
+        yPosition += 16; // Add additional space
 
-        // Add extra space between days
-        yPosition += 16; // 2rem of space (16px)
+        // Check if new page is needed
+        if (yPosition > 250) {
+          doc.addPage();
+          setPageBackground(); // Set the background on the new page
+          yPosition = 20; // Reset y position for new page
+        }
       });
 
-      // Add extra space between plans
-      yPosition += 32; // 2rem of space (32px) between plans
-
-      // Check if we need to add a new page
-      if (yPosition > 250) {
-        doc.addPage();
-        yPosition = 20; // Reset yPosition to the top of the new page
-      }
+      // Add logo to the bottom right after each plan
+      addBottomRightLogo();
+      yPosition += 32; // Add space before the next plan
     });
 
-    doc.save('diet-plan.pdf');
+    // Add logo on the last page
+    addBottomRightLogo(); // Ensures the logo is added to the last page as well
+
+    doc.save('diet-plan.pdf'); // Save the document
   };
 
+  // Reset settings to defaults
   const handleReset = () => {
     setHeadingColor('#FFA500');
     setTextColor('#FFFFFF');
@@ -151,7 +166,7 @@ const DynamicDietPlanComponent = () => {
 
   return (
     <div
-      className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
+      className="grid grid-cols-1 sm:grid-cols-9 text-white font-sans"
       style={{
         background: 'linear-gradient(180deg, #050c1e 0%, #050c1e 100%)',
       }}
@@ -160,21 +175,19 @@ const DynamicDietPlanComponent = () => {
         <DashboardHeader />
       </div>
 
-      <div className="min-h-screen min-w-[100vw]">
-        {/* Toggle Dashboard Visibility on Small Screens */}
+      <div className="min-h-screen">
         {hoverDashboard && (
           <div
             className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-            onClick={() => setHoverDashboard(false)}
+            onClick={handleClick}
           >
             <BiSolidRightArrow size={40} color="orange" />
           </div>
         )}
 
         <div className="overflow-scroll w-[240vw] sm:w-[90vw] m-auto scrollbar-hide">
-          {/* Settings Panel */}
           {user.user.role === 'trainer' && (
-            <div className="bg-gray-800 p-6 rounded-md shadow-md mb-6 overflow-scroll ">
+            <div className="bg-gray-800 p-6 rounded-md shadow-md mb-6">
               <h3 className="text-lg font-semibold mb-4">Settings</h3>
               <div className="flex flex-col sm:flex-row justify-start items-start gap-4">
                 <div>
@@ -211,7 +224,7 @@ const DynamicDietPlanComponent = () => {
             </div>
           )}
 
-          <div className="bg-gray-900 p-6 rounded-md shadow-md ">
+          <div className="bg-gray-900 p-6 rounded-md shadow-md">
             <h1
               className="text-center text-4xl font-bold mb-4"
               style={{ color: headingColor, fontSize: textSize }}
@@ -239,12 +252,12 @@ const DynamicDietPlanComponent = () => {
                       </h3>
                       <table className="min-w-full divide-y divide-gray-700 mt-2">
                         <thead>
-                          <tr>
+                          <tr className="bg-gray-800">
                             <th className="px-4 py-2 text-left">Time</th>
                             <th className="px-4 py-2 text-left">Meal</th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="bg-gray-900 divide-y divide-gray-700">
                           {day.meals.length > 0 ? (
                             day.meals.map((meal, mealIndex) => (
                               <tr key={mealIndex}>
@@ -254,8 +267,9 @@ const DynamicDietPlanComponent = () => {
                             ))
                           ) : (
                             <tr>
-                              <td className="px-4 py-2">No Data</td>
-                              <td className="px-4 py-2">No Data</td>
+                              <td colSpan="2" className="px-4 py-2 text-center">
+                                No Meals
+                              </td>
                             </tr>
                           )}
                         </tbody>
@@ -267,20 +281,19 @@ const DynamicDietPlanComponent = () => {
             )}
           </div>
         </div>
-        <div className="mt-4 flex gap-4">
-          <button
-            onClick={handleReset}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Reset
-          </button>
-          <button
-            onClick={handleDownload}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Download PDF
-          </button>
-        </div>
+
+        <button
+          onClick={handleDownload}
+          className="bg-blue-500 text-white p-2 rounded mt-4 hover:bg-blue-700"
+        >
+          Download PDF
+        </button>
+        <button
+          onClick={handleReset}
+          className="bg-red-500 text-white p-2 rounded mt-4 ml-4 hover:bg-red-700"
+        >
+          Reset Settings
+        </button>
       </div>
     </div>
   );
