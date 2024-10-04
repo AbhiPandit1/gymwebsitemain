@@ -338,14 +338,14 @@ const DayPlan = () => {
                 </button>
               </div>
             ))}
-            <button
-              onClick={addDays}
-              className="bg-yellow-500 text-white rounded px-4 py-2 mb-4"
-            >
-              Add Days
-            </button>
           </div>
         )}
+        <button
+          onClick={addDays}
+          className="bg-yellow-500 text-white rounded px-4 py-2 mb-4 mr-4"
+        >
+          Add Days
+        </button>
 
         <button
           onClick={handleSubmit}
