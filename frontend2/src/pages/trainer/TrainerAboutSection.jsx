@@ -58,7 +58,7 @@ const TrainerAboutSection = () => {
 
       if (response.status === 200) {
         toast.success('Trainer details updated successfully');
-        navigate('/home');
+        navigate(`/account/link/${user.user._id}`);
       } else {
         toast.error('Failed to update trainer details');
         if (response?.data?.message) {

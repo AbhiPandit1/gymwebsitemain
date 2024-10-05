@@ -7,13 +7,13 @@ import { toast } from 'react-toastify';
 import { updateUserDetail } from '../../action/userActions';
 import SmallSpinner from '../../../SmallSpinner';
 
-
 const UserDetails = () => {
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const [gender, setGender] = useState('');
-  const [profilePhoto, setProfilePhoto] = useState(null); // State to hold the file object
-  const [profilePhotoName, setProfilePhotoName] = useState(''); // State to hold the file name
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -29,7 +29,15 @@ const UserDetails = () => {
   const handleProfilePhotoChange = (e) => {
     const file = e.target.files[0];
     setProfilePhoto(file);
-    setProfilePhotoName(file ? file.name : ''); // Update file name
+
+    // Show image preview
+    const fileReader = new FileReader();
+    fileReader.onloadend = () => {
+      setProfilePhotoPreview(fileReader.result);
+    };
+    if (file) {
+      fileReader.readAsDataURL(file);
+    }
   };
 
   const handleRoleChange = (value) => {
@@ -47,15 +55,21 @@ const UserDetails = () => {
     formData.append('name', name);
     formData.append('role', role);
     formData.append('gender', gender);
-    if (profilePhoto) formData.append('profilePhoto', profilePhoto); // Append the file object
+    if (profilePhoto) formData.append('profilePhoto', profilePhoto);
 
     try {
       setLoading(true);
-      const response = await dispatch(updateUserDetail(formData, userId));
+      const response = await dispatch(
+        updateUserDetail(formData, userId, (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress(percentCompleted);
+        })
+      );
 
       if (response.user) {
         toast.success('User updated successfully');
-        console.log(response.user._id);
         response.user.role === 'trainer'
           ? navigate(`/trainer/about/${response.user._id}`)
           : navigate('/programmes');
@@ -67,6 +81,7 @@ const UserDetails = () => {
       toast.error(error?.response?.data?.error || 'Failed to update user');
     } finally {
       setLoading(false);
+      setUploadProgress(0); // Reset progress after the upload
     }
   };
 
@@ -74,7 +89,7 @@ const UserDetails = () => {
     <div className="flex flex-col pt-4 gap-6 min-h-screen bg-gray-800 p-4">
       {/* Login Logo */}
       <Link to="/home" className="mb-4">
-        <LoginLogo header='' />
+        <LoginLogo header="" />
       </Link>
 
       {/* Form */}
@@ -84,37 +99,55 @@ const UserDetails = () => {
           onSubmit={handleUserDetailSubmit}
         >
           {/* Upload Profile Photo */}
-          <div className="flex flex-col items-center mb-4">
-            <label className="bg-orange-600 border-b border-dotted border-gray-500 w-full max-w-xs h-20 flex flex-col justify-center items-center cursor-pointer rounded-2xl p-2 relative">
+          <div className="flex flex-col items-center mb-4 relative w-full">
+            <label className="relative w-full max-w-xs h-20 flex flex-col justify-center items-center cursor-pointer rounded-2xl p-16 bg-gray-700">
               <input
                 type="file"
                 className="absolute inset-0 opacity-0 cursor-pointer"
                 name="profilePhoto"
                 onChange={handleProfilePhotoChange}
               />
-              {profilePhotoName ? (
-                <div className="flex items-center gap-2">
-                  <h1 className="text-white font-sans truncate">
-                    {profilePhotoName}
-                  </h1>
+
+              {/* Display the preview or upload icon */}
+              {profilePhotoPreview ? (
+                <>
+                  {/* Image Preview inside input */}
+                  <img
+                    src={profilePhotoPreview}
+                    alt="Profile Preview"
+                    className="absolute top-3 h-[80%] w-[50%] p-2 rounded-full object-cover "
+                  />
+                  {/* Remove Image Button */}
                   <button
                     type="button"
-                    className="text-white"
+                    className="absolute top-2 right-2 text-white bg-black bg-opacity-50 p-1 rounded-full"
                     onClick={() => {
                       setProfilePhoto(null);
-                      setProfilePhotoName('');
+                      setProfilePhotoPreview('');
+                      setUploadProgress(0);
                     }}
                   >
                     <FaTimes />
                   </button>
-                </div>
+                </>
               ) : (
                 <>
-                  <FaPlus size={40} color="white" />
-                  <h1 className="text-white font-sans">Upload Photo</h1>
+                  {/* Icon and Text */}
+
+                  <h1 className="text-white font-sans">
+                    <FaPlus size={40} color="white" />
+                  </h1>
                 </>
               )}
             </label>
+
+            {/* Display upload percentage inside the input box */}
+            {uploadProgress > 0 && (
+              <div className="absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center bg-black bg-opacity-50 text-white text-lg">
+                {`${uploadProgress}%`}
+              </div>
+            )}
+
             <p className="mt-2 text-white font-sans text-lg font-bold">
               Upload Profile Photo
             </p>

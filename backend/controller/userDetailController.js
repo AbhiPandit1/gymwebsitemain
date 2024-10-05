@@ -47,21 +47,12 @@ export const createUserDetail = async (req, res) => {
       }
     }
 
-    // Validate role and gender
-    if (!['user', 'trainer'].includes(role)) {
-      return res.status(400).json({ error: 'Invalid role specified' });
-    }
-
-    if (!['male', 'female', 'other'].includes(gender)) {
-      return res.status(400).json({ error: 'Invalid gender specified' });
-    }
-
-    // Update user details
+    // Prepare updated user details, retaining existing values if not provided
     const updatedUser = {
-      name,
+      name: name || existingUser.name,
       profilePhoto: profilePhoto || existingUser.profilePhoto, // Use existing photo if no new photo is provided
-      gender,
-      role,
+      gender: gender || existingUser.gender,
+      role: role || existingUser.role,
     };
 
     const user = await User.findByIdAndUpdate(userId, updatedUser, {
@@ -74,7 +65,7 @@ export const createUserDetail = async (req, res) => {
     }
 
     // Update or create Trainer details if role is 'trainer'
-    if (role === 'trainer') {
+    if (updatedUser.role === 'trainer') {
       const trainerData = {
         user: user._id,
       };

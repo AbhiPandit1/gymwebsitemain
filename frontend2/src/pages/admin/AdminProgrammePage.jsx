@@ -141,38 +141,14 @@ const AdminProgrammePage = () => {
       className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
       style={{
         background:
-          'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
+          'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
       }}
     >
-      <div
-        className={`transition-transform duration-300  ${
-          hoverDashboard ? 'hidden sm:hidden' : 'col-span-9 sm:col-span-2'
-        }`}
-      >
-        <DashboardComponent
-          dashBoardLink={dashboardLink}
-          hoverDashboard={hoverDashboard}
-          setHoverDashboard={setHoverDashboard}
-        />
+      <div className="col-span-9 sticky top-0 z-50">
+        <DashboardHeader />
       </div>
 
-      <div
-        className={`transition-transform duration-300 ${
-          hoverDashboard ? 'col-span-9' : 'col-span-9 sm:col-span-7'
-        } overflow-hidden`}
-      >
-        <DashboardHeader />
-
-        {/* Toggle Dashboard Visibility on Small Screens */}
-        {hoverDashboard && (
-          <div
-            className="absolute left-0 z-10 top-[10%] animate-shake cursor-pointer hover:animate-none transition-transform duration-300"
-            onClick={handleClick}
-          >
-            <BiSolidRightArrow size={40} color="orange" />
-          </div>
-        )}
-
+      <div className=" min-h-screen min-w-[100vw]">
         <h1 className="text-2xl font-bold mb-4">Admin Programme</h1>
         <div className="flex items-center gap-4 mb-4">
           <button
