@@ -96,7 +96,7 @@ const ProgrammeInfo = ({
               <FaInfoCircle size={80} className="text-gray-400" />
             </div>
           )}
-          <div className="h-auto lg:h-[80vh] lg:w-2/3 overflow-auto p-4 leading-loose bg-white scrollbar-hide">
+          <div className="h-auto lg:h-[80vh] lg:w-2/3 overflow-auto p-4 leading-loose bg-white scrollbar-hide max-h-[40vh] sm:max-h-full">
             <h1 className="text-3xl font-bold mb-6 text-start text-gray-950">
               {trainerName}
             </h1>

@@ -41,7 +41,6 @@ const PersonalTrainer = () => {
   return (
     <>
       <div
-        className=""
         style={{
           background:
             'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
@@ -75,7 +74,7 @@ const PersonalTrainer = () => {
           <PersonalInfoTrainer />
         </div>
         <div>
-          <ReviewCard currentUser={user?.user} />
+          <ReviewCard currentUser={user.user} />
         </div>
         <div>
           <Footer />

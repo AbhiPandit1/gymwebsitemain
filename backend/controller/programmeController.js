@@ -175,7 +175,7 @@ export const getSingleProgrammeOpen = async (req, res) => {
 export const getProgrammes = async (req, res) => {
   try {
     const programmes = await Programme.find().populate('trainer', 'name');
-    console.log(programmes)
+    console.log(programmes);
 
     // Respond with the fetched programmes
     res.status(200).json(programmes);
@@ -501,6 +501,7 @@ export const deleteDayPlan = async (req, res) => {
 
 export const getByTrainer = async (req, res) => {
   const id = req.params.id; // Assuming the trainer ID comes from the URL parameters
+  console.log(id);
 
   try {
     // Find all programmes where the trainer field matches the given ID
