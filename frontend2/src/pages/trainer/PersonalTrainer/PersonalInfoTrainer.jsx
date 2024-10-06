@@ -8,7 +8,6 @@ import ProgrammeDetail from '../../user/ProgrammeDetail.jsx';
 import Modal from 'react-modal';
 
 const PersonalInfoTrainer = () => {
-  const { token } = useSelector((state) => state.user);
   const [trainerDatas, setTrainerDatas] = useState([]);
   const [showDescriptionModal, setShowDescriptionModal] = useState(false); // State for the description modal
   const [showDetailModal, setShowDetailModal] = useState(false); // State for the detail modal
@@ -26,12 +25,7 @@ const PersonalInfoTrainer = () => {
     const getPersonalProgramme = async () => {
       try {
         const response = await axios.get(
-          `${backendapi}/api/admin/trainer/programme/${trainerId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `${backendapi}/api/admin/trainer/programme/${trainerId}`
         );
         setTrainerDatas(response.data.programmes);
       } catch (error) {
@@ -41,7 +35,7 @@ const PersonalInfoTrainer = () => {
     };
 
     getPersonalProgramme();
-  }, [trainerId, token, backendapi]);
+  }, [trainerId, backendapi]);
 
   // Scroll Functions
   const scrollLeftFunc = () => {
