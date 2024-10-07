@@ -137,7 +137,7 @@ const PersonalInfoTrainer = () => {
             <div
               key={programme._id}
               // Open detail modal on programme click
-              className="bg-gray-800 m-auto w-full max-w-[450px] min-h-[68vh] border-b-4 border-orange-600 shadow-lg relative overflow-hidden cursor-pointer"
+              className="bg-gray-800 m-auto w-full sm:min-w-[450px] max-w-[450px] min-h-[68vh] border-b-4 border-orange-600 shadow-lg relative overflow-hidden cursor-pointer"
             >
               <div className="relative">
                 <img
