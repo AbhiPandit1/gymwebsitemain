@@ -77,5 +77,5 @@ Send targeted promotional emails to creators or users (or both).
 ProgramPanda is fully deployed on Render, providing a fast and scalable platform with excellent loading times. It ensures a seamless user experience for all panels.
 
 🌐 Deployment
-ProgramPanda is fully deployed at www.programpand.co, providing a fast and scalable platform with excellent loading times. It ensures a seamless user experience for all panels.
+ProgramPanda is fully deployed at www.programpanda.co, providing a fast and scalable platform with excellent loading times. It ensures a seamless user experience for all panels.
 
