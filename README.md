@@ -59,7 +59,7 @@
 
 
 
-User
+# User
 Browse and purchase programs via Stripe.
 Receive email confirmation and invoice after each purchase.
 Download the purchased program in a PDF format with full customization.
@@ -73,9 +73,10 @@ Admin
 Manage all user and creator accounts.
 Delete inappropriate or inactive programs.
 Send targeted promotional emails to creators or users (or both).
-🌐 Deployment
+
+# 🌐 Deployment
 ProgramPanda is fully deployed on Render, providing a fast and scalable platform with excellent loading times. It ensures a seamless user experience for all panels.
 
-🌐 Deployment
+# 🌐 Deployment
 ProgramPanda is fully deployed at www.programpanda.co, providing a fast and scalable platform with excellent loading times. It ensures a seamless user experience for all panels.
 
