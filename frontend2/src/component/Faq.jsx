@@ -38,8 +38,8 @@ const Faq = () => {
   };
 
   return (
-    <div className="p-6 rounded-lg min-h-[60vh]">
-      <h2 className="text-2xl font-bebes text-center text-gray-300 mb-6">
+    <div className="p-3 rounded-lg min-h-[60vh] ">
+      <h2 className="text-2xl font-bebes text-center text-white mb-4 text-[28px] sm:text-[40px] ">
         Frequently Asked Questions
       </h2>
       {faqData.map((item, index) => (

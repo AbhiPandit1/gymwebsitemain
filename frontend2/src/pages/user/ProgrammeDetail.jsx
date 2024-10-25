@@ -114,7 +114,7 @@ const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
   return (
     <div className="flex flex-col h-screen font-sans">
       {showHeader && <Header />}
-      <div className="flex-grow flex items-center justify-center p-6  overflow-auto scrollbar-hide max-h-[80vh]">
+      <div className="flex-grow flex items-center justify-center p-6  overflow-auto scrollbar-hide max-h-[100vh]">
         <div className="w-full max-w-6xl bg-white shadow-lg rounded-lg mt-20 sm:mt-16 flex flex-col max-h-[60vh] min-w-[80vw] overflow-scroll scrollbar-hide sm:max-h-screen min-h-[60vh]">
           {' '}
           {/* Added min-height and min-width */}

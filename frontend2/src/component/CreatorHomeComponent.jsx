@@ -118,7 +118,7 @@ const CreatorHomeComponent = () => {
   if (loading) {
     return (
       <div className="p-8 text-white">
-        <h1 className="text-4xl font-extrabold text-center mb-8">
+        <h1 className="text-4xl font-extrabold text-center mb-10">
           Meet Our Creators
         </h1>
         <Skeleton />
@@ -132,7 +132,7 @@ const CreatorHomeComponent = () => {
 
   return (
     <div className=" text-white relative">
-      <h1 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[32px] text-center mb-4">
+      <h1 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[40px] text-center mb-4">
         Meet Our Creators
       </h1>
 
@@ -147,7 +147,7 @@ const CreatorHomeComponent = () => {
           </button>
           <div
             ref={scrollContainerRef}
-            className="overflow-x-auto whitespace-nowrap scrollbar-hide"
+            className="overflow-x-auto whitespace-nowrap scrollbar-hide md:pt-5 "
             style={{ scrollBehavior: 'smooth' }}
           >
             {trainerDatas?.map((data) => (
@@ -224,12 +224,15 @@ const CreatorHomeComponent = () => {
       )}
 
       <div className="flex justify-center mt-8">
-        <Link
-          to="/trainers"
-          className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600  text-white rounded-full flex items-center"
-        >
-          View All Trainers
-          <FaArrowRight className="ml-2" />
+        <Link to="/trainers">
+        <div className="flex justify-center items-center my-4">
+              <div className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600 hover:bg-orange-500  text-white rounded-full flex items-center">
+                View All Trainers
+                <FaArrowRight className="ml-2" />
+                {/* <IoIosArrowRoundForward color="white" className="w-15 h-8" /> */}
+              </div>
+            </div>
+          
         </Link>
       </div>
     </div>

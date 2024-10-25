@@ -20,7 +20,7 @@ const Modal = ({ children, onClose }) => {
         }}
       >
         <button
-          className="absolute top-2 right-2 bg-orange-500 text-white rounded-full p-2 hover:bg-orange-400 transition-colors"
+          className="absolute top-2 right-2 bg-orange-500 text-white pl-2 pr-2 rounded-full hover:bg-orange-400 transition-colors"
           onClick={onClose}
         >
           &times;
@@ -228,6 +228,7 @@ const ReviewCard = ({ currentUser }) => {
           {data.length} Total
         </div>
       </div>
+      <div className='relative'>
       {data?.length > 0 && (
         <div className="hidden sm:flex">
           <button
@@ -313,6 +314,7 @@ const ReviewCard = ({ currentUser }) => {
             </div>
           ))}
         </div>
+      </div>
       </div>
       {currentUser && (
         <div className="flex justify-center mt-4">

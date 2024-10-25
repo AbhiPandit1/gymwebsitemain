@@ -49,11 +49,12 @@ const ProgrammeComponentCard = ({ programmeData, filter }) => {
   return (
     <div className="mt-10">
       {/* Grid layout with responsive columns */}
-      <div className="grid w-[100vw] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 overflow-hidden">
+      <div className="grid w-[100vw] h-[100%] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 overflow-hidden ">
+      
         {visibleProgrammes.map((card) => (
           <div
             key={card._id}
-            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[450px] p-4 w-[300px] mx-auto my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:border-4 hover:shadow-2xl"
+            className="relative bg-gray-950 opacity-90 rounded-xl min-h-[450px] h-[100%] p-4 w-[300px] mx-auto my-4 overflow-hidden bg-cover bg-center group border-2 border-orange-600 hover:border-4 hover:shadow-2xl"
             style={{ backgroundImage: `url(${card.categoryPhoto?.url})` }}
           >
             {/* Dark overlay specific to hovered card */}

@@ -124,10 +124,10 @@ const Card = ({ title, backgroundColor }) => {
 
   return (
     <div className="relative rounded-lg ">
-      <h1 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[32px] text-center mb-4">
+      <h1 className="text-white flex justify-center items-center font-light font-bebes text-[28px] sm:text-[40px] text-center mb-4">
         {title}
       </h1>
-
+      <div className="relative rounded-lg ">
       <button
         onClick={scrollLeftFunc}
         className="hidden sm:block absolute left-0 top-[50%] transform -translate-y-1/2 bg-orange-500 p-3 rounded-full hover:bg-orange-600 transition-colors z-10 shadow-lg"
@@ -195,7 +195,7 @@ const Card = ({ title, backgroundColor }) => {
       >
         <IoIosArrowForward color="white" className="w-8 h-8" />
       </button>
-
+      </div>
       {/* Modal for ProgrammeDetail */}
       <Modal
         isOpen={modalIsOpen}

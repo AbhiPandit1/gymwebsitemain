@@ -8,6 +8,7 @@ import CreatorHomeComponent from '../component/CreatorHomeComponent';
 import Faq from '../component/Faq';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
+import { FaArrowRight, FaUserCircle } from 'react-icons/fa';
 import HomeSkeleton from './skeletons/HomeSkeleton';
 
 const Home = () => {
@@ -25,7 +26,7 @@ const Home = () => {
   if (loading) {
     return <HomeSkeleton />;
   }
-
+  const currentUser = user?.user || null;
   return (
     <>
       {/* Starting Section */}
@@ -37,7 +38,7 @@ const Home = () => {
         }}
       >
         <Header />
-        <div className="relative">
+        <div className="relative md:pt-10 pt-3">
           {/* First Page Section */}
           <div className="flex flex-col justify-center items-center gap-6 w-full px-4 sm:px-6 overflow-hidden">
             {/* Headings */}
@@ -63,13 +64,14 @@ const Home = () => {
             <div className="flex justify-center items-center my-4">
               <div className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600 hover:bg-orange-500  text-white rounded-full flex items-center">
                 View All Programs
-                <IoIosArrowRoundForward color="white" className="w-10 h-6" />
+                <FaArrowRight className="ml-2" />
+                {/* <IoIosArrowRoundForward color="white" className="w-15 h-8" /> */}
               </div>
             </div>
           </Link>
         </div>
 
-        <div className="relative mt-8">
+        <div className="relative mt-15">
           <CreatorHomeComponent />
         </div>
 
@@ -88,7 +90,7 @@ const Home = () => {
 
         {/* Review Card Section */}
         <div>
-          <ReviewCard currentUser={user?.user} />
+          <ReviewCard currentUser={currentUser} />
         </div>
         <div className="relative">
           <Footer />

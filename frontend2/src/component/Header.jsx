@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import logoHeader from '../assets/NewLogo.png';
 import { IoHomeOutline } from 'react-icons/io5';
@@ -10,9 +10,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import Menu from './Menu';
 import { signOut } from '../reducers/userReducer';
 import { toast } from 'react-toastify';
-
 const Header = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isFixed, setIsFixed] = useState(false);
   const { user } = useSelector((state) => state.user);
   const isSignedIn = user && user.token; // Check if user has a token
   const dispatch = useDispatch();
@@ -59,8 +59,24 @@ const Header = () => {
     toast.success('Signed out successfully');
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsFixed(true);
+      } else {
+        setIsFixed(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="flex justify-between items-center p-4 w-full  rounded-l-[1.2rem] rounded-r-[1.2rem] shadow-lg bg-transparent font-bebes">
+    <div className={`flex justify-between items-center p-4 w-full rounded-l-[1.2rem] rounded-r-[1.2rem] bg-transparent font-bebes top-0 left-0 z-50 ${isFixed ? 'fixed header-fixed shadow-lg shadow-orange-500' : ''}`}>
       {/* Logo */}
       <div className="ml-[1%]">
         <Link to="/">
@@ -70,7 +86,7 @@ const Header = () => {
 
       {/* Navigation Menu for larger screens */}
       <div className="hidden sm:flex justify-center items-center gap-3 w-full z-40  ">
-        <div className="flex justify-around items-center font-bebes opacity-95 ml-[10%] mr-[15%] w-[90%] h-[3rem] z-40 mx-auto rounded-lg ">
+        <div className="flex justify-center gap-10 items-center font-bebes opacity-95 w-[70%] h-[3rem] z-40 mx-auto rounded-lg ">
           {menuItems.map((item) => (
             <Link
               key={item.id}
@@ -96,7 +112,7 @@ const Header = () => {
           </>
         ) : (
           <button
-            className="h-[3rem] w-[10rem] rounded-lg text-white bg-gradient-to-r from-orange-400 to-orange-600  hover:bg-orange-800 z-40"
+            className="h-[3rem] w-[10rem] rounded-lg text-white bg-gradient-to-r from-orange-400 to-orange-600 hover:to-orange-800 hover:bg-orange-800 z-40"
             onClick={handleSignOut}
           >
             Sign Out

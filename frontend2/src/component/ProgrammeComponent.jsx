@@ -141,7 +141,7 @@ const ProgrammeComponent = () => {
       }}
     >
       <HeroSection title="Programs" />
-      <div className="w-full flex flex-col items-center text-white p-5 min-h-screen max-w-full mx-auto relative z-40">
+      <div className="w-full flex flex-col items-center text-white p-5 min-h-screen max-w-full mx-auto relative z-40 overflow-hidden">
         <div className="flex max-w-[100vw] flex-col sm:flex-row items-center gap-2 sm:gap-16 justify-between ">
           <div className="mt-3 px-8 py-2">
             <select
