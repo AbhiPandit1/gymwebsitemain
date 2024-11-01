@@ -7,6 +7,7 @@ import DayPlan from '../model/programmeDayPlanModel.js';
 import DietPlan from '../model/programmeDietPlanModel.js';
 import fs from 'fs';
 import { deleteCloudinaryImage } from '../middleware/deleteCloudinaryImage.js';
+import Trainer from '../model/trainerModel.js';
 
 export const createProgramme = async (req, res) => {
   const { category, title, price, desc, trainerEmail, planType, discount } =
@@ -144,8 +145,17 @@ export const createProgramme = async (req, res) => {
 // Get all categories from all users
 export const getAllCategory = async (req, res) => {
   try {
-    const categories = await Programme.find(); // Assuming Programme is your model for categories
+    const categoriesData = await Programme.find(); // Assuming Programme is your model for categories
 
+    let categories = [];
+    if(categoriesData && categoriesData.length > 0) {
+      for (const cat of categoriesData) {
+        const trainer = await Trainer.findOne({ user: cat.trainer });
+        if(trainer?.stripeAccountLinked) {
+          categories.push(cat);
+        }
+      }
+    }
     res.status(200).json({ categories });
   } catch (error) {
     console.error('Error fetching categories:', error);
@@ -174,8 +184,18 @@ export const getSingleProgrammeOpen = async (req, res) => {
 // Get Programmes (Open)
 export const getProgrammes = async (req, res) => {
   try {
-    const programmes = await Programme.find().populate('trainer', 'name');
-    console.log(programmes);
+    const programmesData = await Programme.find().populate('trainer', 'name');
+    console.log(programmesData);
+    const programmes = [];
+    if(programmesData && programmesData.length > 0) {
+      for (const cat of programmesData) {
+        console.log("Trainer data: ", cat.trainer)
+        const trainer = await Trainer.findOne({ user: cat.trainer._id });
+        if(trainer?.stripeAccountLinked) {
+          programmes.push(cat);
+        }
+      }
+    }
 
     // Respond with the fetched programmes
     res.status(200).json(programmes);
@@ -506,6 +526,7 @@ export const getByTrainer = async (req, res) => {
   try {
     // Find all programmes where the trainer field matches the given ID
     const programmes = await Programme.find({ trainer: id });
+    const trainer = await Trainer.findOne({ user: id });
 
     // Check if any programmes were found
     if (programmes.length === 0) {
@@ -513,7 +534,7 @@ export const getByTrainer = async (req, res) => {
     }
 
     // Send the response with the programmes
-    res.status(200).json({ programmes, message: 'Your Programme' });
+    res.status(200).json({ programmes, message: 'Your Programme',trainer });
   } catch (error) {
     // Log the error and send a 500 response for internal server error
     console.error(error);
