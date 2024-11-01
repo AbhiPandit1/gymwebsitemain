@@ -160,7 +160,7 @@ const TrainerCard = ({ searchQuery }) => {
           </div>
         ))}
       </div>
-      <div className="flex justify-center mt-4 space-x-4">
+      <div className="flex justify-center mt-20 space-x-4">
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}

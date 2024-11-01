@@ -46,7 +46,7 @@ const Card = ({ title, backgroundColor }) => {
         const filteredData = response.data.filter(
           (item) => item.isSelected === true
         );
-        setData(filteredData);
+        setData(response.data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);

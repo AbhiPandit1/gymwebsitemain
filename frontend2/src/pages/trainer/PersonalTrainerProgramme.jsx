@@ -9,6 +9,7 @@ import { GiAbdominalArmor } from 'react-icons/gi';
 import useDashboardLinks from '../../../hook/CreateDahsboardLinks';
 import { toast } from 'react-toastify';
 import { BiSolidRightArrow } from 'react-icons/bi';
+import { TiWarningOutline } from "react-icons/ti";
 
 const PersonalTrainerProgramme = () => {
   const { user } = useSelector((state) => state.user);
@@ -18,6 +19,7 @@ const PersonalTrainerProgramme = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [showCategory, setShowCategory] = useState({});
   const dashboardLink = useDashboardLinks();
+  const [trainer, setTrainer] = useState(null);
 
   useEffect(() => {
     const getProgramme = async () => {
@@ -32,6 +34,7 @@ const PersonalTrainerProgramme = () => {
             },
           }
         );
+        setTrainer(response.data.trainer)
         setTrainerDatas(response.data.programmes);
         console.log(response.data);
       } catch (error) {
@@ -65,6 +68,12 @@ const PersonalTrainerProgramme = () => {
     setShowCategory((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const handleToaster = () => {
+    if(!trainer?.stripeAccountLinked) {
+      toast.warn('You haven\'t connected your stripe account yet! None of your programme will be live until you connect your strip account!');
+    }
+  }
+
   return (
     <div
       className="grid grid-cols-9 max-w-[100vw] text-white font-sans"
@@ -76,6 +85,15 @@ const PersonalTrainerProgramme = () => {
       <div className="col-span-9 sticky top-0 z-50">
         <DashboardHeader />
       </div>
+
+      {!trainer?.stripeAccountLinked && (
+        <div className="col-span-9 sticky top-0 z-50">
+          <div className="flex items-center p-3 justify-center bg-yellow-100 border border-yellow-300 text-yellow-700 rounded-md">
+            <TiWarningOutline />
+            <span className="text-sm font-large">You haven't connected your stripe account yet! None of your programme will be live until you connect your strip account!</span>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 p-2 mr-5 sm:grid-cols-3 gap-10 min-h-screen min-w-[100vw]">
         {trainerDatas?.map((card) => (
@@ -195,7 +213,7 @@ const PersonalTrainerProgramme = () => {
           </div>
         ))}
         <div className="">
-          <Link to={`/trainer/create/programme/${user.user._id}`}>
+          <Link to={`/trainer/create/programme/${user.user._id}`} onClick={handleToaster}>
             <div className="bg-tertiary m-auto w-[80%] block sm:w-[70%] justify-center items-center rounded-lg mb-[5rem] shadow-lg transition-transform transform hover:scale-105">
               <p className="text-white font-sans text-[2rem] font-bold ml-2 text-center p-4">
                 Create New +

@@ -100,8 +100,16 @@ const ProgrammeDetail = ({ showHeader, programmeId, closeModal }) => {
   };
 
   const handleCheckout = () => {
-    makePayment();
+    if (user){
+      makePayment();
+    }
+    else {
+      alert('You need to be logged in first to checkout.');
+      navigate('/login')
+    }
   };
+
+  
 
   const handleBack = () => {
     navigate(-1);

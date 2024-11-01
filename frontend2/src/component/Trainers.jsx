@@ -32,7 +32,7 @@ const Trainers = () => {
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-[40rem] h-12 px-4 rounded-sm bg-tertiary border border-secondary focus:outline-none focus:ring-2 focus:ring-secondary"
+              className="w-full sm:w-[40rem] h-12 px-4 rounded-sm bg-tertiary border border-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
         </div>
