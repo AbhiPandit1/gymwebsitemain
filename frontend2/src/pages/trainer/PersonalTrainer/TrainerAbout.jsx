@@ -28,17 +28,18 @@ const TrainerAbout = () => {
 
           {/* Container for text content */}
           <div className="relative z-10 p-8 sm:p-16 text-center">
-            <h1 className="text-transparent  text-4xl sm:text-6xl md:text-7xl text-white  font-bebes">
+            <h1 className="text-transparent text-[1.8rem] sm:text-[2rem] lg:text-[3rem] text-white  font-bebes">
+            
               {userTrainerDetails ? userTrainerDetails?.name : 'Loading...'}
             </h1>
 
             {/* Tagline */}
-            <h2 className="text-orange-400 text-xl sm:text-2xl md:text-3xl mt-4">
+            <h2 className="text-orange-400 text-xl sm:text-2xl md:text-3xl">
               {description ? description.tagline : 'Loading...'}
             </h2>
 
             {/* Pricing Information */}
-            <div className="text-white text-lg sm:text-xl mt-6 flex flex-col justify-center items-center space-x-4">
+            <div className="text-white text-lg sm:text-xl flex flex-col justify-center items-center space-x-4">
               <p className="flex items-center text-white text-lg">
                 ProgrammePanda Guaranteed
                 <FaCheckCircle className="text-green-400 text-2xl" />

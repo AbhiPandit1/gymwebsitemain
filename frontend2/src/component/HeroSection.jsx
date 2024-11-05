@@ -18,10 +18,10 @@ const HeroSection = ({
   return (
     <div className="relative w-full">
       <Header />
-      <h1 className="text-[2rem] font-bebes flex justify-center items-center sm:text-[40px] text-white">
+      <h1 className="text-[2rem] font-bebes flex justify-center items-center md:pt-10 pt-3 sm:text-[40px] text-white">
         {title}
       </h1>
-
+ 
     </div>
   );
 };

@@ -74,7 +74,7 @@ export const paymentCheckout = async (req, res) => {
       ],
       mode: 'payment',
       success_url: `https://www.programpanda.co/payment/success`,
-      cancel_url: `https://www.programpanda.co/payment/cancel`,
+      cancel_url: `https://www.programpanda.co/`,
       payment_intent_data: {
         application_fee_amount: applicationFeeAmount,
         transfer_data: {

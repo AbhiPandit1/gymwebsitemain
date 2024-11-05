@@ -60,15 +60,15 @@ const ProgrammeInfo = ({
 
   return (
     <>
-      <h1
-        className="text-3xl font-bebes  text-center text-white"
+      <h3
+        className="text-3xl font-bebes  text-center text-white pt-5 pb-5"
         style={{
           background:
             'linear-gradient(180deg, #050c1e 0%, #050c1e 40%, #050c1e 70%, #050c1e 100%)',
-        }}
+        }} 
       >
         {topHeading}
-      </h1>
+      </h3>
       <div
         className=" text-white"
         style={{
@@ -105,10 +105,10 @@ const ProgrammeInfo = ({
             </h2>
           </div>
         </div>
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mt-8 mb-6">
           <button
             onClick={openModal}
-            className="px-6 py-3 bg-transparent text-white border-2 border-orange-600 mt-4 shadow-lg flex items-center justify-center hover:bg-orange-700 transition duration-300"
+            className="px-6 py-3 bg-transparent text-white border-2 border-orange-600 shadow-lg flex items-center justify-center hover:bg-orange-700 transition duration-300"
           >
             See More
             <BiSolidRightArrow className="ml-2" />

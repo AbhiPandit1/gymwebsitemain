@@ -9,6 +9,7 @@ import Modal from 'react-modal';
 
 const PersonalInfoTrainer = () => {
   const [trainerDatas, setTrainerDatas] = useState([]);
+  const [trainerDetails, setTrainerDetails] = useState([]);
   const [showDescriptionModal, setShowDescriptionModal] = useState(false); // State for the description modal
   const [showDetailModal, setShowDetailModal] = useState(false); // State for the detail modal
   const [selectedProgramme, setSelectedProgramme] = useState(null);
@@ -28,9 +29,11 @@ const PersonalInfoTrainer = () => {
           `${backendapi}/api/admin/trainer/programme/${trainerId}`
         );
         setTrainerDatas(response.data.programmes);
+        setTrainerDetails(response.data.trainer);
+        console.log("response data:",response);
       } catch (error) {
         console.error(error);
-        toast.error(error.response?.data?.error || 'Add a programme');
+        // toast.error(error.response?.data?.error || 'Add a programme');
       }
     };
 
@@ -99,7 +102,7 @@ const PersonalInfoTrainer = () => {
       }}
     >
       {/* Scroll Buttons */}
-      {!isSmallScreen && (
+      {/* {!isSmallScreen && (
         <>
           <button
             onClick={scrollLeftFunc}
@@ -120,10 +123,10 @@ const PersonalInfoTrainer = () => {
             />
           </button>
         </>
-      )}
+      )} */}
 
       {/* Trainer Programmes */}
-      <div
+      {/* <div
         ref={scrollContainerRef}
         className="flex overflow-x-auto whitespace-nowrap scrollbar-hide"
         style={{ scrollBehavior: 'smooth' }}
@@ -190,7 +193,104 @@ const PersonalInfoTrainer = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
+
+
+      {trainerDatas.length > 0 && trainerDetails.stripeAccountLinked && (
+        <>
+        {console.log('Trainer Data:', trainerDatas)}
+          {/* Left Scroll Button */}
+          <button
+            onClick={scrollLeftFunc}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors"
+            style={{ zIndex: 5 }}
+          >
+            <IoIosArrowBack color="white" className="w-6 h-6 sm:w-10 sm:h-10" />
+          </button>
+
+          {/* Trainer Programmes */}
+          <div
+            ref={scrollContainerRef}
+            className="flex overflow-x-auto whitespace-nowrap scrollbar-hide"
+            style={{ scrollBehavior: 'smooth' }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+            <div className="flex gap-4 sm:gap-10 min-h-screen p-4">
+              {trainerDatas.map((programme) => (
+                <div
+                  key={programme._id}
+                  className="bg-gray-800 m-auto w-full sm:min-w-[450px] max-w-[450px] min-h-[68vh] border-b-4 border-orange-600 shadow-lg relative overflow-hidden cursor-pointer"
+                >
+                  <div className="relative">
+                    <img
+                      src={programme.categoryPhoto?.url || 'defaultImage.jpg'}
+                      alt="Programme"
+                      className="h-[250px] w-full object-cover"
+                    />
+                  </div>
+
+                  <div className="p-4 pt-12 h-full">
+                    <h2 className="text-white text-xl font-semibold mb-2 border-b-2 border-gray-700 pb-2">
+                      {programme.name}
+                    </h2>
+                    <h2 className="text-white text-xl font-semibold mb-2 border-b-2 border-gray-700 pb-2">
+                      ${programme.price}
+                    </h2>
+                    <div className="relative mb-4 border-b-2 border-gray-700 pb-2 h-[5vh] overflow-hidden">
+                      <p className="text-white text-sm cursor-pointer overflow-hidden">
+                        {programme.desc.slice(0, 80)}...
+                      </p>
+                      {programme.desc && (
+                        <button
+                          className="text-orange-400 mb-2 ml-2"
+                          onClick={() => handleShowDescription(programme)}
+                        >
+                          See More
+                        </button>
+                      )}
+                    </div>
+                    <h3 className="text-white text-lg font-bold mb-2">
+                      Categories
+                    </h3>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {programme.category.map((category, index) => (
+                        <button
+                          key={index}
+                          className="bg-gray-700 text-white px-3 py-1 rounded-lg text-sm hover:bg-orange-500 transition-colors duration-300"
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => openDetailModal(programme._id)}
+                    className="bg-gradient-to-r from-orange-400 to-orange-600 text-white font-semibold py-2 px-4 rounded-lg m-4 shadow-md transition-transform duration-300 transform hover:scale-105 hover:shadow-lg"
+                  >
+                    Buy
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Scroll Button */}
+          <button
+            onClick={scrollRightFunc}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors"
+            style={{ zIndex: 5 }}
+          >
+           <IoIosArrowForward
+              color="white"
+              className="w-6 h-6 sm:w-10 sm:h-10"
+            />
+          </button>
+        </>
+      )}
+
 
       {/* Modal for full programme description */}
       <RModal

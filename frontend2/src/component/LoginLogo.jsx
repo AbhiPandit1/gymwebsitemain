@@ -19,7 +19,7 @@ const LoginLogo = ({ header }) => {
           </div>
         </Link>
       </div>
-      <div className="font-bebes text-white text-[1.4rem] sm:text-[2.2rem] w-[full] mt-[2rem]  flex justify-center items-center ">
+      <div className="font-bebes text-white text-[1.4rem] sm:text-[2.7rem] w-[full] mt-[2rem]  flex justify-center items-center ">
         {header}
       </div>
       <div className=" text-paraColor text-[0.8rem] sm:text-[1.4rem] w-[full] font-bebes  flex justify-center items-center">

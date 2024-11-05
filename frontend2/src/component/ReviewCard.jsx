@@ -233,14 +233,14 @@ const ReviewCard = ({ currentUser }) => {
         <div className="hidden sm:flex">
           <button
             onClick={scrollLeftFunc}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-20"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-20" style={{ zIndex: 5 }}
             aria-label="Scroll Left"
           >
             <IoIosArrowBack color="white" className="w-6 h-6 sm:w-10 sm:h-10" />
           </button>
           <button
             onClick={scrollRightFunc}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-20"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors z-20" style={{ zIndex: 5 }}
             aria-label="Scroll Right"
           >
             <IoIosArrowForward

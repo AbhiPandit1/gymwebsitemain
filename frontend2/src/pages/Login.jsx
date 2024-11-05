@@ -11,6 +11,8 @@ import { signInuser } from '../action/userActions';
 import SmallSpinner from '../../SmallSpinner';
 import LoginSkeleton from './skeletons/LoginSkeleton';
 
+import LoadingSpinner from '../../LoadingSpinner';
+
 Modal.setAppElement('#root');
 
 const Login = () => {
@@ -31,6 +33,10 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const backgroundStyle = {
+    background: 'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)'
+  };
+
   const clearErrors = () => {
     setErrors({
       email: '',
@@ -50,11 +56,19 @@ const Login = () => {
     if (!signField.email) {
       newErrors.email = 'Email is required.';
       isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(signField.email)) {
+      newErrors.email = 'Please enter a valid email address.';
+      isValid = false;
     }
+    
     if (!signField.password) {
       newErrors.password = 'Password is required.';
       isValid = false;
+    } else if (signField.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters.';
+      isValid = false;
     }
+
     if (!agreedTerms) {
       newErrors.terms = 'You must agree to the terms and conditions.';
       isValid = false;
@@ -75,12 +89,14 @@ const Login = () => {
     try {
       setLoading(true);
       const response = await dispatch(signInuser(signField));
-      console.log(response.data);
-
-      if (response.status === 201) {
+      
+      if (response?.status === 201) {
         navigate('/');
       } else {
-        // Handle other status codes if needed
+        setErrors({
+          ...errors,
+          email: 'Invalid credentials. Please try again.',
+        });
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -88,33 +104,29 @@ const Login = () => {
         ...errors,
         email: 'An error occurred. Please try again.',
       });
-      setTimeout(clearErrors, 5000);
     } finally {
       setLoading(false);
+      setTimeout(clearErrors, 5000);
     }
   };
 
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <div>
+    <div className="min-h-screen" style={backgroundStyle}>
       {loading ? (
-        <LoginSkeleton /> // Show skeleton loader when loading
+        <LoginSkeleton />
       ) : (
         <form onSubmit={handleSubmit}>
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 min-h-screen overflow-auto font-bebes  py-10 px-4 sm:px-10"
-            style={{
-              background:
-                'linear-gradient(270deg, #172438 0%, rgba(6, 18, 33, 0.746434) 32.93%, rgba(30, 55, 86, 0.5) 64.94%, #01040B 102.92%)',
-            }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 min-h-screen overflow-auto font-bebes py-10 px-4 sm:px-10">
             <div className="flex flex-col pt-8 gap-6 sm:gap-8">
               <LoginLogo header="Log in" />
 
+              {/* Email Field */}
               <div className="flex flex-col sm:ml-20">
-                <label
-                  htmlFor="email"
-                  className="text-white text-lg font-semibold"
-                >
+                <label htmlFor="email" className="text-white text-[1rem] sm:text-[1.5rem] w-[full] mt-[2rem] pl-5 pb-3 font-semibold">
                   Email
                 </label>
                 <div className="relative">
@@ -123,24 +135,20 @@ const Login = () => {
                     id="email"
                     className="w-full sm:w-4/5 text-white bg-tertiary h-12 sm:h-12 rounded-full pl-12 font-sans border border-gray-300 focus:border-orange-600 focus:ring-orange-600"
                     value={signField.email}
-                    onChange={(e) =>
-                      setSignField({ ...signField, email: e.target.value })
-                    }
+                    onChange={(e) => setSignField({ ...signField, email: e.target.value })}
                   />
                   <div className="absolute top-1/2 left-3 transform -translate-y-1/2">
                     <CiMail color="white" size={25} />
                   </div>
                 </div>
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  <p className="text-red-500 text-sm mt-1 pl-5">{errors.email}</p>
                 )}
               </div>
 
+              {/* Password Field */}
               <div className="flex flex-col sm:ml-20">
-                <label
-                  htmlFor="password"
-                  className="text-white text-lg font-semibold"
-                >
+                <label htmlFor="password" className="text-white text-[1rem] sm:text-[1.5rem] pl-5 pb-3 font-semibold">
                   Password
                 </label>
                 <div className="relative">
@@ -149,9 +157,7 @@ const Login = () => {
                     id="password"
                     className="w-full sm:w-4/5 text-white bg-tertiary h-12 sm:h-12 rounded-full pl-12 font-sans border border-gray-300 focus:border-orange-600 focus:ring-orange-600"
                     value={signField.password}
-                    onChange={(e) =>
-                      setSignField({ ...signField, password: e.target.value })
-                    }
+                    onChange={(e) => setSignField({ ...signField, password: e.target.value })}
                   />
                   <div className="absolute top-1/2 left-3 transform -translate-y-1/2">
                     <FaLock color="white" size={25} />
@@ -168,10 +174,11 @@ const Login = () => {
                   </div>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                  <p className="text-red-500 text-sm mt-1 pl-5">{errors.password}</p>
                 )}
               </div>
 
+              {/* Terms and Conditions */}
               <div className="flex flex-col sm:ml-20">
                 <div className="flex items-center gap-2">
                   <input
@@ -179,50 +186,50 @@ const Login = () => {
                     id="terms"
                     checked={agreedTerms}
                     onChange={() => setAgreedTerms(!agreedTerms)}
-                    className="text-orange-600"
+                    className="text-orange-600 rounded focus:ring-orange-500"
                   />
                   <Link to="/programpanda/privacy/terms">
-                    <label
-                      htmlFor="terms"
-                      className="text-white text-lg font-semibold"
-                    >
+                    <label htmlFor="terms" className="text-white text-lg font-semibold">
                       I agree to the{' '}
-                      <span className="text-orange-600 cursor-pointer">
+                      <span className="text-orange-600 cursor-pointer hover:text-orange-500">
                         terms and conditions
                       </span>
                     </label>
                   </Link>
                 </div>
                 {errors.terms && (
-                  <p className="text-red-500 text-sm mt-1">{errors.terms}</p>
+                  <p className="text-red-500 text-sm mt-1 pl-5">{errors.terms}</p>
                 )}
               </div>
 
+              {/* Login Button */}
               <div className="flex flex-col sm:ml-20">
                 <button
                   type="submit"
-                  className="w-full sm:w-4/5 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-semibold"
+                  className="w-full sm:w-4/5 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-semibold text-lg hover:bg-orange-700 transition-colors duration-200"
                   disabled={loading}
                 >
                   {loading ? <SmallSpinner /> : 'Log In'}
                 </button>
               </div>
 
-              <div className="flex flex-col justify-center items-center gap-5 ">
+              {/* Links */}
+              <div className="flex flex-col justify-center items-center gap-5">
                 <p className="text-white text-lg">
                   Don't have an account?{' '}
-                  <Link to="/signin" className="text-orange-600 font-semibold">
+                  <Link to="/signin" className="text-orange-600 font-semibold hover:text-orange-500">
                     Sign Up
                   </Link>
                 </p>
                 <Link to="/user/forgot/email">
-                  <p className="text-sans text-xl text-green-500 hover:text-green-700">
-                    Forgot password
+                  <p className="text-sans text-xl text-green-500 hover:text-green-600 transition-colors duration-200">
+                    Forgot password?
                   </p>
                 </Link>
               </div>
             </div>
 
+            {/* Right side image */}
             <div className="hidden sm:flex items-center justify-center">
               <img
                 src={loginImage}

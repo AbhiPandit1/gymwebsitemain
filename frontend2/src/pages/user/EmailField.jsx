@@ -49,7 +49,7 @@ const EmailField = () => {
 
       <div className="gap-20 max-w-[100vw]">
         <div className="flex flex-col justify-center items-center mt-4 max-w-[100vw]">
-          <label htmlFor="" className="text-white">
+          <label htmlFor="" className="w-full sm:w-[30%] text-white h-[2.5rem] sm:h-[3rem] rounded-[32px] text-lg font-semibold flex items-center">
             Email
           </label>
           <div className="relative flex w-[80%] justify-center">
@@ -60,7 +60,7 @@ const EmailField = () => {
                 <input
                   type="email"
                   name="email"
-                  placeholder="email"
+                  placeholder="Email Address"
                   required
                   className="flex w-full sm:w-[40%] justify-center items-center text-white bg-tertiary h-[2.5rem] sm:h-[3rem] rounded-[32px] pl-[20%] sm:pl-[8%] font-sans"
                   onChange={(e) => setUserEmail(e.target.value)}
@@ -76,7 +76,7 @@ const EmailField = () => {
 
       <div className="flex justify-center items-center">
         <button
-          className="h-[4rem] w-[10rem] rounded-2xl bg-gradient-to-r from-orange-400 to-orange-600 hover:bg-orange-500 text-white flex justify-center items-center gap-5"
+          className="h-[4rem] w-[10rem] rounded-2xl bg-gradient-to-r from-orange-400 to-orange-600 hover:bg-orange-500 text-white flex justify-center items-center gap-2"
           onClick={handleEmail}
           disabled={loading} // Disable button while loading
         >
@@ -84,7 +84,7 @@ const EmailField = () => {
             <Skeleton className="w-full h-[2rem]" />
           ) : (
             <>
-              <div className="font-sans font-extrabold">Submit</div>
+              <div className="font-sans font-semibold text-lg">Submit</div>
               <FaLongArrowAltRight size={30} />
             </>
           )}

@@ -139,7 +139,7 @@ const SignIn = () => {
             <LoginLogo header="Sign up" />
 
             <div className="flex flex-col sm:ml-20">
-              <label htmlFor="email" className="text-white text-lg font-bold">
+              <label htmlFor="email" className="text-white text-[1rem] sm:text-[1.5rem] w-[full] mt-[2rem] pl-5 pb-3 font-semibold">
                 Email
               </label>
               <div className="relative">
@@ -164,7 +164,7 @@ const SignIn = () => {
             <div className="flex flex-col sm:ml-20">
               <label
                 htmlFor="password"
-                className="text-white text-lg font-semibold"
+                className="text-white text-[1rem] sm:text-[1.5rem] pl-5 pb-3 font-semibold"
               >
                 Password
               </label>
@@ -200,7 +200,7 @@ const SignIn = () => {
             <div className="flex flex-col sm:ml-20">
               <label
                 htmlFor="confirmPassword"
-                className="text-white text-lg font-semibold"
+                className="text-white text-[1rem] sm:text-[1.5rem] pl-5 pb-3 font-semibold"
               >
                 Confirm Password
               </label>
@@ -270,7 +270,7 @@ const SignIn = () => {
             <div className="flex flex-col sm:ml-20">
               <button
                 type="submit"
-                className="w-full sm:w-4/5 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-semibold"
+                className="w-full sm:w-4/5 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-semibold text-lg"
                 disabled={loading}
               >
                 {loading ? <SmallSpinner /> : 'Sign Up'}
