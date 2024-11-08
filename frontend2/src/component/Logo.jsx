@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 
 const Logo = ({ backgroundImage }) => {
   return (
-    <div className='flex justify-center items-center'>
-      <Link to="/">
+    <div className='flex items-center'>
+      <Link to="/" className='flex-190px'>
         <img
           src={backgroundImage}
           alt="panda"

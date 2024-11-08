@@ -49,7 +49,7 @@ const Footer = () => {
           {/* First Section */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-10 sm:py-20 border-b border-gray-600">
             <div className="flex flex-col items-start sm:items-center">
-              <Logo backgroundImage={footerImage} />
+              <Logo backgroundImage={footerImage}/>
             </div>
             <div className="flex space-x-5 mt-10 sm:mt-0">
               <a

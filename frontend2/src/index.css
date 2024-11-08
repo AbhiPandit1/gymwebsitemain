@@ -2,5 +2,5 @@
 @tailwind components;
 @tailwind utilities;
 .header-fixed{background-color: #050c1e; border-radius: 0; transition: all 0.25s ease;}
-
+.flex-190px{flex: 0 0 150px;}
 
